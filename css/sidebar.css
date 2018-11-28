@@ -1,0 +1,129 @@
+.col-body {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.col-nav {
+  flex: 0 0 auto;
+}
+
+#sidebar {
+  position: sticky;
+  top: 60px;
+  height: calc(100vh - 60px);
+  padding: 20px 10px 20px 10px;
+  background-color: #f3f3f3;
+  color: #33444C;
+}
+
+.col-content {
+  flex: 1 1;
+  padding: 80px 30px 20px 30px;
+}
+
+/* navgoco sidebar styles (customized) */
+.sidebar, .sidebar ul, .sidebar li {
+  list-style: none;
+}
+
+.sidebar ul {
+  padding: 0;
+  margin:0px;
+}
+
+.sidebar {
+  padding:0px;
+  margin: 0px;
+}
+
+.sidebar > li {
+  margin: 1px 0;
+}
+
+.sidebar > li li {
+  margin: 2px 0;
+}
+
+.sidebar a {
+  color: #0090C8;
+  display: block;
+  outline: none;
+  text-decoration: none;
+  padding: 10px 15px;
+}
+
+.sidebar li > a > span {
+    float: right;
+    font-size: 19px;
+    font-weight: bolder;
+}
+
+
+.sidebar li > a > span:after {
+    content: '\25be';
+}
+.sidebar li.active > a > span:after {
+    content: '\25b4';
+}
+
+.sidebar a:hover, .sidebar li.active > a {
+}
+
+.sidebar > li.active > a  {
+  font-weight: 600;
+}
+
+.sidebar li a {
+    font-size: 14px;
+    line-height: 18px;
+}
+
+.sidebar > li > a {
+    font-size: 16px;
+    line-height: 20px;
+}
+
+ul#mysidebar {
+    border-radius: 0px;
+}
+
+.sidebar ul li ul li a {
+    padding-left: 55px;
+}
+
+.sidebar li.thirdlevel > a {
+    font-weight: bold;
+    padding-left: 20px;
+}
+
+
+.sidebar ul li a {
+    /*background-color: #FAFAFA;*/
+}
+
+.sidebar li a {
+    /*padding-right:10px;*/
+}
+
+.sidebar li a:hover {
+  opacity: 0.7;
+}
+
+.sidebar ul li a {
+  padding-left: 35px;
+}
+/* end sidebar */
+
+@media (max-width: 767px) {
+  .col-body {
+    flex-flow: row wrap;
+  }
+  .col-nav {
+    flex-grow: 1;
+    padding-left: 70px;
+    padding-right: 70px;
+  }
+  #sidebar {
+    height: auto;
+  }
+}
