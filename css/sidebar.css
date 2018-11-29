@@ -16,6 +16,7 @@
   background-color: #f3f3f3;
   color: #33444C;
   max-width: 325px;
+  overflow-y: scroll;
 }
 
 .col-content {
