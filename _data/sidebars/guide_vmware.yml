@@ -79,7 +79,7 @@ entries:
       url: '#increase-iscsi-login-timeout'
     - title: TCP DelayedAck
       output: web, pdf
-      url: '#leave-delayedack-at-its-default:-enabled'
+      url: '#leave-delayedack-at-its-default-enabled'
     - title: Large Receive Offload Maximum Length
       output: web, pdf
       url: '#large-receive-offload-maximum-length'
