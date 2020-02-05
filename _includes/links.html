@@ -1,0 +1,81 @@
+{% comment %}Get links from each sidebar, as listed in the _config.yml file under sidebars{% endcomment %}
+
+<!-- link it srust -->
+
+{% for sidebar in site.sidebars %}
+{% for entry in site.data.sidebars[sidebar].entries %}
+{% for folder in entry.folders %}
+{% for folderitem in folder.folderitems %}
+{% assign urlpath = folderitem.url %}
+{% if folderitem.url contains "html#" %}
+[{{urlpath | remove: ".html"}}]: {{folderitem.url}}
+{% elsif folderitem.url contains "#" %}
+{% assign urlparts = folderitem.url | split: "/" %}
+{% for item in urlparts reversed %}
+{% assign urlpath = item %}
+{% break %}
+{% endfor %}
+[{{urlpath}}]: {{folderitem.url}}
+[{{folderitem.url | remove_first: "/" }}]: {{folderitem.url}}
+{% elsif folderitem.url contains "/index.html" and
+         folderitem.url != "/index.html" %}
+{% assign urlpath = folderitem.url | remove: "/index.html" | remove_first: "/" %}
+<!-- link it srust: index.html match [{{urlpath}}]: {{folderitem.url}} -->
+[{{urlpath}}]: {{folderitem.url}}
+{% elsif folderitem.url contains ".html" %}
+{% assign urlparts = folderitem.url | split: "/" %}
+{% for item in urlparts reversed %}
+{% assign urlpath = item | remove: ".html" %}
+{% break %}
+{% endfor %}
+<!-- link it srust: .html match [{{urlpath}}]: {{folderitem.url}} -->
+[{{urlpath}}]: {{folderitem.url}}
+{% elsif folderitem.url %}
+<!-- link it srust: nomatch  -->
+{% assign urlpath = folderitem.url | remove_first: "/" %}
+[{{urlpath}}]: {{folderitem.url}}
+<!-- link it done -->
+{% endif %}
+{% for subfolders in folderitem.subfolders %}
+{% for subfolderitem in subfolders.subfolderitems %}
+{% if subfolderitem.url == nil %}
+{% continue %}
+{% endif %}
+<!-- link it srust: subfolder -->
+[{{subfolderitem.url | remove: "/"  | remove: ".html"}}]: {{subfolderitem.url | remove: "/"}}
+<!-- link it srust: subfolder done -->
+{% endfor %}
+{% endfor %}
+{% endfor %}
+{% endfor %}
+{% endfor %}
+{% endfor %}
+
+{% comment %} Get links from topnav {% endcomment %}
+
+{% for entry in site.data.topnav.topnav %}
+{% for item in entry.items %}
+{% if item.external_url == null %}
+{% if item.url == nil %}
+{% continue %}
+{% endif %}
+[{{item.url | remove: "/" | remove: ".html"}}]: {{item.url | remove: "/"}}
+{% endif %}
+{% endfor %}
+{% endfor %}
+
+{% comment %}Get links from topnav dropdowns {% endcomment %}
+
+{% for entry in site.data.topnav.topnav_dropdowns %}
+{% for folder in entry.folders %}
+{% for folderitem in folder.folderitems %}
+{% if folderitem.external_url == null %}
+{% if folderitem.url == nil %}
+{% continue %}
+{% endif %}
+[{{folderitem.url | remove: "/"  | remove: ".html"}}]: {{folderitem.url | remove: "/"}}
+{% endif %}
+{% endfor %}
+{% endfor %}
+{% endfor %}
+

@@ -1,0 +1,122 @@
+# This is your sidebar TOC. The sidebar code loops through sections here and provides the appropriate formatting.
+
+entries:
+- title: sidebar
+  folders:
+  - title: ABOUT THIS GUIDE
+    output: web, pdf
+    url: '#vmware-storage-management-guide'
+  - title: DEPLOYMENT PLANNING
+    output: web, pdf
+    url: '#deployment-planning'
+    folderitems:
+    - title: Sizing & Performance
+      output: web, pdf
+      url: '#datastore-sizing-and-performance'
+    - title: Storage I/O Control
+      output: web, pdf
+      url: '#storage-io-control'
+    - title: Storage Distributed Resource Scheduling
+      output: web, pdf
+      url: '#storage-distributed-resource-scheduler-sdrs'
+    - title: Multiple Classes of Storage
+      output: web, pdf
+      url: '#offer-different-classes-of-storage'
+
+  - title: CONNECTING TO BLOCKBRIDGE
+    output: web, pdf
+    url: '#connecting-to-blockbridge'
+    folderitems:
+    - title: iSCSI Multipathing
+      output: web, pdf
+      url: '#iscsi-multipathing'
+    - title: Multi-Complex Firewall Considerations
+      output: web, pdf
+      url: '#multi-complex-firewall'
+    - title: Teamed Interfaces
+      output: web, pdf
+      url: '#blockbridge-teamed-interface-configuration-notes'
+    - title: Provisioning iSCSI Storage
+      output: web, pdf
+      url: '#provisioning-a-blockbridge-service-disk-target-and-profile'
+    - title: VMware Initiator Configuration
+      output: web, pdf
+      url: '#connecting-vmware-to-a-blockbridge-target'
+    - title: Creating a VMFS Datastore
+      output: web, pdf
+      url: '#creating-a-vmfs-datastore'
+
+  - title: HOST TUNING
+    output: web, pdf
+    url: '#host-tuning'
+    folderitems:
+    - title: iSCSI LUN Queue Depth
+      output: web, pdf
+      url: '#increase-the-iscsi-lun-queue-depth-to-256'
+    - title: SchedNumReqOutstanding Depth
+      output: web, pdf
+      url: '#increase-the-schednumreqoutstanding-depth-to-64'
+    - title: Queue Depth Full
+      output: web, pdf
+      url: '#default-do-not-alter-behavior-on-queue-full-conditions'
+    - title: Round Robin Path Selection IOPS Limit
+      output: web, pdf
+      url: '#lower-the-round-robin-path-selection-iops-limit-to-8'
+    - title: VAAI Commands
+      output: web, pdf
+      url: '#default-enable-vaai-commands'
+    - title: Optimized ATS Heartbeating (VMFS-6)
+      output: web, pdf
+      url: '#use-optimized-ats-heartbeating-vmfs-6'
+    - title: Halt VMs on Out-of-Space Conditions
+      output: web, pdf
+      url: '#halt-vms-on-out-of-space-conditions'
+    - title: Jumbo Frames
+      output: web, pdf
+      url: '#jumbo-frames'
+    - title: iSCSI Login Timeout
+      output: web, pdf
+      url: '#increase-iscsi-login-timeout'
+    - title: TCP DelayedAck
+      output: web, pdf
+      url: '#leave-delayedack-at-its-default-enabled'
+    - title: Large Receive Offload Maximum Length
+      output: web, pdf
+      url: '#large-receive-offload-maximum-length'
+    - title: NIC Interrupt Balancing
+      output: web, pdf
+      url: '#nic-interrupt-balancing'
+    - title: Mellanox Specific Optimizations
+      output: web, pdf
+      url: '#mellanox-nic-tuning'
+
+  - title: GUEST TUNING
+    output: web, pdf
+    url: '#guest-tuning'
+    folderitems:
+    - title: Paravirtual SCSI Adapter
+      output: web, pdf
+      url: '#use-the-paravirtual-scsi-adapter-in-guests'
+    - title: Virtual Machine Encryption
+      output: web, pdf
+      url: '#disable-virtual-machine-encryption'
+    - title: Zeroing Policies
+      output: web, pdf
+      url: '#thin-lazy-zeroed-or-eager-zeroed'
+    - title: Guest I/O Latency & Consistency
+      output: web, pdf
+      url: '#improving-guest-io-latency-and-latency-consistency'
+
+  - title: DEPLOYMENT & TUNING CHEATSHEET
+    output: web, pdf
+    url: '#deployment--tuning-cheatsheet'
+    folderitems:
+    - title: Deployment Steps
+      output: web, pdf
+      url: '#deployment-steps'
+    - title: Host tuning – Non-Default Settings
+      output: web, pdf
+      url: '#host-tuning--non-default-settings'
+    - title: Host Tuning – Default Settings
+      output: web, pdf
+      url: '#host-tuning--default-settings'

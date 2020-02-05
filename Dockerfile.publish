@@ -1,0 +1,14 @@
+FROM jekyll/builder
+FROM jekyll/jekyll
+
+WORKDIR /src
+COPY Gemfile /src/Gemfile
+COPY Gemfile.lock /src/Gemfile.lock
+RUN bundle install --with=jekyll_plugins
+RUN git config --global user.email "build@blockbridge.com"
+RUN git config --global user.name "Build"
+
+COPY . /src
+ARG SITE=/tmp/site
+ENV SITE=$SITE
+CMD build/publish.sh
