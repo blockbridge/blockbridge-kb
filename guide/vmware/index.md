@@ -33,7 +33,7 @@ that affect the performance and capabilities of iSCSI storage.
 performance from guest VMs.
 
 {% include tip.html content="All of the deployment steps and recommendations
-are summarized in the 
+are summarized in the
 **[Deployment & Tuning Cheat Sheet](#deployment--tuning-cheatsheet)** at the
 end of the document." %}
 
@@ -251,148 +251,168 @@ CONNECTING TO BLOCKBRIDGE
 iSCSI Multipathing
 ------------------
 
-Multipathing configuration on VMware is surprisingly cumbersome. We've found
-that it's best to get it out of the way first, before you add in your
-Blockbridge targets. Saving it for later frequently results in additional
-phantom paths that need a reboot to clear out.
+Multipathing is a VMware datastore compliance requirement for network
+attached storage. We've found that it's best to get it out of the way
+first, before you attempt to connect to storage. Saving it for later
+frequently results in phantom storage paths that need a reboot to
+clear out.
 
 The definitive reference for ESXi iSCSI multipath configuration is,
-unfortunately, several years old: [Multipathing Configuration for Software iSCS
-Using Port Binding (VMware)](https://www.vmware.com/content/dam/digitalmarketing/vmware/en/pdf/techpaper/vmware-multipathing-configuration-software-iscsi-port-binding-white-paper.pdf).
+unfortunately, several years old: [Multipathing Configuration for
+Software iSCSI Using Port Binding
+(VMware)](https://www.vmware.com/content/dam/digitalmarketing/vmware/en/pdf/techpaper/vmware-multipathing-configuration-software-iscsi-port-binding-white-paper.pdf). Still,
+the document is very thorough and mostly accurate today. If you have a
+complicated install, you should give it a read.
 
-Still, the document is very thorough and 90% accurate even today. If you have a
-more complicated install, you should give it a read. The section below offers a
-simplified description of the process for configuring multipathing on a port
-group with two physical interfaces, focusing on things that have changed with
-the new vCenter 6.7 HTML interface.  Configuring this from the CLI is quite
-complicated -- refer to the above white paper.
+### Requirements for Common Network Architectures
 
-There are three common multipath deployments:
+There are several common network patterns used for highly available iSCSI storage.
 
-1.  ESXi has multiple interfaces, each with an IP address on the same
-    subnet. Blockbridge has a teamed interface on the same subnet. In
-    this mode, ESXi will have one path for each interface. (2 interfaces
-    = 2 paths)
+**Mode A: Single Subnet Nx1**
 
-2.  Both ESXi and Blockbridge have multiple IP addresses on the same
-    subnet. ESXi will make a path between each of its interfaces and
-    each Blockbridge IP. **(Two ESXi interfaces \* two BB interfaces =
-    four paths.)**
+- ESXi has N interface ports, each with an IP address on the same subnet.
+- Blockbridge has a single logical or physical interface port configured with a single IP address.
 
-3.  Blockbridge and ESXi have interfaces on two or more different
-    subnets. VLANs keep the subnets isolated. This will have two or more
-    paths, isolated by VLAN.
+**Mode B: Single Subnet NxM**
 
-Thankfully, all of these configurations look much the same on the
-vSphere side.
+- ESXi has N interface ports, each with an IP address on the same subnet.
+- Blockbridge has M logical or physical interface ports, each with an IP address on the same subnet.
 
-To start, create the first port group and associated vSwitch:
+**Mode C: Multiple Subnet NxN**
 
-1.  Select the host from the sidebar menu.
+- ESXi has N interface ports, each with an IP address on a different subnet.
+- Blockbridge has N logical or physical interface ports, each with an IP address on different subnets.
 
-2.  Select **Configure.**
+If your ESXi interface ports are on different subnets, no additional
+network configuration is required for multipathing. **If your ESXi
+interface ports share a subnet, you must configure iSCSI Port
+Bindings.**
 
-3.  Expand **Networking.**
+### Virtual Networking - VMkernel Adapters & vSwitches
 
-4.  Select **VMkernel Adapters.**
+This section offers a simplified description of the process for
+configuring VMkernel Network Adapters and Virtual Switching in support
+of iSCSI multipathing deployed on a single subnet. Specific attention
+is paid to changes found in the vCenter 6.7 HTML interface.
+Configuration via the CLI is also possible: see [Multipathing
+Configuration for Software iSCSI Using Port Binding
+(VMware)](https://www.vmware.com/content/dam/digitalmarketing/vmware/en/pdf/techpaper/vmware-multipathing-configuration-software-iscsi-port-binding-white-paper.pdf)
+for details.
 
-5.  Select **Add Networking.**
+To start, Launch the **Add Networking** wizard for your host:
+
+1.  **Select the host from the sidebar menu**.
+
+2.  **Select Configure**.
+
+3.  **Expand Networking**.
+
+4.  **Select VMkernel Adapters**.
+
+5.  **Select Add Networking**.
 
 {% include img.html align="center" max-width="90%" file="image2.jpg"
     alt="VMware screenshot showing VMkernel Network Adapters" %}
 
-In the Add Networking dialog:
+**Create a new VMkernel Adapter and vSwitch**:
 
-1.  Select **VMkernel Network Adapter** (**not** Virtual Machine Port
-    Group.)
+1.  **Select VMkernel Network Adapter** as the connection type.
 
-2.  Select **New standard switch**, and set the **MTU**.
+2.  **Select New standard switch** to create a vSwitch.
+    - Set an **MTU** value compatible with your network.
 
-3.  Add all physical interfaces to the switch that will be participating in
-    iSCSI traffic by clicking the green "+" button. Here, we've added vmnic2
-    and (the ridiculously-named) vmnic1000202.
+3.  **Assign participating physical interfaces to the vSwitch** by clicking the green "+" button. Here, we've added vmnic2 and vmnic1000202.
 
     {% include img.html align="center" max-width="90%" file="image3.jpg"
     alt="VMware screenshot showing creation of a virtual switch" %}
 
-4.  Label the "Network" to make it clear that this is one member of a port
-    group for iSCSI traffic. Here, we chose "iSCSI pg1". Select (at least)
-    **vMotion** and **Provisioning** services.
+4.  **Edit the VMkernel Adapter Port properties**.
+    - Enable **vMotion** and **Provisioning** data services.
+    - Specify a **Network Label** that makes it clear that this is one of several ports used for iSCSI traffic. In our example, we chose "iSCSI pg1".
 
     {% include img.html align="center" max-width="90%" file="image4.jpg"
     alt="VMware screenshot showing port properties" %}
 
-5.  On the next screen, enter the port group's IP address and netmask.
+5.  **Edit the IPv4 settings**
+    - enter the IP address and netmask for the VMkernel Adapter Port.
 
 6.  Finally, complete the workflow.
 
-For the second port, follow the same procedure, except part 2:
+**Create additional VMkernel Adapters for each physical network interface port**, adding them to your existing vSwitch. This is the same process as above, **substituting step 2 as follows**:
 
-2.  **Select an existing standard switch**, where you will select the
-    **vSwitch** created for the first port in this group:
+1.  For the target device, **Select an existing standard switch**. Specify the vSwitch created previously.
 
     {% include img.html align="center" max-width="90%" file="image5.jpg"
     alt="VMware screenshot showing add target device selection" %}
 
-You should now see the two VMkernel adapters you've just created:
+On completion, you should see the two VMkernel adapters:
 
 {% include img.html align="center" max-width="90%" file="image6.jpg"
 alt="VMware screenshot showing VMkernel adapters" %}
 
-Next, select **Networking** / **Virtual switches** and scroll down to see the
-new vSwitch.
+### Virtual Networking - Physical Adapter Selection
+
+At this point, you have created a **vSwitch** that connects multiple **VMkernel Adapters** with multiple **Physical Adapters**. By default, VMware will use a single physical adapter for outbound traffic from the vSwitch. To use additional physical adapters, you must apply a policy to each **VMkernel Adapter** that binds outbound traffic to single **Physical Adapter**.
+
+To start, **locate your vSwitch Network Diagram**
+
+1.  **Select Networking** / **Virtual switches**.
+    - Scroll down as needed to find your vSwitch.
 
 {% include img.html align="center" max-width="90%" file="image7.jpg"
 alt="VMware screenshot showing newly created vSwitch" %}
 
-Next, we're going to edit the configuration of each of the VMkernel adapters.
+Next, **edit the configuration of each VMkernel adapter**.
 
-1.  Select the **three dots** to the right of the first adapter (here, it's
-    "iSCSI pg1").
+1.  **Select the three dots** to the right of the first VMkernel adapter (here, it's "iSCSI pg1").
 
-2.  Select **Edit Settings** in the small box that pops up.
+2.  **Select Edit Settings**.
 
     {% include img.html align="center" max-width="90%" file="image8.jpg"
     alt="VMware screenshot of adapter edit dialog" %}
 
-3.  In the Edit Settings dialog, select **Teaming and failover** from the
-    column on the left.
+3.  **Select Teaming and failover** in the edit settings dialog.
 
-4.  Select the checkbox next to **Override**
+4.  **Select the checkbox next to Override**
 
-5.  Then, move **one** physical adapter down below **Unused adapters**.  Below,
-    we've done this to the vmnic100202 adapter.
+5.  **Assign a Single Physical Adapter as an Active Adapter**
+    - Assign all other adapters as **Unused Adapters**.
 
     {% include img.html align="center" max-width="90%" file="image9.jpg"
     alt="VMware screenshot showing unused adapters" %}
 
-Repeat this process for the second VMkernel adapter, only this time moving the
-other physical adapter down below **Unused adapters.** Here, that's vmnic2.
+Repeat this process for each **VMkernel adapter**, ensuring each adapter maps to a unique **Physical Adapter**. In the example below, our "iSCSI pg2" adapter assigns "vmnic1000202" as active since "iSCSI pg1" previously assigned "vmnic2".
 
 {% include img.html align="center" max-width="90%" file="image10.jpg"
 alt="VMware screenshot showing unusued adapters" %}
 
-Finally, you need to bind the port groups to the iSCSI adapter.
+### Network Port Bindings for iSCSI
 
-1.  Select **Storage / Storage Adapters**.
+At this point, you have multiple **VMkernel adapters** that are mapped to independent **Physical Adapters** configured with **IP addresses on the same subnet**. The last step is to configure network port bindings in the **VMware Software iSCSI Adapter**.
 
-2.  Select the iSCSI software adapter.
+1.  **Select Storage / Storage Adapters**.
 
-3.  Select **Network Port Binding.**
+2.  **Select the iSCSI Software Adapter**.
 
-4.  Select **Add.**
+3.  **Select Network Port Binding**.
+
+4.  **Select Add**.
 
     {% include img.html align="center" max-width="90%" file="image11.jpg"
     alt="VMware screenshot binding port groups to an iSCSI adapter" %}
 
-5.  Select the two VMkernel adapters, then select OK.
+5.  **Select your VMkernel Adapters**, then **select OK**.
 
     {% include img.html align="center" max-width="90%" file="image12.jpg"
     alt="VMware screenshot showing multiple selected adapters" %}
 
 ### Resources
 
--   [When To Use Multiple Subnet iSCSI Network Design (Chris Wahl)](http://wahlnetwork.com/2015/03/09/when-to-use-multiple-subnet-iscsi-network-design/)
+-   [Multipathing Configuration for Software iSCSI Using Port Binding (VMware)](https://www.vmware.com/content/dam/digitalmarketing/vmware/en/pdf/techpaper/vmware-multipathing-configuration-software-iscsi-port-binding-white-paper.pdf)
+
+-   [When To Use Multiple Subnet iSCSI Network Design (Chris Wahl)](https://wahlnetwork.com/2015/03/09/when-to-use-multiple-subnet-iscsi-network-design/)
+
+-   [VMware vSphere - When to use iSCSI Port Binding, and why! (Stephen Wagner)](https://www.stephenwagner.com/2014/06/07/vmware-vsphere-iscsi-port-binding/)
 
 -   [ESXi iSCSI, Multiple Subnets, and Port Binding (Cody Hosterman)](https://www.codyhosterman.com/2018/05/esxi-iscsi-multiple-subnets-and-port-binding/)
 
@@ -490,7 +510,7 @@ In the "Create Initiator Profile" dialog that opens, enter a CHAP username
 {% include img.html align="center" max-width="90%" file="image17.jpg"
 alt="Blockbridge screenshot showing create initiator profile modal" %}
 
-You will need the iSCSI IQN from the iSCSI adapter in each ESXi host.  
+You will need the iSCSI IQN from the iSCSI adapter in each ESXi host.
 
 {% include gui.html app="VMware" content="Host -\> Configure -\> Storage/Storage Adapters -> IQN" %}
 
@@ -587,7 +607,7 @@ for two target portal IP addresses.
 
 {% include tip.html content="VMware's older documentation is quicker to
     navigate than the new stuff. Here's a document with numerous helpful iSCSI
-    CLI configuration examples: 
+    CLI configuration examples:
     [vSphere 5 Command Line Documentation (VMware)](https://pubs.vmware.com/vsphere-50/index.jsp?topic=%2Fcom.vmware.vcli.examples.doc_50%2Fcli_manage_iscsi_storage.7.5.html)" %}
 
     esxcli iscsi adapter discovery statictarget add --adapter=vmhba64 --address=172.16.200.44:3261 \
@@ -948,7 +968,7 @@ undertake the transition.
 Use vmkping to test that jumbo frames are configured.
 
     vmkping -ds 8972 <IP of Blockbridge storage service>
-    
+
 ### Resources
 
 - [Testing VMkernel network connectivity with the vmkping command (1003728) (VMware)](https://kb.vmware.com/s/article/1003728)
@@ -1091,7 +1111,7 @@ ring pages, so your installation may not need additional tuning:
     190
     [root@esx]# cat /sys/module/vmw_pvscsi/parameters/ring_pages
     32
-    
+
 ### Resources
 
 - [Large-scale workloads with intensive I/O patterns might require queue depths significantly greater than Paravirtual SCSI default values (2053145) (VMware)](https://kb.vmware.com/s/article/2053145>)
