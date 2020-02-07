@@ -9,36 +9,41 @@ toc: false
 This is a guide for deploying VMware vSphere clusters with Blockbridge
 storage. It is roughly structured in chronological order: the beginning of the
 document focuses on points to consider before you deploy while the end details
-the tunings to apply once everything is up and running.  The final two pages
-are a "cheat sheet" of deployment steps and command lines for deploying and
-tuning the system.
+the tunings to apply once everything is up and running.  You may want to
+**[skip ahead to the cheat sheet](#deployment--tuning-cheatsheet)** in the
+final section for tips and techniques in a condensed form.
 
-The **Deployment Planning** chapter opens with a discussion of how to size your
-VMFS datastores for performance and flexibility with Blockbridge. It goes on to
-detail how best to configure VMware's Storage I/O Control and Storage
-Distributed Resource Scheduler features with all-flash Blockbridge storage.
+The **[Deployment Planning](#deployment-planning)** chapter opens with a
+discussion of how to size your VMFS datastores for performance and flexibility
+with Blockbridge. It goes on to detail how best to configure VMware's Storage
+I/O Control and Storage Distributed Resource Scheduler features with all-flash
+Blockbridge storage.
 
-**Connecting to a Blockbridge Dataplane** gets into the details of deploying
-the solution. The bulk of the chapter is devoted to properly configuring iSCSI
-multipathing with port binding. You can skip this if you've done it before. The
-chapter then gets into how to provision disks and iSCSI targets on Blockbridge,
-and how to connect them to your ESXi hosts.
+**[Connecting to Blockbridge](#connecting-to-blockbridge)**
+gets into the details of deploying the solution. The bulk of the chapter is
+devoted to properly configuring iSCSI multipathing with port binding. You can
+skip this if you've done it before. The chapter then gets into how to provision
+disks and iSCSI targets on Blockbridge, and how to connect them to your ESXi
+hosts.
 
-**Tuning the Hosts** enumerates recommendations for ESXi host-level parameters
+**[Host Tuning](#host-tuning)** enumerates recommendations for ESXi host-level parameters
 that affect the performance and capabilities of iSCSI storage.
 
-**Tuning the Guests** offers additional recommendations for achieving high
+**[Guest Tuning](#guest-tuning)** offers additional recommendations for achieving high
 performance from guest VMs.
 
-{% include tip.html content="All of the deployment steps and recommendations are summarized in the *Deployment and Tuning Cheat Sheet* at the end of the document." %}
+{% include tip.html content="All of the deployment steps and recommendations
+are summarized in the 
+**[Deployment & Tuning Cheat Sheet](#deployment--tuning-cheatsheet)** at the
+end of the document." %}
 
 ---
 
 DEPLOYMENT PLANNING
 ===================
 
-Datastore Sizing and Performance
---------------------------------
+Sizing & Performance
+--------------------
 
 {% include tip.html content="Our base recommendation is to **provision one
 Blockbridge LUN for each Blockbridge dataplane complex and create a VMFS-6
@@ -54,12 +59,12 @@ With an NVMe array, VMware's iSCSI initiator is likely to be the performance
 bottleneck. When running an ESXi host up in the range of hundreds of thousands
 of IOPS, you'll see a big rise in the system CPU time as well as a lot of NIC
 interrupts. You can manage the bulk of this by simply having enough CPU
-resources available for the storage subsystem. Secondarily, however, you may
-find that you can unlock some additional initiator-side concurrency benefits by
-doubling up on the VMFS datastores you build from the same Blockbridge
-dataplane complex.  It's not a guaranteed win, but it may be worth an
-experiment to see if provisioning an additional VMFS datastore or two nets you
-some performance gains.
+resources available for the storage subsystem. However, you may find that you
+can unlock some additional initiator-side concurrency benefits by doubling up
+on the VMFS datastores you build from the same Blockbridge dataplane complex.
+It's not a guaranteed win, but it may be worth an experiment to see if
+provisioning an additional VMFS datastore or two nets you some performance
+gains.
 
 If you're deploying with multi-complex Blockbridge dataplanes, **create at
 least one VMFS datastore per dataplane complex**. Each complex is its own
@@ -68,13 +73,13 @@ performance domain (and failure domain.)
 We **don't** recommend incorporating multiple LUNs into a single
 datastore. VMFS extents are not stripes. You are not likely to realize any
 additional performance with multiple extents. Plus, Storage I/O Control will
-not work on datastores with multiple extents[^1].
+not work on datastores with multiple extents.
 
 For Storage DRS, using a greater number of smaller LUNs can give VMware's
 algorithm more leeway to achieve a balanced performance and capacity
 solution. However, making the datastores too small could force additional
 vMotions and create dead spaces that aren't easily recaptured. It's best to
-avoid slicing and dicing the storage too thinly[^2].
+avoid slicing and dicing the storage too thinly.
 
 When planning your installation, keep in mind the following limits for VMFS6 on
 vSphere 6.5:
@@ -114,7 +119,7 @@ the ESXi I/O stack:
    alt="A Diagram of the VMware IO Stack" %}
 
 > *Source:
-> [https://blogs.vmware.com/vsphere/2012/07/troubleshooting-storage-performance-in-vsphere-part-5-storage-queues.html](https://blogs.vmware.com/vsphere/2012/07/troubleshooting-storage-performance-in-vsphere-part-5-storage-queues.html)*
+> [Troubleshooting Storage Performance in vSphere Part 5: Storage Queues (VMware)](https://blogs.vmware.com/vsphere/2012/07/troubleshooting-storage-performance-in-vsphere-part-5-storage-queues.html)*
 
 In the above diagram, the SIOC measurement point is on top of the Driver. It
 measures the round-trip latency and throughput of I/O's issued to the device
@@ -149,7 +154,7 @@ neighbor problem, it may be better to see if you can move the noisy neighbors
 away to other hosts or other datastores. Or, dedicate storage to
 latency-sensitive workloads." %}
 
-Here are some additional considerations:
+### Additional Considerations
 
 -   Instead of SIOC, consider using per-VM IOPS limits, configurable
     from VM Storage Policies. These allow for AWS-style IOPS
@@ -158,30 +163,27 @@ Here are some additional considerations:
 
 -   vSphere 6.5 introduced SIOC v2, configured with VM Storage Policies
     instead of Disk Shares, but you can still configure SIOC v1. If you
-    refer to 3^rd^ party documentation on the web, make sure you're
+    refer to 3<sup>rd</sup> party documentation on the web, make sure you're
     looking at an appropriate version.
 
 -   SIOC won't work on datastores that have more than one extent. If
     you've built your datastore out of multiple LUNs, you can't use
     SIOC.
 
-Lastly, here are several excellent Storage I/O Control configuration and
-performance resources:
+### Resources
 
--   [VMware: Storage I/O Control
-    v2](https://storagehub.vmware.com/t/vsphere-storage/vsphere-6-5-storage-1/storage-i-o-control-v2-2/)
+-   [VMware vSphere: Storage I/O Control Requirements (VMware)](https://docs.vmware.com/en/VMware-vSphere/6.5/com.vmware.vsphere.resmgmt.doc/GUID-37CC0E44-7BC7-479C-81DC-FFFC21C1C4E3.html)
 
--   [VMware vSphere: Managing Storage I/O
-    Resources](https://docs.vmware.com/en/VMware-vSphere/6.7/com.vmware.vsphere.resmgmt.doc/GUID-7686FEC3-1FAC-4DA7-B698-B808C44E5E96.html)
+-   [VMware: Storage I/O Control v2 (VMware)](https://storagehub.vmware.com/t/vsphere-storage/vsphere-6-5-storage-1/storage-i-o-control-v2-2/)
 
--   [Troubleshooting Storage Performance in vSphere -- Storage
-    Queues](https://blogs.vmware.com/vsphere/2012/07/troubleshooting-storage-performance-in-vsphere-part-5-storage-queues.html)
+-   [VMware vSphere: Managing Storage I/O Resources (VMware)](https://docs.vmware.com/en/VMware-vSphere/6.7/com.vmware.vsphere.resmgmt.doc/GUID-7686FEC3-1FAC-4DA7-B698-B808C44E5E96.html)
 
--   [IO queues within
-    ESXi](http://virtualization.solutions/2017/10/01/io-queues-within-esxi/)
+-   [Troubleshooting Storage Performance in vSphere -- Storage Queues (VMware)](https://blogs.vmware.com/vsphere/2012/07/troubleshooting-storage-performance-in-vsphere-part-5-storage-queues.html)
 
-Storage Distributed Resource Scheduler (SDRS)
----------------------------------------------
+-   [IO queues within ESXi (Manuel Weisshaar)](http://virtualization.solutions/2017/10/01/io-queues-within-esxi/)
+
+Storage Distributed Resource Scheduling
+---------------------------------------
 
 Storage DRS (SDRS) is a vCenter feature that offers a long-term solution to
 balancing storage performance and capacity. To manage performance, SDRS samples
@@ -194,12 +196,11 @@ roughly the granularity of a day.
 
 The latency metric used by Storage DRS is measured at the same level in the I/O
 stack where virtual machine I/O is injected. Referring back to the diagram in
-the Storage I/O Control section, it includes latency incurred on the host-side
-World queue. This is a better measure of "whole system" performance, including
-inefficiencies on the host.
+the [Storage I/O Control](#storage-io-control) section, it includes latency
+incurred on the host-side World queue. This is a better measure of "whole
+system" performance, including inefficiencies on the host.
 
-Before enabling "fully automated SDRS" with storage backed by Blockbridge LUNs,
-consider the following:
+### Additional Considerations
 
 -   Thin provisioning on the Blockbridge side can confuse vCenter's
     sense of how much space is available. Configure your Blockbridge
@@ -211,14 +212,16 @@ consider the following:
     coordinate them with the VM migrations. Use manual mode SDRS in this
     case.
 
-Resources:
+### Resources
 
--   [VMware Storage DRS FAQ](https://kb.vmware.com/s/article/2149938)
+-   [Should I use many small LUNs or a couple large LUNs for Storage DRS? (Duncan Epping)](http://www.yellow-bricks.com/2012/12/06/should-i-use-many-small-luns-or-a-couple-of-large-luns-for-storage-drs/)
 
--   [VMware Storage DRS Interoperability](https://www.vmware.com/content/dam/digitalmarketing/vmware/en/pdf/techpaper/vsphere-storage-drs-interoperability-white-paper.pdf)
+-   [VMware Storage DRS FAQ (VMware),](https://kb.vmware.com/s/article/2149938)
 
-Offer Different Classes of Storage
-----------------------------------
+-   [VMware Storage DRS Interoperability (VMware)](https://www.vmware.com/content/dam/digitalmarketing/vmware/en/pdf/techpaper/vsphere-storage-drs-interoperability-white-paper.pdf)
+
+Multiple Classes of Storage
+---------------------------
 
 When planning out your VMware deployment, consider offering different classes
 of storage. With multiple Blockbridge dataplanes or a single multi-complex
@@ -236,9 +239,9 @@ tiering solution.** Instead, create multiple DRS clusters, with one storage
 technology per cluster. Inside each cluster, create multiple datastores that
 all use the same storage technology.
 
-Here's some older, but still valid information on this approach:
+### Resources
 
--   [VM Storage Profiles and Storage DRS – Part 2](https://frankdenneman.nl/2012/09/19/storage-drs-and-storage-profiles-part-2-distributed-vms/)
+-   [VM Storage Profiles and Storage DRS – Part 2 (Frank Denneman)](https://frankdenneman.nl/2012/09/19/storage-drs-and-storage-profiles-part-2-distributed-vms/) *(Older but still valid information on this approach.)*
 
 ---
 
@@ -254,8 +257,8 @@ Blockbridge targets. Saving it for later frequently results in additional
 phantom paths that need a reboot to clear out.
 
 The definitive reference for ESXi iSCSI multipath configuration is,
-unfortunately, several years old:
-<https://www.vmware.com/content/dam/digitalmarketing/vmware/en/pdf/techpaper/vmware-multipathing-configuration-software-iscsi-port-binding-white-paper.pdf>
+unfortunately, several years old: [Multipathing Configuration for Software iSCS
+Using Port Binding (VMware)](https://www.vmware.com/content/dam/digitalmarketing/vmware/en/pdf/techpaper/vmware-multipathing-configuration-software-iscsi-port-binding-white-paper.pdf).
 
 Still, the document is very thorough and 90% accurate even today. If you have a
 more complicated install, you should give it a read. The section below offers a
@@ -273,8 +276,8 @@ There are three common multipath deployments:
 
 2.  Both ESXi and Blockbridge have multiple IP addresses on the same
     subnet. ESXi will make a path between each of its interfaces and
-    each Blockbridge IP. (Two ESXi interfaces \* two BB interfaces =
-    four paths.)
+    each Blockbridge IP. **(Two ESXi interfaces \* two BB interfaces =
+    four paths.)**
 
 3.  Blockbridge and ESXi have interfaces on two or more different
     subnets. VLANs keep the subnets isolated. This will have two or more
@@ -387,238 +390,19 @@ Finally, you need to bind the port groups to the iSCSI adapter.
     {% include img.html align="center" max-width="90%" file="image12.jpg"
     alt="VMware screenshot showing multiple selected adapters" %}
 
-For more depth on multipathing, consult the following articles:
+### Resources
 
--   <http://wahlnetwork.com/2015/03/09/when-to-use-multiple-subnet-iscsi-network-design/>
+-   [When To Use Multiple Subnet iSCSI Network Design (Chris Wahl)](http://wahlnetwork.com/2015/03/09/when-to-use-multiple-subnet-iscsi-network-design/)
 
--   <https://www.codyhosterman.com/2018/05/esxi-iscsi-multiple-subnets-and-port-binding/>
+-   [ESXi iSCSI, Multiple Subnets, and Port Binding (Cody Hosterman)](https://www.codyhosterman.com/2018/05/esxi-iscsi-multiple-subnets-and-port-binding/)
 
--   [https://kb.vmware.com/s/article/2038869](https://kb.vmware.com/s/article/2038869)
+-   [Considerations for using software iSCSI port binding in ESX/ESXi (2038869) (VMware KB)](https://kb.vmware.com/s/article/2038869)
 
--   [https://kb.vmware.com/s/article/2010877](https://kb.vmware.com/s/article/2010877)
-
-Multi-Complex Firewall
-----------------------
-
-**If you're not installing with a multi-complex dataplane, you can skip
-this section.**
-
-VMware needs a little additional configuration to take advantage of Blockbridge
-5.0's multi-complex feature.  The independent performance and failure domains
-of multi-complex advertise iSCSI target portals on a range of TCP ports from
-3260 to 3275.  But out of the box, ESX refuses to speak iSCSI to anything
-except 3260. To be able to talk to ports 3261-3275, we will have to add entries
-to the ESXi firewall.
-
-There are two options for changing the firewall and both come with some
-caveats: you can either drop the firewall rules and associated commands into
-VMware's equivalent of *ye olde* /etc/rc.local or you can install the unsigned
-"Blockbridge VIB".
-
-### Option 1: /etc/rc.local.d/local.sh
-
-VMware's firewall rules can be augmented by adding additional files in
-`/etc/vmware/firewall`.  However, nothing you put in there survives a
-reboot. The technique described below is ugly, but it works. You put the rules
-and commands to refresh them in `/etc/rc.local.d/local.sh`.  The server
-executes that script on startup, and poof, you have firewall rules.
-
-Edit `/etc/rc.local.d/local.sh` to add the Blockbridge firewall definitions,
-which are bookended by `# BLOCKBRIDGE ISCSI FIREWALL RULES ###`.  When ESXi
-runs local.sh on startup, the script creates the file
-`/etc/vmware/firewall/blockbridge.xml`.
-
-    [root\@esx:/etc/vmware/firewall\] vi /etc/rc.local.d/local.sh
-    #!/bin/sh
-    # local configuration options
-
-    # Note: modify at your own risk!  If you do/use anything in this
-    # script that is not part of a stable API (relying on files to be in
-    # specific places, specific tools, specific output, etc) there is a
-    # possibility you will end up with a broken system after patching or
-    # upgrading.  Changes are not supported unless under direction of
-    # VMware support.
-
-    # Note: This script will not be run when UEFI secure boot is enabled.
-
-    # BLOCKBRIDGE ISCSI FIREWALL RULES
-    ##################################
-    cat > /etc/vmware/firewall/blockbridge.xml <<EOF
-    <!-- Firewall configuration information for Blockbridge -->
-    <ConfigRoot>
-      <service>
-        <id>Blockbridge</id>
-        <rule id='0000'>
-          <direction>outbound</direction>
-          <protocol>tcp</protocol>
-          <porttype>dst</porttype>
-          <port>3261</port>
-        </rule>
-        <rule id='0001'>
-          <direction>outbound</direction>
-          <protocol>tcp</protocol>
-          <porttype>dst</porttype>
-          <port>3262</port>
-        </rule>
-        <rule id='0002'>
-          <direction>outbound</direction>
-          <protocol>tcp</protocol>
-          <porttype>dst</porttype>
-          <port>3263</port>
-        </rule>
-        <rule id='0003'>
-          <direction>outbound</direction>
-          <protocol>tcp</protocol>
-          <porttype>dst</porttype>
-          <port>3264</port>
-        </rule>
-        <enabled>true</enabled>
-        <required>false</required>
-      </service>
-    </ConfigRoot>
-    EOF
-
-    chmod 444 /etc/vmware/firewall/blockbridge.xml
-    chmod +t /etc/vmware/firewall/blockbridge.xml
-    localcli network firewall refresh
-    localcli storage core adapter rescan \--all
-
-    # BLOCKBRIDGE ISCSI FIREWALL RULES
-    ##################################
-
-    exit 0
-
-Run ./local.sh once manually to permit connection to those ports:
-
-    [root\@esx:/etc/rc.local.d\] ./local.sh
-    [root\@esx:/etc/rc.local.d\] esxcli network firewall ruleset rule list | grep Blockbridge
-
-    Blockbridge               Outbound TCP Dst             3261 3261
-    Blockbridge               Outbound TCP Dst             3262 3262
-    Blockbridge               Outbound TCP Dst             3263 3263
-    Blockbridge               Outbound TCP Dst             3264 3264
-    Blockbridge               Outbound TCP Dst             3265 3265
-    Blockbridge               Outbound TCP Dst             3266 3266
-    Blockbridge               Outbound TCP Dst             3267 3267
-    Blockbridge               Outbound TCP Dst             3268 3268
-    Blockbridge               Outbound TCP Dst             3269 3269
-    Blockbridge               Outbound TCP Dst             3270 3270
-    Blockbridge               Outbound TCP Dst             3271 3271
-    Blockbridge               Outbound TCP Dst             3272 3272
-    Blockbridge               Outbound TCP Dst             3273 3273
-    Blockbridge               Outbound TCP Dst             3274 3274
-    Blockbridge               Outbound TCP Dst             3275 3275
+-   [Multi-homing on ESXi/ESX (2010877) (VMware KB)](https://kb.vmware.com/s/article/2010877)
 
 
-Verify that all the iSCSI targets show "No Error":
-
-    [root@esx:~] esxcli iscsi adapter target list
-
-    Adapter  Target                                            Alias  Discovery Method  Last Error
-    -------  ------------------------------------------------  -----  ----------------  ----------
-    vmhba64  iqn.2009-12.com.blockbridge:t-pjxazwlg-target            STATIC            No Error
-    vmhba64  iqn.2009-12.com.blockbridge:t-pjxazvaoe-esx3-cx1         STATIC            No Error
-
-Source, regarding `rc.local.d`: <https://kb.vmware.com/s/article/2043564>
-
-### Option 2: Install the Blockbridge Firewall Rule VIB
-
-This option seems like the better choice at first blush. You get a small
-package of software from Blockbridge Support and install it like a package
-install, only from esxcli.  However, the downside is potentially major: our VIB
-is not signed. In order to install our VIB on a production server, you have to
-lower its acceptance level to CommunitySupported (from either VMwareCertified
-or PartnerSupported.)   VMware threatens that they could deny support if they
-see your server running CommunitySupported VIBs.
-
-More information on VIBs:
-
--   <https://blogs.vmware.com/vsphere/2011/09/whats-in-a-vib.html>
-
--   <https://docs.vmware.com/en/VMware-vSphere/6.7/com.vmware.vsphere.security.doc/GUID-751034F3-5337-4DB2-8272-8DAC0980EACA.html>
-
-Here's how to install the firewall rules using this method:
-
-1.  Obtain the Blockbridge Firewall VIB and "offline-bundle" from Blockbridge
-    support to a datastore.
-
-2.  Upload both to a datastore in the host.
-
-3.  Downgrade the acceptance level.
-
-    ~~~~~~
-    [root@esx:~] esxcli software acceptance set --level CommunitySupported
-    Host acceptance level changed to 'CommunitySupported'.
-    ~~~~~~
-
-4.  install the VIB and the "offline-bundle" via esxcli: 
-
-    ~~~~~~
-    [root@esx:~] esxcli software vib install -v /vmfs/volumes/datastore/blockbridge.vib -f
-
-    Installation Result
-       Message: Operation finished successfully.
-       Reboot Required: false
-       VIBs Installed: Blockbridge_bootbank_blockbridge_5.0.0-0.0.1
-       VIBs Removed:
-       VIBs Skipped:
-
-    [root@esx:~] esxcli software vib install -d /vmfs/volumes/datastore/blockbridge-offline-bundle.zip -f
-
-    Installation Result
-       Message: Host is not changed.
-       Reboot Required: false
-       VIBs Installed:
-       VIBs Removed:
-       VIBs Skipped: Blockbridge_bootbank_blockbridge_5.0.0-0.0.1
-    ~~~~~~
-
-5.  Check for the presence of the Blockbridge firewall and installed software:
-
-    ~~~~~~
-    [root@esx:~] ls -alt /etc/vmware/firewall/
-    total 40
-    drwxr-xr-x    1 root     root           512 Oct 22 21:56 ..
-    drwxr-xr-x    1 root     root           512 Oct 22 21:55 .
-    -r--r--r--    1 root     root          2551 Oct 22 21:43 blockbridge.xml
-    -r--r--r--    1 root     root           433 Oct 27  2016 vsanhealth.xml
-    -r--r--r--    1 root     root         20717 Oct 27  2016 service.xml
-
-    [root@esx:~] esxcli software vib list
-    Name                           Version                              Vendor       Acceptance Level    Install Date
-    -----------------------------  -----------------------------------  -----------  ------------------  ------------
-    blockbridge                    5.0.0-0.0.1                          Blockbridge  CommunitySupported  2019-10-22
-    net-ixgbe                      4.4.1-1OEM.600.0.0.2159203           INT          VMwareCertified     2016-03-22
-    ata-libata-92                  3.00.9.2-16vmw.650.0.0.4564106       VMW          VMwareCertified     2016-03-22
-    ata-pata-amd                   0.3.10-3vmw.650.0.0.4564106          VMW          VMwareCertified     2016-03-22
-    ~~~~~~
-
-6.  Rescan the SCSI buses to fix the target error state.
-
-    ~~~~~~
-    [root@esx:~] esxcli iscsi adapter target list
-    Adapter  Target                                            Alias  Discovery Method  Last Error
-    -------  ------------------------------------------------  -----  ----------------  ----------------------------
-    vmhba64  iqn.2009-12.com.blockbridge:t-pjxazwlg-target            STATIC            No Error
-    vmhba64  iqn.2009-12.com.blockbridge:t-pjxazvaoe-esx3-cx1         STATIC            0x0008 Connection timed out.
-
-    [root@esx:~] localcli storage core adapter rescan --all
-
-    [root@esx:~] esxcli iscsi adapter target list
-    Adapter  Target                                            Alias  Discovery Method  Last Error
-    -------  ------------------------------------------------  -----  ----------------  ----------
-    vmhba64  iqn.2009-12.com.blockbridge:t-pjxazwlg-target            STATIC            No Error
-    vmhba64  iqn.2009-12.com.blockbridge:t-pjxazvaoe-esx3-cx1         STATIC            No Error
-    ~~~~~~
-
-7.  Double-check the listed ports under Blockbridge in **Host -\> Configure -\>
-    System / Firewall.**
-
-    {% include img.html align="center" max-width="90%" file="image13.jpg"
-    alt="VMware screenshot showing firewall port configuration" %}
-
-Blockbridge Teamed Interface Configuration Notes
-------------------------------------------------
+Teamed Interfaces
+-----------------
 
 Should you choose a teamed interface on the Blockbridge side, configure
 the team like this:
@@ -644,10 +428,12 @@ the team like this:
         }
     }
 
-The above shows the t0 team configured with active/active LACP. Use the
-"fast\_rate" option to ensure that it only waits for one second before giving
-up on a path (slow is 30 seconds!) Using "l3" and "l4" for tx\_hash factors in
-all endpoint addresses as well as port numbers to the link selection:
+The above shows the t0 team configured with active/active LACP. We recommend
+you use the "fast\_rate" option to ensure that it only waits for one second
+before giving up on a path (slow is 30 seconds!) You'll need to update the
+configuration on your L2 switches to match.  Using "l3" and "l4" for tx\_hash
+factors in all endpoint addresses as well as port numbers to the link
+selection:
 
 -   **l3** --- Uses source and
     destination **IPv4** and **IPv6** addresses.
@@ -659,15 +445,15 @@ Configure the same team on both primary cluster members. Then, add the VIPs to
 the cluster configuration, using the team's interface name. Open the VIPs for
 storage access by adding them from the flyout menu on the storage node.
 
-Provisioning a Blockbridge Service, Disk, Target, and Profile
--------------------------------------------------------------
+Provisioning iSCSI Storage
+--------------------------
 
 This section describes how to do the Blockbridge side of the
-configuration. You'll create a virtual storage service for each Blockbridge
-dataplane complex. Inside those storage services, you will create one disk per
-VMware datastore, and an iSCSI target with a LUN for each disk. A global set of
-CHAP credentials will serve to authenticate your VMware cluster to the
-Blockbridge dataplane endpoints.
+configuration. You'll create a **virtual storage service** for each Blockbridge
+dataplane complex. Inside those storage services, you will create one **disk**
+per VMware datastore, and an **iSCSI target** with a LUN for each disk. A
+global set of **CHAP credentials** will serve to authenticate your VMware
+cluster to the Blockbridge dataplane endpoints.
 
 Start by logging in to the administrative "system" user in the Blockbridge web
 GUI. On the infrastructure tab, manually provision a virtual storage service
@@ -699,15 +485,17 @@ the Storage tab.
 alt="Blockbridge screenshot showing flyout menu of a storage service" %}
 
 In the "Create Initiator Profile" dialog that opens, enter a CHAP username
-(here, "esx\@vmw") and a CHAP secret, with confirmation.
+(here, "esx@vmw") and a CHAP secret, with confirmation.
 
 {% include img.html align="center" max-width="90%" file="image17.jpg"
 alt="Blockbridge screenshot showing create initiator profile modal" %}
 
-You will need the iSCSI IQN from the iSCSI adapter in each ESXi host.  Find it
-under Host -\> Configure -\> Storage/Storage Adapters in the vSphere GUI. Paste
-each host's IQN into the "Permitted Initiators" section of the dialog then
-click "create".
+You will need the iSCSI IQN from the iSCSI adapter in each ESXi host.  
+
+{% include gui.html app="VMware" content="Host -\> Configure -\> Storage/Storage Adapters -> IQN" %}
+
+Paste each host's IQN into the "Permitted Initiators" section of the dialog
+then click "create".
 
 {% include img.html align="center" max-width="90%" file="image18.jpg"
 alt="VMware screenshot showing where to find the iSCSI initiator IQN" %}
@@ -729,7 +517,7 @@ alt="Blockbridge screenshot showing the create disk modal" %}
 
 From the CLI, it's:
 
-    bb disk create \--vss cx1:nvme \--label ds1 \--capacity 1TiB
+    bb disk create --vss cx1:nvme --label ds1 --capacity 1TiB
 
 Next, create a single iSCSI target on the Blockbridge side. Even if you created
 multiple disks, a single target will suffice. Select "Create a target" from the
@@ -748,14 +536,15 @@ Creating the target is a multi-step process from the CLI:
     bb target acl add --target target --profile "cluster profile"
     bb target lun map --target target --disk ds1
 
-Repeat bb target lun map for each disk.
+Repeat <tt>bb target lun map</tt> for each disk.
 
-Connecting VMware to a Blockbridge Target
------------------------------------------
+VMware Initiator Configuration
+------------------------------
 
-From the vSphere GUI, select Host -\> Configure -\> Storage/Storage Adapters,
-and click on the iSCSI adapter. Under Properties, scroll down to
-Authentication. Click **Edit...**
+{% include gui.html app="VMware" content="Host -\> Configure -\> Storage/Storage Adapters" %}
+
+From the vSphere GUI, select the iSCSI adapter. Under Properties, scroll down
+to Authentication. Select **Edit...**
 
 {% include img.html align="center" max-width="90%" file="image22.jpg"
 alt="VMware screenshot showing where to edit iSCSI authentication settings" %}
@@ -774,8 +563,13 @@ dynamic targets. If you need to use other iSCSI targets with different
 credentials, you can unclick "Inherit authentication settings from parent" and
 enter a new set of CHAP credentials each time you add a target.
 
-Staying on the iSCSI software adapter, select Static Discovery[^3], then click
+Staying on the iSCSI software adapter, select Static Discovery, then click
 **Add...**
+
+{% include tip.html content="Opportunistically, you can use Dynamic Discovery
+    for single-complex dataplanes, or for the first complex on a multi-complex
+    dataplane. VMware's dynamic discovery doesn't support target ports other
+    than 3260." %}
 
 {% include img.html align="center" max-width="90%" file="image24.jpg"
 alt="VMware screenshot showing where to manage iSCSI static discovery" %}
@@ -789,12 +583,17 @@ alt="VMware screenshot showing static iSCSI target server modal" %}
 
 With static discovery, you have to add each path manually. You may find it
 easier to use esxcli to add static targets. The following example adds paths
-for two target portal IP addresses[^4].
+for two target portal IP addresses.
+
+{% include tip.html content="VMware's older documentation is quicker to
+    navigate than the new stuff. Here's a document with numerous helpful iSCSI
+    CLI configuration examples: 
+    [vSphere 5 Command Line Documentation (VMware)](https://pubs.vmware.com/vsphere-50/index.jsp?topic=%2Fcom.vmware.vcli.examples.doc_50%2Fcli_manage_iscsi_storage.7.5.html)" %}
 
     esxcli iscsi adapter discovery statictarget add --adapter=vmhba64 --address=172.16.200.44:3261 \
            --name=iqn.2009-12.com.blockbridge:t-pjwahzvbab-nkaejpda:target
 
-    esxcli iscsi adapter discovery statictarget add --adapter=vmhba64\--address=172.16.201.44:3261 \
+    esxcli iscsi adapter discovery statictarget add --adapter=vmhba64 --address=172.16.201.44:3261 \
            --name=iqn.2009-12.com.blockbridge:t-pjwahzvbab-nkaejpda:target
 
 If you need per-target CHAP settings, update the target with the following
@@ -802,7 +601,7 @@ command. It will prompt you to enter the secret, so it doesn't show up in
 command line logs.
 
     esxcli iscsi adapter target portal auth chap set --adapter=vmhba64 \
-           --direction=uni --authname=esx\@vmw \
+           --direction=uni --authname=esx@vmw \
            --secret --level=required --address=172.16.200.44:3261 \
            --name=iqn.2009-12.com.blockbridge:t-pjwahzvbab-nkaejpda:target
 
@@ -830,11 +629,12 @@ command in a for loop, as follows:
         esxcli storage nmp device set --psp=VMW_PSP_RR --device=${dev}
     done
 
-For more path selection configuration, refer to the section on Tuning the Hosts
-below.
+{% include tip.html content="For more regarding path selection configuration,
+refer to the [Host Tuning](#host-tuning) section below." %}
 
-Finally, verify that all paths to each device are working. Select Storage
-Devices -\> Paths. Each path should show Active status.
+Finally, verify that all paths to each device are working. Select **Storage
+Devices -\> Paths**. Each path should show Active status.  Neither path should
+have any indicator in the "Preferred" column.
 
 {% include img.html align="center" max-width="90%" file="image27.jpg"
 alt="VMware screenshot showing where view storage path health" %}
@@ -848,46 +648,47 @@ Whenever possible, use VMFS version 6. VMFS-6, introduced with vSphere 6.5,
 includes numerous performance and stability improvements. In particular, the
 following enhancements are notable for Blockbridge installations:
 
--   VMFS-6 metadata is aligned to a 4 KiB blocksize
+-   VMFS-6 metadata is aligned to a 4 KiB blocksize.
 
--   Improved miscompare handling for ATS heartbeats
+-   It has improved miscompare handling for ATS heartbeats,
 
--   Reduced lock contention
+-   reduced lock contention, and
 
--   Multiple concurrent transactions
+-   supports multiple concurrent transactions.
 
 We recommend VMFS-6 for all new installations.
 
-To create the datastore, right-click on a host then select Storage -\> New
-Datastore. We recommend creating the datastore from a single disk and setting
+To create the datastore, right-click on a host then select **Storage -\> New
+Datastore**. We recommend creating the datastore from a single disk and setting
 its size to consume 100% of that disk.
 
-Read more about the differences between VMFS-5 and VMFS-6 here:
-<https://storagehub.vmware.com/t/vsphere-storage/vsphere-6-5-storage-1/vmfs-6-5/>
+### Resources
+
+* [VMware VMFS-6 Notes (VMwware)](https://storagehub.vmware.com/t/vsphere-storage/vsphere-6-5-storage-1/vmfs-6-5/)
 
 ---
 
 HOST TUNING
 ===========
 
-Increase the iSCSI LUN Queue Depth to 256
------------------------------------------
+iSCSI LUN Queue Depth
+---------------------
 {% include gui.html app="VMware" content="Host -> Configure -> Storage / Storage Adapters -> iSCSI Software Adapter -> Advanced Options: MaxCommands"%}
 
 The iSCSI **MaxCommands** parameter controls how many reads and writes can be
 in-flight to the storage before additional I/O's begin to queue in the ESXi
-host. It defaults to 128. We recommend you increase this setting to 256 for a
+host. It defaults to 128. We recommend you increase this setting to 192 for a
 Blockbridge LUN.
 
 The risk of setting this number too low is obvious: performance suffers because
 vSphere can't get enough work out into the LUN. There really isn't a practical
-downside to doubling the value to 256. It's always better to get the I/O out to
-the storage subsystem, rather than leave it queued on the host.
+downside to increasing the value to 192. It's always better to get the I/O out
+to the storage subsystem, rather than leave it queued on the host.
 
 Increasing the queue depth requires a host reboot. Use the following esxcli
 command to increase the depth, then reboot the ESXi host.
 
-    esxcli system module parameters set -m iscsi_vmk -p iscsivmk_LunQDepth=256
+    esxcli system module parameters set -m iscsi_vmk -p iscsivmk_LunQDepth=192
 
 After reboot, validate that your iSCSI devices have the increased "Device Max
 Queue Depth".
@@ -899,17 +700,17 @@ Queue Depth".
        Has Settable Display Name: true
        Size: 1048576
        ...
-       Device Max Queue Depth: 256
+       Device Max Queue Depth: 192
        No of outstanding IOs with competing worlds: 32
 
-In a Linux guest, spin up this 256 queue depth, 4K random read workload with
+In a Linux guest, spin up this 192 queue depth, 4K random read workload with
 fio. This example uses reads on the root disk. Do not change this test to
 write.
 
     [global]
     rw=randreadT
     bs=4096
-    iodepth=256
+    iodepth=192
     direct=1
     ioengine=libaio
     time_based
@@ -925,20 +726,20 @@ Validate that more than 128 commands are outstanding in the ACTV column:
     9:42:43pm up 13 min, 551 worlds, 2 VMs, 6 vCPUs; CPU load average: 1.46, 1.49, 0.00
 
     DEVICE                                PATH/WORLD/PARTITION DQLEN WQLEN ACTV QUED %USD  LOAD    CMDS/s   READS/s  WRITES/s
-    naa.60a010a03ff1bb511962194c40626cd1           -             256     -  210    0   82  0.82 232971.42 232971.23      0.00
+    naa.60a010a03ff1bb511962194c40626cd1           -             192     -  210    0   82  0.82 232971.42 232971.23      0.00
 
 
-Increase the SchedNumReqOutstanding Depth to 64
------------------------------------------------
+SchedNumReqOutstanding Depth
+----------------------------
 
     esxcli storage core device set --sched-num-req-outstanding
 
 vSphere has a confusingly-named setting that controls how deep the I/O queue is
 for a guest when other guests are accessing the same storage device. In earlier
 versions of ESXi, this used to be controlled via the global parameter
-Disk.SchedNumReqOutstanding. But starting in 5.5, control has been relegated to
-an esxcli-only parameter, viewable in the output of esxcli storage core device
-list: "No of outstanding IOs with competing worlds", like this;
+**Disk.SchedNumReqOutstanding**. But starting in 5.5, control has been
+relegated to an esxcli-only parameter, viewable in the output of esxcli storage
+core device list: "No of outstanding IOs with competing worlds", like this;
 
     [root@esx:~] esxcli storage core device list
     naa.60a010a0b139fa8b1962194c406263ad
@@ -948,12 +749,12 @@ list: "No of outstanding IOs with competing worlds", like this;
        No of outstanding IOs with competing worlds: 32
 
 If only one guest is sending I/O to a storage device, it's permitted to use the
-full queue depth (128, or 256 if doubled as recommended.) As soon as a second
+full queue depth (128, or 192 if increased as recommended.) As soon as a second
 guest begins accessing the device, by default, the queue depth of each guest
 drops to 32.
 
-Generally, we recommend increasing this setting to 64 if you've doubled the
-iSCSI LUN queue depth to 256. In situations where multiple guests are accessing
+Generally, we recommend increasing this setting to 64 if you've increased the
+iSCSI LUN queue depth to 192. In situations where multiple guests are accessing
 a device at the same time, the queue depth of 64 ensures that no guest claims
 more than their fair share of the storage performance, yet still has enough
 depth to get commands out to the LUN.  And, as will be the case much of the
@@ -964,29 +765,29 @@ In some situations, even this behavior is not desirable. You can confirm this
 is happening to your guests by running esxtop and watching the DQLEN column. If
 it's stuck at 32 (or 64) for multiple guests, it's a safe bet they're subject
 to this parameter. If you believe that your guest workloads are unfairly
-penalized by this setting, try increasing it to the device queue depth.
+penalized by this setting, try increasing it to the device queue depth (192).
 
-    [root@esx:~] esxcli storage core device set -sched-num-req-outstanding 256 -d naa.60a010a0b139fa8b1962194c406263ad
+    [root@esx:~] esxcli storage core device set -sched-num-req-outstanding 192 -d naa.60a010a0b139fa8b1962194c406263ad
 
-Default: Do not Alter Behavior on Queue Full Conditions
--------------------------------------------------------
+Queue Depth Full
+----------------
 {% include gui.html app="VMware" content="Host -> Configure -> System / Advanced System Settings: Disk.QFullSampleSize" %}
 
 vSphere can dynamically reduce its queue size if the backing storage reports a
 SCSI TASK SET FULL or BUSY status. This behavior allows it to adapt to arrays
-with shallow queue depths. But with the default queue depth of 128, or even
-doubled to 256, the Blockbridge dataplane's queue isn't going to report this
-status. Our recommendation is to **leave the Disk.QFullSampleSize parameter set
-to zero** (its default), disabling this feature.
+with shallow queue depths. But with the default queue depth of 128 or even 192,
+the Blockbridge dataplane's queue isn't going to report this status. Our
+recommendation is to **leave the Disk.QFullSampleSize parameter set to zero**
+(its default), disabling this feature.
 
-Lower the Round Robin Path Selection IOPS Limit to 8
-----------------------------------------------------
+Round Robin Path Selection IOPS Limit
+-------------------------------------
 
     esxcli storage nmp psp roundrobin deviceconfig set ...
 
 By default, the round-robin iSCSI multipathing plug-in sends 1,000 I/O's down
 one active path before switching to another. This technique often fails to
-unlock the full bandwidth of multiple paths. With a queue depth of 128 or 256,
+unlock the full bandwidth of multiple paths. With a queue depth of 128 or 192,
 the workload "sloshes" back and forth between the two paths, rather than
 saturating both of them. By lowering the I/O limit to 8, VMware switches paths
 after every eight I/O's issued, more efficiently using the network.
@@ -1044,11 +845,12 @@ Alternatively, view the path selection policy directly,
        Number Of Sampling IOs Per Path: 0
        Use Active Unoptimized Paths: false
 
-Source:
-[https://kb.vmware.com/s/article/2069356](https://kb.vmware.com/s/article/2069356)
+### Resources
 
-Default: Enable VAAI Commands
------------------------------
+- [Adjusting Round Robin IOPS limit from default 1000 to 1 (2069356) (VMware)](https://kb.vmware.com/s/article/2069356)
+
+VAAI Commands
+-------------
 
 The Blockbridge dataplane fully supports the VAAI command set, including:
 
@@ -1068,8 +870,8 @@ System Settings. By default, they're enabled, so no change should be required.
 {% include img.html align="center" max-width="90%" file="image28.jpg"
 alt="VMware screenshot showing advanced system settings for hardware acceleration" %}
 
-Use Optimized ATS Heartbeating (VMFS-6)
----------------------------------------
+Optimized ATS Heartbeating (VMFS-6)
+-----------------------------------
 
 {% include gui.html app="VMware" content="Host -> Configure -> System / Advanced System Settings: VMFS3.UseATSForHBOnVMFS5" %}
 
@@ -1080,13 +882,15 @@ vMotion.) It doesn't cause any notable load on the data plane. The legacy
 alternative to ATS heartbeating is more cumbersome.
 
 Versions of ESXi earlier than 6.5, or those using VMFS-5 volumes, may not have
-properly handled ATS timeouts, incorrectly registering "miscompares". (Cormac
-Hogan writes about this in some detail here:
-<https://cormachogan.com/2017/08/24/ats-miscompare-revisited-vsphere-6-5/>.)
-For these older versions of ESXi, it's best to disable this setting.
+properly handled ATS timeouts, incorrectly registering "miscompares".  For
+these older versions of ESXi, it's best to disable this setting.
 
 {% include img.html align="center" max-width="90%" file="image29.jpg"
 alt="VMware screenshot showing advanced system settings for ATS heartbeating" %}
+
+### Resources
+
+- [ATS Miscompare Revisited in vSphere 6.5 (Cormac Hogan)](https://cormachogan.com/2017/08/24/ats-miscompare-revisited-vsphere-6-5/))
 
 Halt VMs on Out-of-Space Conditions
 -----------------------------------
@@ -1098,8 +902,8 @@ any VM that attempts to allocate storage, instead of passing the error
 through. Many applications do not handle out-of-space particularly well, so
 this option can be a lifesaver. Documents from VMware refer to this as the
 "thin provisioning stun" feature. It's **enabled** by default, with
-Disk.ReturnCCForNoSpace = 0. Somewhat confusingly, this "0" setting instructs
-VMware to NOT return an error (a SCSI CHECK CONDITION) when it runs out of
+**Disk.ReturnCCForNoSpace = 0**. Somewhat confusingly, this "0" setting instructs
+VMware to *not* return an error (a SCSI CHECK CONDITION) when it runs out of
 space. We recommend that you leave this set to 0, allowing it to pause the VMs.
 
 {% include img.html align="center" max-width="90%" file="image30.jpg"
@@ -1119,7 +923,7 @@ frames at L2, you'll need to make sure you've configured vSphere for jumbo
 frames. If you're not using jumbos yet, consider carefully whether you want to
 undertake the transition.
 
-1.  Navigate to Host -\> Configure -\> Networking / VMkernel adapters
+1.  Navigate to **Host -\> Configure -\> Networking / VMkernel adapters**
 
 2.  For each adapter the must be modified:
 
@@ -1141,13 +945,17 @@ undertake the transition.
 
     c.  Press "OK".
 
-Use vmkping to test that jumbo frames are configured (from
-<https://kb.vmware.com/s/article/1003728>)
+Use vmkping to test that jumbo frames are configured.
 
     vmkping -ds 8972 <IP of Blockbridge storage service>
+    
+### Resources
 
-Increase iSCSI Login Timeout
-----------------------------
+- [Testing VMkernel network connectivity with the vmkping command (1003728) (VMware)](https://kb.vmware.com/s/article/1003728)
+
+
+iSCSI Login Timeout
+-------------------
 
 {% include gui.html app="VMware"
 content="Host -> Configure -> Storage / Storage Adapters -> iSCSI Software
@@ -1168,8 +976,8 @@ From the CLI:
 
     esxcli iscsi adapter param set --adapter=vmhba64 --key=LoginTimeout --value=60
 
-Leave DelayedAck at its Default: Enabled
-----------------------------------------
+TCP DelayedAck
+--------------
 
 {% include gui.html app="VMware"
 content="Host -> Configure -> Storage / Storage Adapters -> iSCSI Software
@@ -1202,7 +1010,7 @@ alt="VMware screenshot show iSCSI advanced settings for DelayedAck" %}
 Large Receive Offload Maximum Length
 ------------------------------------
 
-The /Net/VmxnetLROMaxLength parameter sets the size of the Large Receive
+The **/Net/VmxnetLROMaxLength** parameter sets the size of the Large Receive
 Offload (LRO) buffer. By default, it's set to 32,000 bytes. Increasing the size
 of this **may** improve throughput.
 
@@ -1222,8 +1030,8 @@ maintain that kind of control on an ESXi server. We recommend that you accept
 the default balancing. ESXi appears to do a decent job of avoiding cores under
 heavy utilization by VMs.
 
-Mellanox NIC Tuning
--------------------
+Mellanox Specific Optimizations
+-------------------------------
 
 On ConnectX-3 NICs, we recommend disabling adaptive receive interrupt
 moderation. On newer cards, it behaves well. But it doesn't seem to quite do
@@ -1260,8 +1068,8 @@ adaptive-rx, and disable transmit coalescing:
 GUEST TUNING
 ============
 
-Use the Paravirtual SCSI Adapter in Guests
-------------------------------------------
+Paravirtual SCSI Adapter
+------------------------
 
 Whenever possible, select the **Paravirtual SCSI adapter** for the **SCSI
 controller** in each guest VM. This adapter offers the best performance and
@@ -1274,19 +1082,22 @@ alt="VMware screenshot showing guest virtual hardware settings" %}
 Linux kernels going all the way back to 2.6.33 include the necessary
 vmw\_pvscsi driver. For Microsoft Windows guests, install VMware tools.
 
-Consult VMware's KB article (<https://kb.vmware.com/s/article/2053145>) for
-details on changing the queue depths of the Paravirtual SCSI adapter inside the
-guest OS. Unlike the defaults in the article, recent Linux installs seem to be
-defaulting to 254 queue depth with 32 ring pages, so your installation may not
-need additional tuning:
+Consult VMware's KB article (below) for details on changing the queue depths of
+the Paravirtual SCSI adapter inside the guest OS. Unlike the defaults in the
+article, recent Linux installs seem to be defaulting to 190 queue depth with 32
+ring pages, so your installation may not need additional tuning:
 
     [root@esx]# cat /sys/module/vmw_pvscsi/parameters/cmd_per_lun
-    254
+    190
     [root@esx]# cat /sys/module/vmw_pvscsi/parameters/ring_pages
     32
+    
+### Resources
 
-Disable Virtual Machine Encryption
-----------------------------------
+- [Large-scale workloads with intensive I/O patterns might require queue depths significantly greater than Paravirtual SCSI default values (2053145) (VMware)](https://kb.vmware.com/s/article/2053145>)
+
+Virtual Machine Encryption
+--------------------------
 
 We recommend avoiding encrypted VMware virtual disks, for a few reasons:
 
@@ -1303,8 +1114,8 @@ host and the Blockbridge dataplane, please contact Blockbridge support.
 
 (Encryption is a relatively new feature, introduced in vSphere 6.5.)
 
-Thin, Lazy Zeroed, or Eager Zeroed?
------------------------------------
+Zeroing Policies
+----------------
 
 VMware famously has three types of guest disks: **Thin, Lazy Zeroed**, and
 **Eager Zeroed**. With a Blockbridge array, **Thin** disks are nearly always
@@ -1334,8 +1145,8 @@ done ahead of time, or even just-in-time. In most cases, this is
 preferable. They don't take up space that they don't need, and they don't have
 the write serialization penalty of **Lazy Zeroed** disks.
 
-Improving Guest I/O Latency and Latency Consistency
----------------------------------------------------
+Guest I/O Latency & Consistency
+-------------------------------
 
 Achieving the lowest possible latency inside a guest requires dedicating CPU
 resources to it. For example, to dedicate a CPU core to a guest:
@@ -1354,7 +1165,7 @@ resources to it. For example, to dedicate a CPU core to a guest:
 ---
 
 DEPLOYMENT & TUNING CHEATSHEET
-=================================
+==============================
 
 Deployment Steps
 ----------------
@@ -1409,11 +1220,11 @@ Host tuning -- Non-Default Settings
 
 Increase iSCSI LUN Queue Depth (global, requires reboot)
 
-    esxcli system module parameters set -m iscsi_vmk -p iscsivmk_LunQDepth=256
+    esxcli system module parameters set -m iscsi_vmk -p iscsivmk_LunQDepth=192
 
 Increase the SchedNumReqOutstanding Depth (per-device)
 
-    esxcli storage core device set --sched-num-req-outstanding=256 \
+    esxcli storage core device set --sched-num-req-outstanding=192 \
       --device=naa.60a010a0b139fa8b1962194c406263ad
 
 
@@ -1490,19 +1301,3 @@ Verify that NIC Interrupt Balancing is Enabled
 
     esxcli system settings kernel list | grep intrBalancingEnabled
     intrBalancingEnabled                     Bool    true           …
-
-[^1]: [VMware vSphere: Storage I/O Control
-    Requirements](https://docs.vmware.com/en/VMware-vSphere/6.5/com.vmware.vsphere.resmgmt.doc/GUID-37CC0E44-7BC7-479C-81DC-FFFC21C1C4E3.html)
-
-[^2]: [Should I use many small LUNs or a couple large LUNs for Storage
-    DRS?]
-
-[^3]: Opportunistically, you can use Dynamic Discovery for
-    single-complex dataplanes, or for the first complex on a
-    multi-complex dataplane. VMware's dynamic discovery doesn't support
-    target ports other than 3260.
-
-[^4]: VMware's older documentation is quicker to navigate than the new
-    stuff. Here's a document with numerous helpful iSCSI CLI
-    configuration examples: [vSphere 5 Command Line
-    Documentation](https://pubs.vmware.com/vsphere-50/index.jsp?topic=%2Fcom.vmware.vcli.examples.doc_50%2Fcli_manage_iscsi_storage.7.5.html)
