@@ -243,32 +243,30 @@ DEPLOYMENT PLANNING
 Sizing & Performance
 --------------------
 
+Historically, VMware’s storage performance is entirely limited by the backend
+array. In days of HDD and hybrid HDD/SSD storage systems, many administrators
+used a large number of low capacity LUNs to improve performance. The
+performance improvement was attributed to a better distribution of I/O across
+high-latency media.
+
+With All-SSD and All-NVMe arrays, VMware’s iSCSI initiator is likely the
+primary performance bottleneck, especially for high-IOPS workloads. When
+operating an ESXi host in the range of hundreds of thousands of IOPS, you’ll
+see a significant rise in CPU utilization and NIC interrupt processing
+overhead. One of the best ways to ensure consistent storage performance is to
+have adequate CPU resources available for the storage subsystem. You may also
+unlock additional initiator-side concurrency benefits by doubling up on the
+number of VMFS datastores you build from a Blockbridge dataplane complex. While
+it’s not a guaranteed win, it may be worth an experiment if you are equipped
+with high-performance servers.
+
 {% include tip.html content="Our base recommendation is to **provision one
-Blockbridge LUN for each Blockbridge dataplane complex and create a VMFS-6
-datastore from it.**" %}
+Blockbridge LUN for each Blockbridge dataplane complex and create a single
+VMFS-6 datastore from it**. If you’re deploying with a multi-complex
+Blockbridge dataplane, create one LUN and VMFS-6 datastore for each dataplane
+complex: each complex provides an independent performance and failure domain." %}
 
-Historically, VMware's storage performance was entirely limited by the backend
-array. In those days, many deployments found using a larger number of smaller
-LUNs achieved additional concurrency. VMware could get more I/O out to the
-array and the array did a better job scheduling, resulting in higher overall
-performance.
-
-With an NVMe array, VMware's iSCSI initiator is likely to be the performance
-bottleneck. When running an ESXi host up in the range of hundreds of thousands
-of IOPS, you'll see a big rise in the system CPU time as well as a lot of NIC
-interrupts. You can manage the bulk of this by simply having enough CPU
-resources available for the storage subsystem. However, you may find that you
-can unlock some additional initiator-side concurrency benefits by doubling up
-on the VMFS datastores you build from the same Blockbridge dataplane complex.
-It's not a guaranteed win, but it may be worth an experiment to see if
-provisioning an additional VMFS datastore or two nets you some performance
-gains.
-
-If you're deploying with multi-complex Blockbridge dataplanes, **create at
-least one VMFS datastore per dataplane complex**. Each complex is its own
-performance domain (and failure domain.)
-
-We **don't** recommend incorporating multiple LUNs into a single
+We **do not** recommend incorporating multiple LUNs into a single
 datastore. VMFS extents are not stripes. You are not likely to realize any
 additional performance with multiple extents. Plus, Storage I/O Control will
 not work on datastores with multiple extents.
@@ -279,8 +277,11 @@ solution. However, making the datastores too small could force additional
 vMotions and create dead spaces that aren't easily recaptured. It's best to
 avoid slicing and dicing the storage too thinly.
 
-When planning your installation, keep in mind the following limits for VMFS6 on
-vSphere 6.5:
+VMware Storage Limits
+--------------------
+
+When planning your installation, keep in mind the following limits for VMFS6 as
+of vSphere 6.5:
 
 |---
 | Parameter | Limit
@@ -296,19 +297,19 @@ Storage I/O Control
 -------------------
 {% include gui.html app="VMware" content="Datastore -> Configure -> General -> Datastore Capabilities -> Storage I/O Control" %}
 
-Storage I/O Control (SIOC) is VMware's solution to the "noisy neighbor"
-problem, when a single VM's I/O load swamps the storage subsystem, affecting
-other VMs. SIOC allows the hypervisor to throttle back guest I/O to specified
-limits when the latency or throughput of the storage subsystem increases beyond
-a predefined point. You can specify policies for how each guest's I/O is
+Storage I/O Control (SIOC) is VMware’s solution to the “noisy neighbor”
+problem: when a single VM’s I/O load swamps the storage subsystem, negatively
+affecting the performance of other VMs. SIOC allows the hypervisor to throttle
+guest I/O when the latency or throughput of the storage subsystem increases
+beyond a predefined point. You can specify policies for how each guest’s I/O is
 scheduled when SIOC is active.
 
-Blockbridge dataplanes fully support SIOC, as all the enforcement is done in
-the ESXi host. If raw, global performance is your concern, you should leave
-SIOC disabled. The best performance is going to happen when VMware can get the
-I/O's out to the LUN as quickly as possible. However, if you have VMs that
-require predicable I/O latency, you may find that SIOC helps meet those
-requirements.
+Blockbridge dataplanes fully support SIOC, as all of the enforcement is
+performed in the ESXi host. If raw, global performance is your primary concern,
+you should leave SIOC disabled. The best performance is going to happen when
+VMware can issue I/O’s out to the LUN as quickly as possible. However, if you
+have VMs that require predictable I/O latency, you may find that SIOC helps
+meet those requirements.
 
 Correctly implementing SIOC starts with understanding exactly where it sits in
 the ESXi I/O stack:
@@ -446,12 +447,12 @@ all use the same storage technology.
 CONNECTING TO BLOCKBRIDGE
 =====================================
 
-iSCSI Multipathing
+VMware Multipath Networking
 ------------------
 
 Multipathing is a VMware datastore compliance requirement for
 network-attached storage. We've found that it's best to get it out of
-the way first, before you attempt to connect to storage. Saving it for
+the way before you attempt to connect to storage. Saving it for
 later frequently results in phantom storage paths that need a reboot
 to clear out.
 
@@ -666,19 +667,18 @@ storage access by adding them from the flyout menu on the storage node.
 Provisioning iSCSI Storage
 --------------------------
 
-This section describes how to do the Blockbridge side of the
-configuration. You'll create a **virtual storage service** for each Blockbridge
-dataplane complex. Inside those storage services, you will create one **disk**
-per VMware datastore, and an **iSCSI target** with a LUN for each disk. A
-global set of **CHAP credentials** will serve to authenticate your VMware
-cluster to the Blockbridge dataplane endpoints.
+This section describes how to provision and configure your Blockbride storage
+for use with a VMware datastore. You’ll create one or more virtual storage
+services distributed across your dataplane complexes. Inside those storage
+services, you will create a virtual disk and an iSCSI target for each VMware
+datastore that you want to create. A global set of CHAP credentials will serve
+to authenticate your VMware cluster to the Blockbridge dataplane endpoints.
 
 Start by logging in to the administrative "system" user in the Blockbridge web
 GUI. On the infrastructure tab, manually provision a virtual storage service
-(VSS) on each dataplane complex that will be connected to your VMware
-installation. If you're planning to create multiple VMware datastores per
-dataplane complex, you can create the disks to back them inside a single
-virtual service.
+(VSS) on each dataplane complex that will connect to your VMware
+installation. If you plan to create multiple VMware datastores per dataplane
+complex, create the disks to back them inside a single virtual service.
 
 {% include img.html align="center" max-width="90%" file="image14.jpg"
 alt="Blockbridge screenshot showing flyout menu of a datastore" %}
