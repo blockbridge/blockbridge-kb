@@ -620,11 +620,26 @@ At this point, you have multiple **VMkernel adapters** that are mapped to indepe
 -   [Multi-homing on ESXi/ESX (2010877) (VMware KB)](https://kb.vmware.com/s/article/2010877)
 
 
-Teamed Interfaces
------------------
+LACP & Bonded Networking
+------------------------
 
-Should you choose a teamed interface on the Blockbridge side, configure
-the team like this:
+If your network configuration consists of bonded network interfaces that use
+the Link Aggregation Control Protocol (LACP), we recommend that you **configure
+"fast rate" (also known as "lacp short-timeout")**. "Fast rate" improves link
+failure recovery times from the default value of 30 seconds to 1 second. Proper
+setup requires consistent configurations settings on your host interfaces and
+corresponding switch ports.
+
+We also recommend that you **configure passive transmit hashing on bonded
+interfaces**. Transmit hashing ensures that the ethernet packets of a single
+network flow transmit on the same network link. Transmit hashing reduces the
+probability of packet reordering and performance loss for iSCSI/TCP. We
+recommend that you incorporate both L3 (i.e., source and destination IPv4 and
+IPv6 addresses) and L4 (i.e., source and destination ports) in your hash
+configuration for efficient flow distribution across your network links.
+
+The example below shows a Linux team configuration with active/active LACP and
+l3/l4 transmit hashing.
 
     # teamdctl t0 config dump
     {
@@ -646,23 +661,6 @@ the team like this:
             ]
         }
     }
-
-The above shows the t0 team configured with active/active LACP. We recommend
-you use the "fast\_rate" option to ensure that it only waits for one second
-before giving up on a path (slow is 30 seconds!) You'll need to update the
-configuration on your L2 switches to match.  Using "l3" and "l4" for tx\_hash
-factors in all endpoint addresses as well as port numbers to the link
-selection:
-
--   **l3** --- Uses source and
-    destination **IPv4** and **IPv6** addresses.
-
--   **l4** --- Uses source and
-    destination **TCP** and **UDP** and **SCTP** ports.
-
-Configure the same team on both primary cluster members. Then, add the VIPs to
-the cluster configuration, using the team's interface name. Open the VIPs for
-storage access by adding them from the flyout menu on the storage node.
 
 Provisioning iSCSI Storage
 --------------------------
@@ -916,10 +914,10 @@ iSCSI LUN Queue Depth
 ---------------------
 {% include gui.html app="VMware" content="Host -> Configure -> Storage / Storage Adapters -> iSCSI Software Adapter -> Advanced Options: MaxCommands"%}
 
-The iSCSI **MaxCommands** parameter controls how many reads and writes can be
-in-flight to the storage before additional I/O's begin to queue in the ESXi
-host. It defaults to 128. We recommend you increase this setting to 192 for a
-Blockbridge LUN.
+The iSCSI **LunQDepth** parameter controls the number of concurrent I/O
+operations that ESXi can issue on a single iSCSI session before queuing occurs
+in the host. We recommend that you increase LunQDepth to 192 for a Blockbridge
+LUN. The default value of LunQDepth is 128.
 
 The risk of setting this number too low is obvious: performance suffers because
 vSphere can't get enough work out into the LUN. There really isn't a practical
