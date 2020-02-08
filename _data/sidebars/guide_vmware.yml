@@ -6,6 +6,27 @@ entries:
   - title: ABOUT THIS GUIDE
     output: web, pdf
     url: '#vmware-storage-management-guide'
+
+  - title: DEPLOYMENT & TUNING QUICKSTART
+    output: web, pdf
+    url: '#deployment--tuning-quickstart'
+    folderitems:
+    - title: VMware iSCSI Networking
+      output: web, pdf
+      url: '#vmware-iscsi-networking'
+    - title: Blockbridge Virtual Storage
+      output: web, pdf
+      url: '#blockbridge-virtual-storage'
+    - title: VMware Storage Devices
+      output: web, pdf
+      url: '#vmware-storage-devices'
+    - title: VMware Datastore & VMFS
+      output: web, pdf
+      url: '#vmware-datastore--vmfs'
+    - title: VMware System Settings
+      output: web, pdf
+      url: '#vmware-system-settings'
+
   - title: DEPLOYMENT PLANNING
     output: web, pdf
     url: '#deployment-planning'
@@ -103,17 +124,3 @@ entries:
     - title: Guest I/O Latency & Consistency
       output: web, pdf
       url: '#guest-io-latency--consistency'
-
-  - title: DEPLOYMENT & TUNING CHEATSHEET
-    output: web, pdf
-    url: '#deployment--tuning-cheatsheet'
-    folderitems:
-    - title: Deployment Steps
-      output: web, pdf
-      url: '#deployment-steps'
-    - title: Host tuning – Non-Default Settings
-      output: web, pdf
-      url: '#host-tuning--non-default-settings'
-    - title: Host Tuning – Default Settings
-      output: web, pdf
-      url: '#host-tuning--default-settings'
