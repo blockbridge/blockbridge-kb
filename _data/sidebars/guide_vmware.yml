@@ -34,6 +34,9 @@ entries:
     - title: Sizing & Performance
       output: web, pdf
       url: '#sizing--performance'
+    - title: VMware Storage Limits
+      output: web, pdf
+      url: '#vmware-storage-limits'
     - title: Storage I/O Control
       output: web, pdf
       url: '#storage-io-control'
@@ -48,9 +51,9 @@ entries:
     output: web, pdf
     url: '#connecting-to-blockbridge'
     folderitems:
-    - title: iSCSI Multipathing
+    - title: VMware Multipath Networking
       output: web, pdf
-      url: '#iscsi-multipathing'
+      url: '#vmware-multipath-networking'
     - title: Teamed Interfaces
       output: web, pdf
       url: '#teamed-interfaces'
