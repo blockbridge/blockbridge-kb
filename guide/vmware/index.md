@@ -7,11 +7,15 @@ toc: false
 ---
 
 This is a guide for deploying VMware vSphere clusters with Blockbridge
-storage. It is roughly structured in chronological order: the beginning of the
-document focuses on points to consider before you deploy while the end details
-the tunings to apply once everything is up and running.  You may want to
-**[skip ahead to the cheat sheet](#deployment--tuning-cheatsheet)** in the
-final section for tips and techniques in a condensed form.
+storage.
+
+Most readers will want to start with the
+**[Deployment and Tuning Quickstart](#deployment--tuning-quickstart)** section.
+It's an ordered list of configuration and tuning steps, and it's the fastest
+path to an optimal installation.
+
+The rest of the document goes into more detail about all aspects of using
+VMware with Blockbridge.
 
 The **[Deployment Planning](#deployment-planning)** chapter opens with a
 discussion of how to size your VMFS datastores for performance and flexibility
@@ -32,10 +36,203 @@ that affect the performance and capabilities of iSCSI storage.
 **[Guest Tuning](#guest-tuning)** offers additional recommendations for achieving high
 performance from guest VMs.
 
-{% include tip.html content="All of the deployment steps and recommendations
-are summarized in the
-**[Deployment & Tuning Cheat Sheet](#deployment--tuning-cheatsheet)** at the
-end of the document." %}
+---
+
+DEPLOYMENT & TUNING QUICKSTART
+==============================
+
+
+VMware iSCSI Networking
+-----------------------
+
+1.  **Configure VMware virtual networking and the VMware iSCSI adapter to
+    support multiple paths to storage.** [(details)](#connecting-to-blockbridge)
+
+    * If your network interface ports are on the same subnet, create iSCSI Port
+    Bindings.
+    * If your network interface ports are on different subnets, no additional
+    virtual networking is required.
+
+1.  **Configure Jumbo Frames** as needed. [(details)](#jumbo-frames)
+
+1.  **Increase the iSCSI LUN Queue Depth.** [(details)](#iscsi-lun-queue-depth)
+
+    * This setting has been found to increase performance.
+    * Requires a reboot to take effect.
+
+    ~~~~~~
+    esxcli system module parameters set -m iscsi_vmk -p iscsivmk_LunQDepth=192
+    ~~~~~~
+
+1. **Increase the iSCSI Login Timeout to ride out LUN failovers.** [(details)](#iscsi-login-timeout)
+
+        esxcli iscsi adapter param set --adapter=vmhba64 --key=LoginTimeout --value=60
+
+1. **Increase the Large Receive Offload Maximum Length.** [(details)](#large-receive-offload-maximum-length).
+
+        esxcfg-advcfg -s 65535 /Net/VmxnetLROMaxLength
+
+1. **Verify that NIC Interrupt Balancing is Enabled.** [(details)](#nic-interrupt-balancing)
+
+        esxcli system settings kernel list | grep intrBalancingEnabled
+        intrBalancingEnabled                     Bool    true           ...
+
+1. **Apply Mellanox ConnectX-3 NIC Tuning.** [(details)](#mellanox-specific-optimizations)
+
+   * Repeat for each interface port.
+
+    ~~~~~~
+    esxcli network nic ring current set -r 4096 -n vmnicX
+    esxcli network nic coalesce set -a false -n vmnicX
+    esxcli network nic coalesce set –-tx-usecs=0 –-rx-usecs=3 –-adaptive-rx=false -n vmnicX
+    ~~~~~~
+
+1. **Apply Mellanox ConnectX-4,5+ NIC Tuning.** [(details)](#mellanox-specific-optimizations)
+
+   * Repeat for each interface port.
+
+    ~~~~~~
+    esxcli network nic ring current set -r 4096 -n vmnicX
+    esxcli network nic coalesce set –-tx-usecs=0 –-adaptive-rx=true -n vmnicX
+    ~~~~~~
+
+
+Blockbridge Virtual Storage
+---------------------------
+
+1. **Create a global iSCSI initiator profile.**
+
+    * Register the iSCSI qualified name (IQN) of each VMware iSCSI adapter.
+    * Configure CHAP authentication credentials.
+
+    ~~~~~~
+    bb profile create --label 'cluster profile' --initiator-login 'esx' --initiator-pass ************
+    bb profile initiator add --profile 'cluster profile' --iqn iqn.1998-01.com.vmware:bb-cluster-4-0b2f0b43
+    ~~~~~~
+
+1. **Provision a virtual storage service.**
+
+    * We recommend a single VMware datastore per Blockbridge complex for
+      optimal performance.
+    * Create the storage service from the "system" account on the Blockbridge
+      GUI to guarantee datastore placement.
+
+1. **Create a virtual disk within the virtual service.**
+
+   * We recommend a single Blockbridge virtual disk per VMware datastore.
+
+    ~~~~~~
+    bb disk create --vss cx1:nvme --label ds1 --capacity 1TiB
+    ~~~~~~
+
+1. **Create an iSCSI target within the virtual service.**
+
+   * Add a LUN mapping for your virtual disk.
+   * Insert your global iSCSI initiator profile into the access control list.
+
+    ~~~~~~
+    bb target create --vss cx1:nvme --label target1
+    bb target acl add --target target1 --profile cluster-profile
+    bb target lun map --target target1 --disk ds1
+    ~~~~~~
+
+{% include tip.html
+content="See [Provisioning iSCSI Storage](#provisioning-iscsi-storage) for
+detailed information on Blockbridge virtual storage configuration." %}
+
+VMware Storage Devices
+----------------------
+
+1. **Add a Dynamic Discovery Target.**
+
+    * Choose one of the Blockbridge target portals - VMware will find the others.
+
+    ~~~~~~
+    esxcli iscsi adapter discovery sendtarget add --adapter=vmhba64 --address=172.16.200.44:3260
+    ~~~~~~
+
+1. **Increase the SchedNumReqOutstanding Depth for each storage device.** [(details)](#schednumreqoutstanding-depth)
+
+    ~~~~~~
+    esxcli storage core device set --sched-num-req-outstanding=192 \
+      --device=naa.60a010a0b139fa8b1962194c406263ad
+    ~~~~~~
+
+1.  **Set the Round-Robin path selection policy for each storage device.** [(details)](#vmware-initiator-configuration)
+
+    ~~~~~~
+    esxcli storage nmp device set --psp=VMW_PSP_RR --device=naa.60a010a071105fae1962194c40626ca8
+    ~~~~~~
+
+1.  **Lower the Round Robin Path Selection IOPS Limit for each storage
+    device.** [(details)](#round-robin-path-selection-iops-limit)
+
+    ~~~~~~
+    esxcli storage nmp psp roundrobin deviceconfig set --type=iops --iops=8 \
+      --device=naa.60a010a03ff1bb511962194c40626cd1
+    ~~~~~~
+
+1. **Confirm that Queue Full Sample Size and Threshold are 0.** [(details)](#queue-depth-full)
+
+    ~~~~~~
+    esxcli storage core device list | grep 'Queue Full'
+       Queue Full Sample Size: 0
+       Queue Full Threshold: 0
+       Queue Full Sample Size: 0
+       Queue Full Threshold: 0
+    ~~~~~~
+
+1. **Use this bash script helper to apply esxcli commands to all devices.**
+
+    ~~~~~~
+    for dev in $(esxcli storage nmp device list | egrep ^naa); do
+      esxcli ... --device=${dev}
+    done
+    ~~~~~~
+
+
+VMware Datastore & VMFS
+-----------------------
+
+1. **Create a VMware datastore for each Blockbridge
+   disk.** [(details)](#creating-a-vmfs-datastore)
+
+   * Use VMFS version 6 or higher.
+
+
+VMware System Settings
+----------------------
+
+Optionally, validate that the following system-wide settings retain their
+default values.
+
+1. **Confirm that VAAI Commands are Enabled.** [(details)](#vaai-commands)
+
+        esxcli  system settings advanced list -o /VMFS3/HardwareAcceleratedLocking
+        ...
+           Int Value: 1
+        esxcli  system settings advanced list -o /DataMover/HardwareAcceleratedMove
+        ...
+           Int Value: 1
+        esxcli  system settings advanced list -o /DataMover/HardwareAcceleratedInit
+        ...
+           Int Value: 1
+
+1. **Confirm that the SCSI "Atomic Test and Set" Command is Used.** [(details)](#optimized-ats-heartbeating-vmfs-6)
+
+        esxcli  system settings advanced list -o /VMFS3/UseATSForHBOnVMFS5
+        ...
+           Int Value: 1
+
+1. **Confirm that VMs are Halted on Out of Space Conditions.** [(details)](#halt-vms-on-out-of-space-conditions)
+
+   * This option should be disabled.
+
+    ~~~~~~
+    esxcli  system settings advanced list -o /Disk/ReturnCCForNoSpace
+    ...
+       Int Value: 0
+    ~~~~~~
 
 ---
 
@@ -583,13 +780,32 @@ dynamic targets. If you need to use other iSCSI targets with different
 credentials, you can unclick "Inherit authentication settings from parent" and
 enter a new set of CHAP credentials each time you add a target.
 
-Staying on the iSCSI software adapter, select Static Discovery, then click
+### Dynamic Discovery
+
+Staying on the iSCSI software adapter, select Dynamic Discovery, then click
 **Add...**
 
-{% include tip.html content="Opportunistically, you can use Dynamic Discovery
-    for single-complex dataplanes, or for the first complex on a multi-complex
-    dataplane. VMware's dynamic discovery doesn't support target ports other
-    than 3260." %}
+{% include tip.html content="In most cases, you can (and should) use Dynamic
+    Discovery. However, VMware's dynamic discovery doesn't support target ports
+    other than 3260." %}
+
+{% include img.html align="center" max-width="90%" file="dynamic-discovery.jpg"
+alt="VMware screenshot showing where to manage iSCSI dynamic discovery" %}
+
+On the dialog that pops up, enter one of the Blockbridge target's portal IP
+addresses, along with the port.
+
+{% include img.html align="center" max-width="50%" file="sendtarget-server.jpg"
+alt="VMware screenshot showing dynamic iSCSI target server modal" %}
+
+Alternatively, add the dynamic discovery target with esxcli:
+
+    esxcli iscsi adapter discovery sendtarget add --adapter=vmhba64 --address=172.16.200.44:3260
+
+### Static Discovery
+
+In the rare instance that you need to use static target discovery, here's how
+to do it.  Select Static Discovery, then click **Add...**
 
 {% include img.html align="center" max-width="90%" file="image24.jpg"
 alt="VMware screenshot showing where to manage iSCSI static discovery" %}
@@ -616,6 +832,8 @@ for two target portal IP addresses.
     esxcli iscsi adapter discovery statictarget add --adapter=vmhba64 --address=172.16.201.44:3261 \
            --name=iqn.2009-12.com.blockbridge:t-pjwahzvbab-nkaejpda:target
 
+### Per-Target CHAP
+
 If you need per-target CHAP settings, update the target with the following
 command. It will prompt you to enter the secret, so it doesn't show up in
 command line logs.
@@ -624,6 +842,8 @@ command line logs.
            --direction=uni --authname=esx@vmw \
            --secret --level=required --address=172.16.200.44:3261 \
            --name=iqn.2009-12.com.blockbridge:t-pjwahzvbab-nkaejpda:target
+
+### Path Selection Policy
 
 Next up, change the multipathing policies for each LUN to **Round Robin**. From
 the vSphere GUI, click **Edit Multipathing...** then change the policy.
@@ -764,7 +984,7 @@ core device list: "No of outstanding IOs with competing worlds", like this;
     [root@esx:~] esxcli storage core device list
     naa.60a010a0b139fa8b1962194c406263ad
        Display Name: B*BRIDGE iSCSI Disk (naa.60a010a0b139fa8b1962194c406263ad)
-       …
+       ...
        Device Max Queue Depth: 128
        No of outstanding IOs with competing worlds: 32
 
@@ -1181,143 +1401,3 @@ resources to it. For example, to dedicate a CPU core to a guest:
 {% include gui.html app="VMware" content="VM -> Edit Settings -> VM Options -> Advanced" %}
 {% include gui.html app="VMware" content="VM -> Edit Settings -> Virtual Hardware -> CPU -> Reservation" %}
 {% include gui.html app="VMware" content="VM -> Edit Settings -> Virtual Hardware -> CPU -> Scheduling Affinity" %}
-
----
-
-DEPLOYMENT & TUNING CHEATSHEET
-==============================
-
-Deployment Steps
-----------------
-
-1.  vmw: Configure iSCSI multipathing with port binding.
-
-2.  vmw: If you're installing with a multi-complex Blockbridge dataplane,
-    configure the firewall to permit connections to ports other than 3260.
-
-3.  bb: Provision a Blockbridge virtual storage service for each Blockbridge
-    dataplane complex.
-
-4.  bb: Create a global initiator profile with the CHAP credentials to be used
-    by all ESXi hosts.
-
-5.  bb: Create one or more disks in each virtual service to back the VMFS
-    datastores. (Refer to discussion about VMFS datastore sizing).
-
-    ~~~~~~
-    bb disk create --vss cx1:nvme --label ds1 --capacity 1TiB
-    ~~~~~~
-
-6.  bb: Create a target in each virtual service and add LUNs for all
-    disks in the service.
-
-    ~~~~~~
-    bb target create --vss cx1:nvme --label target1
-    bb target acl add --target target1 --profile cluster-profile
-    bb target lun map --target target1 --disk ds1
-    ~~~~~~
-
-7.  vmw: Add Static Discovery targets for all paths.
-
-    ~~~~~~
-    esxcli iscsi adapter discovery statictarget add --adapter=vmhba64 --address=172.16.200.44:3261 \
-           --name=iqn.2009-12.com.blockbridge:t-pjwahzvbab-nkaejpda:target
-    ~~~~~~
-
-8.  vmw: Set the Round-Robin path discovery policy for each disk.
-
-    ~~~~~~
-    esxcli storage nmp device set --psp=VMW_PSP_RR --device=naa.60a010a071105fae1962194c40626ca8
-    ~~~~~~
-
-9.  vmw: Create one VMFS datastore for each Blockbridge disk. Use VMFS
-    version 6.
-
-10. vmw: Configure Jumbo Frames as needed.
-
-Host tuning -- Non-Default Settings
------------------------------------
-
-Increase iSCSI LUN Queue Depth (global, requires reboot)
-
-    esxcli system module parameters set -m iscsi_vmk -p iscsivmk_LunQDepth=192
-
-Increase the SchedNumReqOutstanding Depth (per-device)
-
-    esxcli storage core device set --sched-num-req-outstanding=192 \
-      --device=naa.60a010a0b139fa8b1962194c406263ad
-
-
-Bash Script Helper for Per-Device Commands
-
-    for dev in $(esxcli storage nmp device list | egrep ^naa); do
-      esxcli … --device=${dev}
-    done
-
-Set the Round-Robin Path Selection Policy (per-device)
-
-    esxcli storage nmp device set --psp=VMW_PSP_RR --device=naa.60a010a071105fae1962194c40626ca8
-
-Lower the Round Robin Path Selection IOPS Limit (per-device)
-
-    esxcli storage nmp psp roundrobin deviceconfig set --type=iops --iops=8 \
-      --device=naa.60a010a03ff1bb511962194c40626cd1
-
-Increase iSCSI Login Timeout
-
-    esxcli iscsi adapter param set --adapter=vmhba64 --key=LoginTimeout --value=60
-
-Increase Large Receive Offload Maximum Length
-
-    esxcfg-advcfg -s 65535 /Net/VmxnetLROMaxLength
-
-Mellanox ConnectX-3 NIC Tuning (per-NIC)
-
-    esxcli network nic ring current set -r 4096 -n vmnicX
-    esxcli network nic coalesce set -a false -n vmnicX
-    esxcli network nic coalesce set –-tx-usecs=0 –-rx-usecs=3 –-adaptive-rx=false -n vmnicX
-
-Mellanox ConnectX-4,5+ NIC Tuning (per-NIC)
-
-    esxcli network nic ring current set -r 4096 -n vmnicX
-    esxcli network nic coalesce set –-tx-usecs=0 –-adaptive-rx=true -n vmnicX
-
-Host Tuning -- Default Settings
--------------------------------
-
-Confirm that Queue Full Sample Size and Threshold are 0
-
-    esxcli storage core device list | grep 'Queue Full'
-       Queue Full Sample Size: 0
-       Queue Full Threshold: 0
-       Queue Full Sample Size: 0
-       Queue Full Threshold: 0
-
-Confirm that VAAI Commands are Enabled
-
-    esxcli  system settings advanced list -o /VMFS3/HardwareAcceleratedLocking
-    …
-       Int Value: 1
-    esxcli  system settings advanced list -o /DataMover/HardwareAcceleratedMove
-    …
-       Int Value: 1
-    esxcli  system settings advanced list -o /DataMover/HardwareAcceleratedInit
-    …
-       Int Value: 1
-
-Confirm that the SCSI "Atomic Test and Set" Command is Used
-
-    esxcli  system settings advanced list -o /VMFS3/UseATSForHBOnVMFS5
-    …
-       Int Value: 1
-
-Confirm that VMs are Halted on Out of Space Conditions (option should be disabled)
-
-    esxcli  system settings advanced list -o /Disk/ReturnCCForNoSpace
-    …
-       Int Value: 0
-
-Verify that NIC Interrupt Balancing is Enabled
-
-    esxcli system settings kernel list | grep intrBalancingEnabled
-    intrBalancingEnabled                     Bool    true           …
