@@ -5,7 +5,7 @@ entries:
   folders:
   - title: ABOUT THIS GUIDE
     output: web, pdf
-    url: '#vmware-storage-management-guide'
+    url: '#blockbridge-vmware-storage-guide'
 
   - title: DEPLOYMENT & TUNING QUICKSTART
     output: web, pdf
@@ -83,9 +83,9 @@ entries:
     - title: VAAI Commands
       output: web, pdf
       url: '#vaai-commands'
-    - title: Optimized ATS Heartbeating (VMFS-6)
+    - title: ATS Heartbeating (VMFS-6)
       output: web, pdf
-      url: '#optimized-ats-heartbeating-vmfs-6'
+      url: '#ats-heartbeating-vmfs-6'
     - title: Halt VMs on Out-of-Space Conditions
       output: web, pdf
       url: '#halt-vms-on-out-of-space-conditions'
