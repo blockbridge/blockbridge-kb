@@ -1,13 +1,14 @@
 ---
 layout: page
-title: VMWARE STORAGE MANAGEMENT GUIDE
+title: Blockbridge VMware Storage Guide
+description: A detailed guide, best practices, and performance tuning parameters for VMware using iSCSI storage. Everything you need to know for optimal configuration.
 permalink: /guide/vmware/index.html
 keywords: vmware
 toc: false
 ---
 
-This is a guide for deploying VMware vSphere clusters with Blockbridge
-storage.
+This is a guide for deploying VMware ESXi and VMware vSphere clusters on
+Blockbridge iSCSI storage
 
 Most readers will want to start with the
 **[Deployment and Tuning Quickstart](#deployment--tuning-quickstart)** section.
@@ -45,17 +46,17 @@ DEPLOYMENT & TUNING QUICKSTART
 VMware iSCSI Networking
 -----------------------
 
-1.  **Configure VMware virtual networking and the VMware iSCSI adapter to
-    support multiple paths to storage.** [(details)](#connecting-to-blockbridge)
+1.  **Configure VMware networking and the VMware iSCSI adapter to
+    support multiple storage paths.** [**&#9432;**](#connecting-to-blockbridge)
 
     * If your network interface ports are on the same subnet, create iSCSI Port
     Bindings.
     * If your network interface ports are on different subnets, no additional
     virtual networking is required.
 
-1.  **Configure Jumbo Frames** as needed. [(details)](#jumbo-frames)
+1.  **Configure Jumbo Frames** as needed. [**&#9432;**](#jumbo-frames)
 
-1.  **Increase the iSCSI LUN Queue Depth.** [(details)](#iscsi-lun-queue-depth)
+1.  **Increase the iSCSI LUN Queue Depth.** [**&#9432;**](#iscsi-lun-queue-depth)
 
     * This setting has been found to increase performance.
     * Requires a reboot to take effect.
@@ -64,20 +65,20 @@ VMware iSCSI Networking
     esxcli system module parameters set -m iscsi_vmk -p iscsivmk_LunQDepth=192
     ~~~~~~
 
-1. **Increase the iSCSI Login Timeout to ride out LUN failovers.** [(details)](#iscsi-login-timeout)
+1. **Increase the iSCSI Login Timeout to ride out LUN failovers.** [**&#9432;**](#iscsi-login-timeout)
 
         esxcli iscsi adapter param set --adapter=vmhba64 --key=LoginTimeout --value=60
 
-1. **Increase the Large Receive Offload Maximum Length.** [(details)](#large-receive-offload-maximum-length).
+1. **Increase the Large Receive Offload Maximum Length.** [**&#9432;**](#large-receive-offload-maximum-length)
 
         esxcfg-advcfg -s 65535 /Net/VmxnetLROMaxLength
 
-1. **Verify that NIC Interrupt Balancing is Enabled.** [(details)](#nic-interrupt-balancing)
+1. **Verify that NIC Interrupt Balancing is Enabled.** [**&#9432;**](#nic-interrupt-balancing)
 
         esxcli system settings kernel list | grep intrBalancingEnabled
         intrBalancingEnabled                     Bool    true           ...
 
-1. **Apply Mellanox ConnectX-3 NIC Tuning.** [(details)](#mellanox-specific-optimizations)
+1. **Apply Mellanox ConnectX-3 NIC Tuning.** [**&#9432;**](#mellanox-specific-optimizations)
 
    * Repeat for each interface port.
 
@@ -87,7 +88,7 @@ VMware iSCSI Networking
     esxcli network nic coalesce set –-tx-usecs=0 –-rx-usecs=3 –-adaptive-rx=false -n vmnicX
     ~~~~~~
 
-1. **Apply Mellanox ConnectX-4,5+ NIC Tuning.** [(details)](#mellanox-specific-optimizations)
+1. **Apply Mellanox ConnectX-4,5+ NIC Tuning.** [**&#9432;**](#mellanox-specific-optimizations)
 
    * Repeat for each interface port.
 
@@ -151,28 +152,28 @@ VMware Storage Devices
     esxcli iscsi adapter discovery sendtarget add --adapter=vmhba64 --address=172.16.200.44:3260
     ~~~~~~
 
-1. **Increase the SchedNumReqOutstanding Depth for each storage device.** [(details)](#schednumreqoutstanding-depth)
+1. **Increase the SchedNumReqOutstanding Depth for each storage device.** [**&#9432;**](#schednumreqoutstanding-depth)
 
     ~~~~~~
     esxcli storage core device set --sched-num-req-outstanding=192 \
       --device=naa.60a010a0b139fa8b1962194c406263ad
     ~~~~~~
 
-1.  **Set the Round-Robin path selection policy for each storage device.** [(details)](#vmware-initiator-configuration)
+1.  **Set the Round-Robin path selection policy for each storage device.** [**&#9432;**](#vmware-initiator-configuration)
 
     ~~~~~~
     esxcli storage nmp device set --psp=VMW_PSP_RR --device=naa.60a010a071105fae1962194c40626ca8
     ~~~~~~
 
 1.  **Lower the Round Robin Path Selection IOPS Limit for each storage
-    device.** [(details)](#round-robin-path-selection-iops-limit)
+    device.** [**&#9432;**](#round-robin-path-selection-iops-limit)
 
     ~~~~~~
     esxcli storage nmp psp roundrobin deviceconfig set --type=iops --iops=8 \
       --device=naa.60a010a03ff1bb511962194c40626cd1
     ~~~~~~
 
-1. **Confirm that Queue Full Sample Size and Threshold are 0.** [(details)](#queue-depth-full)
+1. **Confirm that Queue Full Sample Size and Threshold are 0.** [**&#9432;**](#queue-depth-full)
 
     ~~~~~~
     esxcli storage core device list | grep 'Queue Full'
@@ -195,7 +196,7 @@ VMware Datastore & VMFS
 -----------------------
 
 1. **Create a VMware datastore for each Blockbridge
-   disk.** [(details)](#creating-a-vmfs-datastore)
+   disk.** [**&#9432;**](#creating-a-vmfs-datastore)
 
    * Use VMFS version 6 or higher.
 
@@ -206,7 +207,7 @@ VMware System Settings
 Optionally, validate that the following system-wide settings retain their
 default values.
 
-1. **Confirm that VAAI Commands are Enabled.** [(details)](#vaai-commands)
+1. **Confirm that VAAI Commands are Enabled.** [**&#9432;**](#vaai-commands)
 
         esxcli  system settings advanced list -o /VMFS3/HardwareAcceleratedLocking
         ...
@@ -218,13 +219,13 @@ default values.
         ...
            Int Value: 1
 
-1. **Confirm that the SCSI "Atomic Test and Set" Command is Used.** [(details)](#optimized-ats-heartbeating-vmfs-6)
+1. **Confirm that the SCSI "Atomic Test and Set" Command is Used.** [**&#9432;**](#optimized-ats-heartbeating-vmfs-6)
 
         esxcli  system settings advanced list -o /VMFS3/UseATSForHBOnVMFS5
         ...
            Int Value: 1
 
-1. **Confirm that VMs are Halted on Out of Space Conditions.** [(details)](#halt-vms-on-out-of-space-conditions)
+1. **Confirm that VMs are Halted on Out of Space Conditions.** [**&#9432;**](#halt-vms-on-out-of-space-conditions)
 
    * This option should be disabled.
 
@@ -448,11 +449,11 @@ CONNECTING TO BLOCKBRIDGE
 iSCSI Multipathing
 ------------------
 
-Multipathing is a VMware datastore compliance requirement for network
-attached storage. We've found that it's best to get it out of the way
-first, before you attempt to connect to storage. Saving it for later
-frequently results in phantom storage paths that need a reboot to
-clear out.
+Multipathing is a VMware datastore compliance requirement for
+network-attached storage. We've found that it's best to get it out of
+the way first, before you attempt to connect to storage. Saving it for
+later frequently results in phantom storage paths that need a reboot
+to clear out.
 
 The definitive reference for ESXi iSCSI multipath configuration is,
 unfortunately, several years old: [Multipathing Configuration for
@@ -535,7 +536,7 @@ To start, Launch the **Add Networking** wizard for your host:
 
 6.  Finally, complete the workflow.
 
-**Create additional VMkernel Adapters for each physical network interface port**, adding them to your existing vSwitch. This is the same process as above, **substituting step 2 as follows**:
+**Create VMkernel Adapters for each additional physical network interface port**, adding them to your existing vSwitch. This is the same process as above, **substituting step 2 as follows**:
 
 1.  For the target device, **Select an existing standard switch**. Specify the vSwitch created previously.
 
@@ -1110,7 +1111,7 @@ System Settings. By default, they're enabled, so no change should be required.
 {% include img.html align="center" max-width="90%" file="image28.jpg"
 alt="VMware screenshot showing advanced system settings for hardware acceleration" %}
 
-Optimized ATS Heartbeating (VMFS-6)
+ATS Heartbeating (VMFS-6)
 -----------------------------------
 
 {% include gui.html app="VMware" content="Host -> Configure -> System / Advanced System Settings: VMFS3.UseATSForHBOnVMFS5" %}
