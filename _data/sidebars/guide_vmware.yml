@@ -47,9 +47,9 @@ entries:
       output: web, pdf
       url: '#multiple-classes-of-storage'
 
-  - title: CONNECTING TO BLOCKBRIDGE
+  - title: NETWORKING & STORAGE
     output: web, pdf
-    url: '#connecting-to-blockbridge'
+    url: '#networking--storage'
     folderitems:
     - title: VMware Multipath Networking
       output: web, pdf
