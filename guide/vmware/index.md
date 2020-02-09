@@ -11,7 +11,7 @@ This guide provides technical details for deploying VMware ESXi and VMware
 vSphere clusters on Blockbridge iSCSI storage.
 
 Most readers will want to start with the **[Deployment and Tuning
-Quickstart](deployment--tuning-quickstart)** section. It's an ordered list of
+Quickstart](#deployment--tuning-quickstart)** section. It's an ordered list of
 configuration and tuning steps, and it's the fastest path to an optimal
 installation. The rest of the document provides detail on all aspects of using
 VMware with Blockbridge:
