@@ -21,7 +21,7 @@ VMware with Blockbridge:
     best to configure VMware's Storage I/O Control and Storage Distributed
     Resource Scheduler features for use with all-flash storage.
 
-* **[Connecting to Blockbridge](#connect-to-blockbridge)** provides
+* **[Networking & Storage](#networking--storage)** provides
     administration, provisioning, and configuration details. The bulk of the
     content is devoted to networking requirements for multipath storage
     access. Additional topics include how to provision storage with Blockbridge
@@ -441,7 +441,7 @@ all use the same storage technology.
 
 ---
 
-CONNECTING TO BLOCKBRIDGE
+NETWORKING & STORAGE
 =====================================
 
 VMware Multipath Networking
