@@ -7,35 +7,32 @@ keywords: vmware
 toc: false
 ---
 
-This is a guide for deploying VMware ESXi and VMware vSphere clusters on
-Blockbridge iSCSI storage
+This guide provides technical details for deploying VMware ESXi and VMware
+vSphere clusters on Blockbridge iSCSI storage.
 
-Most readers will want to start with the
-**[Deployment and Tuning Quickstart](#deployment--tuning-quickstart)** section.
-It's an ordered list of configuration and tuning steps, and it's the fastest
-path to an optimal installation.
+Most readers will want to start with the **[Deployment and Tuning
+Quickstart](deployment--tuning-quickstart)** section. It's an ordered list of
+configuration and tuning steps, and it's the fastest path to an optimal
+installation. The rest of the document provides detail on all aspects of using
+VMware with Blockbridge:
 
-The rest of the document goes into more detail about all aspects of using
-VMware with Blockbridge.
+* **[Deployment Planning](#deployment-planning)** is a discussion of how to
+    plan your VMFS datastores for performance and flexibility. It describes how
+    best to configure VMware's Storage I/O Control and Storage Distributed
+    Resource Scheduler features for use with all-flash storage.
 
-The **[Deployment Planning](#deployment-planning)** chapter opens with a
-discussion of how to size your VMFS datastores for performance and flexibility
-with Blockbridge. It goes on to detail how best to configure VMware's Storage
-I/O Control and Storage Distributed Resource Scheduler features with all-flash
-Blockbridge storage.
+* **[Connecting to Blockbridge](#connect-to-blockbridge)** provides
+    administration, provisioning, and configuration details. The bulk of the
+    content is devoted to networking requirements for multipath storage
+    access. Additional topics include how to provision storage with Blockbridge
+    and how to connect it to your ESXi hosts.
 
-**[Connecting to Blockbridge](#connecting-to-blockbridge)**
-gets into the details of deploying the solution. The bulk of the chapter is
-devoted to properly configuring iSCSI multipathing with port binding. You can
-skip this if you've done it before. The chapter then gets into how to provision
-disks and iSCSI targets on Blockbridge, and how to connect them to your ESXi
-hosts.
+* **[Host Tuning](#host-tuning)** enumerates recommendations for host-level
+    ESXi parameters that affect the performance, features, and resiliency of
+    iSCSI storage.
 
-**[Host Tuning](#host-tuning)** enumerates recommendations for ESXi host-level parameters
-that affect the performance and capabilities of iSCSI storage.
-
-**[Guest Tuning](#guest-tuning)** offers additional recommendations for achieving high
-performance from guest VMs.
+* **[Guest Tuning](#guest-tuning)** offers additional recommendations for
+    achieving high performance from guest VMs.
 
 ---
 
