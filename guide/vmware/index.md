@@ -237,8 +237,8 @@ default values.
 DEPLOYMENT PLANNING
 ===================
 
-Sizing & Performance
---------------------
+Datastores, Complexes & LUNS
+----------------------------
 
 Historically, VMware’s storage performance is entirely limited by the backend
 array. In days of HDD and hybrid HDD/SSD storage systems, many administrators
