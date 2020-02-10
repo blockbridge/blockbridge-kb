@@ -43,9 +43,9 @@ entries:
     - title: Storage Distributed Resource Scheduling
       output: web, pdf
       url: '#storage-distributed-resource-scheduling'
-    - title: Multiple Classes of Storage
+    - title: Storage Performance Classes
       output: web, pdf
-      url: '#multiple-classes-of-storage'
+      url: '#storage-performance-classes'
 
   - title: NETWORKING & STORAGE
     output: web, pdf
