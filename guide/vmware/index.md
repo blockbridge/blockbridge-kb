@@ -44,7 +44,7 @@ VMware iSCSI Networking
 -----------------------
 
 1.  **Configure VMware networking and the VMware iSCSI adapter to
-    support multiple storage paths.** [**&#9432;**](#connecting-to-blockbridge)
+    support multiple storage paths.** [**&#9432;**](#vmware-multipath-networking)
 
     * If your network interface ports are on the same subnet, create iSCSI Port
     Bindings.
