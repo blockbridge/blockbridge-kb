@@ -734,24 +734,24 @@ From the CLI, it's:
 
     bb disk create --vss cx1:nvme --label ds1 --capacity 1TiB
 
-Next, create a single iSCSI target on the Blockbridge side. Even if you created
-multiple disks, a single target will suffice. Select "Create a target" from the
-virtual storage service's flyout menu (shown earlier).
+Next, create an iSCSI target on the Blockbridge side for each disk you created
+above.  Creating one target per disk ensures that each LUN has an independent
+iSCSI command queue.  Select "Create a target" from the virtual storage
+service's flyout menu (shown earlier).
 
 {% include img.html align="center" max-width="90%" file="image21.jpg"
 alt="Blockbridge screenshot showing the create disk modal" %}
 
-Click "insert" to add additional disks to the target. Select the label of the
-global initiator profile you created earlier to grant access via those
-credentials.
+On each target, select "insert" to add one disk. Select the label of the global
+initiator profile you created earlier to grant access via those credentials.
 
-Creating the target is a multi-step process from the CLI:
+Creating a target is a multi-step process from the CLI:
 
     bb target create --vss cx1:nvme --label target
     bb target acl add --target target --profile "cluster profile"
     bb target lun map --target target --disk ds1
 
-Repeat <tt>bb target lun map</tt> for each disk.
+Repeat this procedure for each disk.
 
 VMware Initiator Configuration
 ------------------------------
@@ -911,17 +911,11 @@ HOST TUNING
 
 iSCSI LUN Queue Depth
 ---------------------
-{% include gui.html app="VMware" content="Host -> Configure -> Storage / Storage Adapters -> iSCSI Software Adapter -> Advanced Options: MaxCommands"%}
 
-The iSCSI **MaxCommands** parameter exposed to the vSphere GUI is referred to
-as **LunQDepth** from esxcli.  Though they have different names, both control
-the same internal setting.  We refer to the parameter as LunQDepth in this
-section, but changing MaxCommands has the same effect.
-
-The LunQDepth parameter controls the number of concurrent I/O operations that
-ESXi can issue on a single iSCSI session before queuing occurs in the host. We
-recommend that you increase LunQDepth to 192 for a Blockbridge LUN. The default
-value of LunQDepth is 128.
+The iSCSI **LunQDepth** parameter controls the number of concurrent I/O
+operations that ESXi can issue on a single iSCSI session before queuing occurs
+in the host. We recommend that you increase LunQDepth to 192 for a Blockbridge
+LUN. The default value of LunQDepth is 128.
 
 The risk of setting this number too low is obvious: performance suffers because
 vSphere can't get enough work out into the LUN. There really isn't a practical
