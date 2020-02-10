@@ -29,9 +29,12 @@ footer {
   min-height: 40px;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 400px) {
   .navbar-brand {
     max-width: 80% !important;
+  }
+  .navbar-brand > svg.bb-logo {
+        margin-top: 4px !important;
   }
 }
 
