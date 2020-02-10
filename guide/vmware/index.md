@@ -626,7 +626,7 @@ If your network configuration consists of bonded network interfaces that use
 the Link Aggregation Control Protocol (LACP), we recommend that you **configure
 "fast rate" (also known as "lacp short-timeout")**. "Fast rate" improves link
 failure recovery times from the default value of 30 seconds to 1 second. Proper
-setup requires consistent configurations settings on your host interfaces and
+setup requires consistent configuration settings on your host interfaces and
 corresponding switch ports.
 
 We also recommend that you **configure passive transmit hashing on bonded
@@ -913,10 +913,15 @@ iSCSI LUN Queue Depth
 ---------------------
 {% include gui.html app="VMware" content="Host -> Configure -> Storage / Storage Adapters -> iSCSI Software Adapter -> Advanced Options: MaxCommands"%}
 
-The iSCSI **LunQDepth** parameter controls the number of concurrent I/O
-operations that ESXi can issue on a single iSCSI session before queuing occurs
-in the host. We recommend that you increase LunQDepth to 192 for a Blockbridge
-LUN. The default value of LunQDepth is 128.
+The iSCSI **MaxCommands** parameter exposed to the vSphere GUI is referred to
+as **LunQDepth** from esxcli.  Though they have different names, both control
+the same internal setting.  We refer to the parameter as LunQDepth in this
+section, but changing MaxCommands has the same effect.
+
+The LunQDepth parameter controls the number of concurrent I/O operations that
+ESXi can issue on a single iSCSI session before queuing occurs in the host. We
+recommend that you increase LunQDepth to 192 for a Blockbridge LUN. The default
+value of LunQDepth is 128.
 
 The risk of setting this number too low is obvious: performance suffers because
 vSphere can't get enough work out into the LUN. There really isn't a practical
