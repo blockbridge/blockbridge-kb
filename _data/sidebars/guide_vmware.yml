@@ -31,9 +31,9 @@ entries:
     output: web, pdf
     url: '#deployment-planning'
     folderitems:
-    - title: Sizing & Performance
+    - title: Datastores, Complexes & LUNS
       output: web, pdf
-      url: '#sizing--performance'
+      url: '#datastores-complexes--luns'
     - title: VMware Storage Limits
       output: web, pdf
       url: '#vmware-storage-limits'
