@@ -971,8 +971,8 @@ SchedNumReqOutstanding Depth
 
     esxcli storage core device set --sched-num-req-outstanding
 
-vSphere has a confusingly-named setting that controls how deep the I/O queue is
-for a guest when other guests are accessing the same storage device. In earlier
+vSphere has a special setting that controls how deep the I/O queue is for a
+guest when other guests are accessing the same storage device. In earlier
 versions of ESXi, this used to be controlled via the global parameter
 **Disk.SchedNumReqOutstanding**. But starting in 5.5, control has been
 relegated to an esxcli-only parameter, viewable in the output of esxcli storage
@@ -1139,7 +1139,7 @@ any VM that attempts to allocate storage, instead of passing the error
 through. Many applications do not handle out-of-space particularly well, so
 this option can be a lifesaver. Documents from VMware refer to this as the
 "thin provisioning stun" feature. It's **enabled** by default, with
-**Disk.ReturnCCForNoSpace = 0**. Somewhat confusingly, this "0" setting instructs
+**Disk.ReturnCCForNoSpace = 0**.  Setting ReturnCCForNoSpace to "0" instructs
 VMware to *not* return an error (a SCSI CHECK CONDITION) when it runs out of
 space. We recommend that you leave this set to 0, allowing it to pause the VMs.
 
