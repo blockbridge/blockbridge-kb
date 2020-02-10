@@ -416,24 +416,26 @@ system" performance, including inefficiencies on the host.
 
 -   [VMware Storage DRS Interoperability (VMware)](https://www.vmware.com/content/dam/digitalmarketing/vmware/en/pdf/techpaper/vsphere-storage-drs-interoperability-white-paper.pdf)
 
-Multiple Classes of Storage
----------------------------
+Storage Performance Classes
+---------------
 
-When planning out your VMware deployment, consider offering different classes
-of storage. With multiple Blockbridge dataplanes or a single multi-complex
-dataplane, you can create several datastores each backed by a different storage
-technology. For example, you can have a low-cost VMFS volume backed by consumer
-SATA flash, another backed by NVMe, and still another backed by (gasp) SAS
-spinners. All these technologies are managed by Blockbridge's "single-pane of
-glass" control plane and you have full control over how VMware consumes them.
+Blockbridge dataplanes offer programmatically-defined performance
+characteristics that give you full control over IOPS and bandwidth quality of
+service. Whether your deployment consists of a single Blockbridge complex with
+homogenous storage media or multiple Dataplane complexes with tiered media
+types, you can configure VMware to deliver multiple classes of storage.
 
-Note that if you're planning to use Storage DRS, we don't recommend including
-different classes of storage in the same DRS Cluster (e.g.  NVMe and
-SATA). SDRS won't balance correctly across these datastores for performance,
-let alone other policy characteristics like reliability.  **SDRS is not a
-tiering solution.** Instead, create multiple DRS clusters, with one storage
-technology per cluster. Inside each cluster, create multiple datastores that
-all use the same storage technology.
+We recommend that you implement storage classes only if your environment
+consists of mixed application use-cases. For example: if you would like to
+prevent background processing jobs from affecting the performance of database
+applications, you may opt for multiple storage classes with segregated
+performance guarantees (even if they share the same pool of capacity). You
+should **create a separate VMware VMFS datastore for each performance class**.
+
+If you use Storage Distributed Resource Scheduling (SDRS), **create independent
+SDRS clusters for each performance class**. It is essential to point out that
+SDRS is not a tiering solution. You should ensure that all VMFS datastores
+within an SDRS cluster have uniform performance characteristics.
 
 ### Resources
 
