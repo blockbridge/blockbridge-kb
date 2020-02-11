@@ -1,0 +1,8 @@
+Workflow:
+--------
+
+- make all changes on master branch. You can type `make` to build and serve the static site on your localhost.
+
+- when changes look good, checkout the `production` branch, and commit the changes to production
+
+- when production is pushed, teamcity will pickup the checkin, and publish to https://kb.blockbridge.com automatically.
