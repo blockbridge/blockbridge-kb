@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 . $(git --exec-path)/git-sh-setup
 require_clean_work_tree "update static site"
 
