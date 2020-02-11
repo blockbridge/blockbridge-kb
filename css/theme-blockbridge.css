@@ -29,9 +29,12 @@ footer {
   min-height: 40px;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 400px) {
   .navbar-brand {
     max-width: 80% !important;
+  }
+  .navbar-brand > svg.bb-logo {
+        margin-top: 4px !important;
   }
 }
 
@@ -45,6 +48,10 @@ footer {
     border-left: 5px solid #ED1951;
     font-size:16px;
 }
+
+.post-title-main {
+    text-transform: uppercase;
+ }
 
 .nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
     background-color: #248ec2;
