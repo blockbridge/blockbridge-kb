@@ -689,7 +689,7 @@ wish to create a dedicated account for your VMware storage.
 alt="Blockbridge screenshot showing storage service provisioning modal" %}
 
 Reserve enough size to hold the contents of the VMware datastores you intend to
-create. If you created the VSS on a different account (as we did with the "vmw"
+create. If you created the VSS in a different account (as we did with the "vmw"
 account here), log out, and log back in as that account.
 
 The easiest way of managing authentication for your VMware deployment is to use
@@ -766,7 +766,7 @@ alt="VMware screenshot showing where to edit iSCSI authentication settings" %}
 
 Enter the CHAP username and secret from the Blockbridge initiator
 profile. Blockbridge targets support mutual authentication -- a good idea if
-you're concerned about an attacker interposing a illegitimate iSCSI target in
+you're concerned about an attacker interposing an illegitimate iSCSI target in
 your infrastructure.
 
 {% include img.html align="center" max-width="50%" file="image23.jpg"
