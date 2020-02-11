@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="{% if page.summary %}{{ page.summary | strip_html | strip_newlines | truncate: 160 }}{% endif %}">
+<meta name="description" content="{% if page.description %}{{ page.description | strip_html | strip_newlines | truncate: 158 }}{% endif %}">
 <meta name="keywords" content="{{page.tags}}{% if page.tags %}, {% endif %} {{page.keywords}}">
 <title>{{ page.title }} | {{ site.site_title }}</title>
 <!-- Google Fonts -->
@@ -34,7 +34,7 @@
 <script src="{{ "/js/toc.js" | prepend: site.baseurl }}"></script>
 <script src="{{ "/js/customscripts.js" | prepend: site.baseurl }}"></script>
 
-<link rel="shortcut icon" href="{{ "/images/bb-favicon-32x32.png" | prepend: site.baseurl }}" type="image/png">
+<link rel="shortcut icon" href="{{ "/images/bb-favicon.ico" | prepend: site.baseurl }}" type="image/png">
 
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->

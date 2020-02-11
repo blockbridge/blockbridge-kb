@@ -5,43 +5,64 @@ entries:
   folders:
   - title: ABOUT THIS GUIDE
     output: web, pdf
-    url: '#vmware-storage-management-guide'
+    url: '#blockbridge-vmware-storage-guide'
+
+  - title: DEPLOYMENT & TUNING QUICKSTART
+    output: web, pdf
+    url: '#deployment--tuning-quickstart'
+    folderitems:
+    - title: VMware iSCSI Networking
+      output: web, pdf
+      url: '#vmware-iscsi-networking'
+    - title: Blockbridge Virtual Storage
+      output: web, pdf
+      url: '#blockbridge-virtual-storage'
+    - title: VMware Storage Devices
+      output: web, pdf
+      url: '#vmware-storage-devices'
+    - title: VMware Datastore & VMFS
+      output: web, pdf
+      url: '#vmware-datastore--vmfs'
+    - title: VMware System Settings
+      output: web, pdf
+      url: '#vmware-system-settings'
+
   - title: DEPLOYMENT PLANNING
     output: web, pdf
     url: '#deployment-planning'
     folderitems:
-    - title: Sizing & Performance
+    - title: Datastores, Complexes & LUNS
       output: web, pdf
-      url: '#datastore-sizing-and-performance'
+      url: '#datastores-complexes--luns'
+    - title: VMware Storage Limits
+      output: web, pdf
+      url: '#vmware-storage-limits'
     - title: Storage I/O Control
       output: web, pdf
       url: '#storage-io-control'
     - title: Storage Distributed Resource Scheduling
       output: web, pdf
-      url: '#storage-distributed-resource-scheduler-sdrs'
-    - title: Multiple Classes of Storage
+      url: '#storage-distributed-resource-scheduling'
+    - title: Storage Performance Classes
       output: web, pdf
-      url: '#offer-different-classes-of-storage'
+      url: '#storage-performance-classes'
 
-  - title: CONNECTING TO BLOCKBRIDGE
+  - title: NETWORKING & STORAGE
     output: web, pdf
-    url: '#connecting-to-blockbridge'
+    url: '#networking--storage'
     folderitems:
-    - title: iSCSI Multipathing
+    - title: VMware Multipath Networking
       output: web, pdf
-      url: '#iscsi-multipathing'
-    - title: Multi-Complex Firewall Considerations
+      url: '#vmware-multipath-networking'
+    - title: LACP & Bonded Networking
       output: web, pdf
-      url: '#multi-complex-firewall'
-    - title: Teamed Interfaces
-      output: web, pdf
-      url: '#blockbridge-teamed-interface-configuration-notes'
+      url: '#lacp--bonded-networking'
     - title: Provisioning iSCSI Storage
       output: web, pdf
-      url: '#provisioning-a-blockbridge-service-disk-target-and-profile'
+      url: '#provisioning-iscsi-storage'
     - title: VMware Initiator Configuration
       output: web, pdf
-      url: '#connecting-vmware-to-a-blockbridge-target'
+      url: '#vmware-initiator-configuration'
     - title: Creating a VMFS Datastore
       output: web, pdf
       url: '#creating-a-vmfs-datastore'
@@ -52,22 +73,22 @@ entries:
     folderitems:
     - title: iSCSI LUN Queue Depth
       output: web, pdf
-      url: '#increase-the-iscsi-lun-queue-depth-to-256'
+      url: '#iscsi-lun-queue-depth'
     - title: SchedNumReqOutstanding Depth
       output: web, pdf
-      url: '#increase-the-schednumreqoutstanding-depth-to-64'
+      url: '#schednumreqoutstanding-depth'
     - title: Queue Depth Full
       output: web, pdf
-      url: '#default-do-not-alter-behavior-on-queue-full-conditions'
+      url: '#queue-depth-full'
     - title: Round Robin Path Selection IOPS Limit
       output: web, pdf
-      url: '#lower-the-round-robin-path-selection-iops-limit-to-8'
+      url: '#round-robin-path-selection-iops-limit'
     - title: VAAI Commands
       output: web, pdf
-      url: '#default-enable-vaai-commands'
-    - title: Optimized ATS Heartbeating (VMFS-6)
+      url: '#vaai-commands'
+    - title: ATS Heartbeating (VMFS-6)
       output: web, pdf
-      url: '#use-optimized-ats-heartbeating-vmfs-6'
+      url: '#ats-heartbeating-vmfs-6'
     - title: Halt VMs on Out-of-Space Conditions
       output: web, pdf
       url: '#halt-vms-on-out-of-space-conditions'
@@ -76,10 +97,10 @@ entries:
       url: '#jumbo-frames'
     - title: iSCSI Login Timeout
       output: web, pdf
-      url: '#increase-iscsi-login-timeout'
+      url: '#iscsi-login-timeout'
     - title: TCP DelayedAck
       output: web, pdf
-      url: '#leave-delayedack-at-its-default-enabled'
+      url: '#tcp-delayedack'
     - title: Large Receive Offload Maximum Length
       output: web, pdf
       url: '#large-receive-offload-maximum-length'
@@ -88,7 +109,7 @@ entries:
       url: '#nic-interrupt-balancing'
     - title: Mellanox Specific Optimizations
       output: web, pdf
-      url: '#mellanox-nic-tuning'
+      url: '#mellanox-specific-optimizations'
 
   - title: GUEST TUNING
     output: web, pdf
@@ -96,27 +117,13 @@ entries:
     folderitems:
     - title: Paravirtual SCSI Adapter
       output: web, pdf
-      url: '#use-the-paravirtual-scsi-adapter-in-guests'
+      url: '#paravirtual-scsi-adapter'
     - title: Virtual Machine Encryption
       output: web, pdf
-      url: '#disable-virtual-machine-encryption'
+      url: '#virtual-machine-encryption'
     - title: Zeroing Policies
       output: web, pdf
-      url: '#thin-lazy-zeroed-or-eager-zeroed'
+      url: '#zeroing-policies'
     - title: Guest I/O Latency & Consistency
       output: web, pdf
-      url: '#improving-guest-io-latency-and-latency-consistency'
-
-  - title: DEPLOYMENT & TUNING CHEATSHEET
-    output: web, pdf
-    url: '#deployment--tuning-cheatsheet'
-    folderitems:
-    - title: Deployment Steps
-      output: web, pdf
-      url: '#deployment-steps'
-    - title: Host tuning – Non-Default Settings
-      output: web, pdf
-      url: '#host-tuning--non-default-settings'
-    - title: Host Tuning – Default Settings
-      output: web, pdf
-      url: '#host-tuning--default-settings'
+      url: '#guest-io-latency--consistency'
