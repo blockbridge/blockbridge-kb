@@ -9,7 +9,7 @@ serve:
 fetch:
 	@build/fetch.sh
 
-publish:
+publish: fetch
 	docker build -f Dockerfile.publish -t blockbridge-kb:build .
 	@sudo rm -rf _site
 	@mkdir -p _site
