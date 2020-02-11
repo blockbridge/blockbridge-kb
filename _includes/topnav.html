@@ -2,64 +2,8 @@
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container-fluid topnavlinks">
         <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
             <div class="navbar-brand">{% svg /images/bb-svg-logo.svg class="bb-logo" width="100%" %}</div>
         </div>
-        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav navbar-right">
-                <!-- entries without drop-downs appear here -->
-
-{% assign topnav = site.data[page.topnav] %}
-{% assign topnav_dropdowns = site.data[page.topnav].topnav_dropdowns %}
-
-                {% for entry in topnav.topnav %}
-                {% for item in entry.items %}
-                {% if item.external_url %}
-                <li><a href="{{item.external_url}}" target="_blank">{{item.title}}</a></li>
-                {% elsif page.url contains item.url %}
-                <li class="active"><a href="{{item.url | prepend: site.baseurl }}">{{item.title}}</a></li>
-                {% elsif item.url != nil %}
-                <li><a href="{{item.url | prepend: site.baseurl }}">{{item.title}}</a></li>
-                {% else %}
-                <li>{{item.title}}</li>
-                {% endif %}
-                {% endfor %}
-                {% endfor %}
-                <!-- entries with drop-downs appear here -->
-                <!-- conditional logic to control which topnav appears for the audience defined in the configuration file.-->
-                {% for entry in topnav_dropdowns %}
-                {% for folder in entry.folders %}
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ folder.title }}<b class="caret"></b></a>
-                    <ul class="dropdown-menu">
-                        {% for folderitem in folder.folderitems %}
-                        {% if folderitem.external_url %}
-                        <li><a href="{{folderitem.external_url}}" target="_blank">{{folderitem.title}}</a></li>
-                        {% elsif page.url contains folderitem.url %}
-                        <li class="dropdownActive"><a href="{{folderitem.url | prepend: site.baseurl }}">{{folderitem.title}}</a></li>
-                        {% elsif folderitem.url != nil %}
-                        <li><a href="{{folderitem.url | prepend: site.baseurl }}">{{folderitem.title}}</a></li>
-                        {% else %}
-                        <li>{{folderitem.title}}</li>
-                        {% endif %}
-                        {% endfor %}
-                    </ul>
-                </li>
-                {% endfor %}
-                {% endfor %}
-                {% if site.feedback_disable == null or site.feedback_disable == false %}
-			{% include feedback.html %}
-		{% endif %}
-                {% if site.search_disable == null or site.search_disable == false %}
-			{% include search.html %}
-		{% endif %}
-            </ul>
-        </div>
-        </div>
-        <!-- /.container -->
+    </div>
+    <!-- /.container -->
 </nav>
