@@ -85,6 +85,14 @@ defaults:
       comments: false
       search: true
       sidebar: guide_vmware
+  - scope:
+      path: "release/5.0"
+      type: "pages"
+    values:
+      layout: "page"
+      comments: false
+      search: true
+      sidebar: release_5_0
 
 plugins:
   - jekyll-redirect-from

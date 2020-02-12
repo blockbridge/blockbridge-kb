@@ -1,0 +1,28 @@
+# This is your sidebar TOC. The sidebar code loops through sections here and provides the appropriate formatting.
+
+entries:
+- title: sidebar
+  folders:
+  - title: RELEASE 5.0
+    output: web, pdf
+    url: '#blockbridge-5-0-release-notes'
+
+  - title: ADMINISTRATION
+    output: web, pdf
+    url: '#administration'
+
+  - title: INTEGRATION
+    output: web, pdf
+    url: '#integration'
+
+  - title: MOBILITY
+    output: web, pdf
+    url: '#mobility'
+
+  - title: PERFORMANCE
+    output: web, pdf
+    url: '#performance'
+
+  - title: PLATFORM
+    output: web, pdf
+    url: '#platform'
