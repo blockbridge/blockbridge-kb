@@ -6,23 +6,89 @@ entries:
   - title: RELEASE 5.0
     output: web, pdf
     url: '#blockbridge-5-0-release-notes'
+    folderitems:
+      - title: Multi-complex
+        output: web, pdf
+        url: '#multi-complex'
 
-  - title: ADMINISTRATION
+  - title: MANAGEMENT
     output: web, pdf
-    url: '#administration'
+    url: '#management'
+    folderitems:
+      - title: Datastore Statistics
+        output: web, pdf
+        url: '#management'
+      - title: Tenant Usage Reports
+        output: web, pdf
+        url: '#managament'
+      - title: Usage Visualizations
+        output: web, pdf
+        url: '#management'
 
-  - title: INTEGRATION
+  - title: INTEGRATIONS
     output: web, pdf
-    url: '#integration'
+    url: '#integrations'
+    folderitems:
+      - title: ATS Concurrency (VMware)
+        output: web, pdf
+        url: '#ats-concurrency-vmware'
+      - title: Portal Filter (OpenStack)
+        output: web, pdf
+        url: '#portal-filter-openstack'
 
-  - title: MOBILITY
+  - title: DATA MOBILITY
     output: web, pdf
-    url: '#mobility'
+    url: '#data-mobility'
+    folderitems:
+      - title: Inter-Dataplane Clones
+        output: web, pdf
+        url: '#inter-dataplane-clones'
 
   - title: PERFORMANCE
     output: web, pdf
     url: '#performance'
+    folderitems:
+      - title: GCC8 with LTO
+        output: web, pdf
+        url: '#gcc8-with-lto'
+      - title: Segment Cache Hugepages
+        output: web, pdf
+        url: '#segment-cache-hugepages'
+      - title: Read Performance Improvements
+        output: web, pdf
+        url: '#read-performance-improvements'
+      - title: Compound Operations
+        output: web, pdf
+        url: '#compound-operations'
+      - title: Improved IRQ Routing
+        output: web, pdf
+        url: '#improved-irq-routing'
+      - title: Metadata Encryption Offload
+        output: web, pdf
+        url: '#metadata-encryption-offload'
+      - title: Compression
+        output: web, pdf
+        url: '#compression'
 
   - title: PLATFORM
     output: web, pdf
     url: '#platform'
+    folderitems:
+      - title: AMD EPYC Naples & Rome
+        output: web, pdf
+        url: '#amd-epyc-naples--rome'
+      - title: Encrypted Cluster Hearbeating
+        output: web, pdf
+        url: '#encrypted-cluster-heartbeating'
+      - title: Linux Kernel 5.4
+        output: web, pdf
+        url: '#linux-kernel-54'
+      - title: Centos 7.7
+        output: web, pdf
+        url: '#centos-77'
+      - title: Cluster Upgrade Performance
+        output: web, pdf
+        url: '#cluster-upgrade-performance'
+      - title: Volume Check Scheduling
+        output: web, pdf
+        url: '#volume-check-scheduling'
