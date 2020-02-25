@@ -240,7 +240,7 @@ default values.
         ...
            Int Value: 1
 
-1. **Confirm that the SCSI "Atomic Test and Set" Command is Used.** [**&#9432;**](#optimized-ats-heartbeating-vmfs-6)
+1. **Confirm that the SCSI "Atomic Test and Set" Command is Used.** [**&#9432;**](#ats-heartbeating-vmfs-6)
 
         esxcli  system settings advanced list -o /VMFS3/UseATSForHBOnVMFS5
         ...
@@ -634,7 +634,7 @@ At this point, you have multiple **VMkernel adapters** that are mapped to indepe
 
 -   [When To Use Multiple Subnet iSCSI Network Design (Chris Wahl)](https://wahlnetwork.com/2015/03/09/when-to-use-multiple-subnet-iscsi-network-design/)
 
--   [VMware vSphere - When to use iSCSI Port Binding, and why! (Stephen Wagner)](https://www.stephenwagner.com/2014/06/07/vmware-vsphere-iscsi-port-binding/)
+-   [VMware vSphere - When to use iSCSI Port Binding, and why! (Stephen Wagner)](https://www.stephenwagner.com/2014/06/07/vmware-vsphere-iscsi-port-binding/amp/)
 
 -   [ESXi iSCSI, Multiple Subnets, and Port Binding (Cody Hosterman)](https://www.codyhosterman.com/2018/05/esxi-iscsi-multiple-subnets-and-port-binding/)
 
@@ -1365,7 +1365,7 @@ ring pages, so your installation may not need additional tuning:
 
 ### Resources
 
-- [Large-scale workloads with intensive I/O patterns might require queue depths significantly greater than Paravirtual SCSI default values (2053145) (VMware)](https://kb.vmware.com/s/article/2053145>)
+- [Large-scale workloads with intensive I/O patterns might require queue depths significantly greater than Paravirtual SCSI default values (2053145) (VMware)](https://kb.vmware.com/s/article/2053145)
 
 Virtual Machine Encryption
 --------------------------
