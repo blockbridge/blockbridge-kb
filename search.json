@@ -26,6 +26,17 @@
 
 
 {
+"title": "Installing a Custom TLS Key and Certificate",
+"tags": "",
+"keywords": "security,ssl,certificate",
+"url": "/guide/custom-certs/index.html",
+"summary": ""
+}
+,
+
+
+
+{
 "title": "Blockbridge VMware Storage Guide",
 "tags": "",
 "keywords": "vmware",

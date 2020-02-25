@@ -4,9 +4,9 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="">
-<meta name="keywords" content=" ">
-<title>Getting help with Blockbridge | Blockbridge Knowledgebase</title>
+<meta name="description" content="Follow this procedure to install your organization's web certificate in the Blockbridge Controlplane.">
+<meta name="keywords" content=" security,ssl,certificate">
+<title>Installing a Custom TLS Key and Certificate | Blockbridge Knowledgebase</title>
 <!-- Google Fonts -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto&display=swap">
@@ -139,10 +139,76 @@
           <!-- row-oriented flex container -->
           
 
+          <!-- Sidebar Column -->
+          <nav class="col-nav hidden-sm hidden-xs" id="tg-sb-sidebar">
+            
+
+<ul id="sidebar" class="sidebar">
+  
+  
+  
+  
+  <li>
+      <a href="#installing-a-custom-tls-key-and-certificate">INSTALLING A CUSTOM CERTIFICATE</a>
+      <ul>
+          
+          
+          
+          <li><a href="#copy-private-key-and-certificate-files">Copy Private Key and Certificate Files</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#create-a-custom-apache-configuration-file">Create a Custom Apache Config File</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#install-the-custom-apache-configuration-file">Install Custom Apache Config File</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#reload-apaches-configuration">Reload Apache&apos;s Configuration</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#apache-configuration-template">Apache Configuration Template</a></li>
+          
+          
+          
+          
+      </ul>
+   </li>
+     
+      
+      
+      <!-- if you aren't using the accordion, uncomment this block:
+         <p class="external">
+             <a href="#" id="collapseAll">Collapse All</a> | <a href="#" id="expandAll">Expand All</a>
+         </p>
+         -->
+</ul>
+
+<!-- this highlights the active parent class in the navgoco sidebar. this is critical so that the parent expands when you're viewing a page. This must appear below the sidebar code above. Otherwise, if placed inside customscripts.js, the script runs before the sidebar code runs and the class never gets inserted.-->
+<script>$("li.active").parents('li').toggleClass("active");</script>
+
+          </nav>
+          
+
           <!-- Content Column -->
           <main class="col-content">
             <div class="post-header">
-   <h1 class="post-title-main">Getting help with Blockbridge</h1>
+   <h1 class="post-title-main">Installing a Custom TLS Key and Certificate</h1>
 </div>
 
 
@@ -150,38 +216,138 @@
 <div class="post-content">
 
    
-    <div class="summary">Contact Blockbridge Support for help.</div>
-   
-
-    
-    
-<!-- this handles the automatic toc. use ## for subheads to auto-generate the on-page minitoc. if you use html tags, you must supply an ID for the heading element in order for it to appear in the minitoc. -->
-<script>
-$( document ).ready(function() {
-  // Handler for .ready() called.
-
-$('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3,h4' });
-
-/* this offset helps account for the space taken up by the floating toolbar. */
-$('#toc').on('click', 'a', function() {
-  var target = $(this.getAttribute('href'))
-    , scroll_target = target.offset().top
-
-  $(window).scrollTop(scroll_target - 10);
-  return false
-})
-  
-});
-</script>
-
-<div id="toc"></div>
 
     
 
 
     
 
-   <div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> If you have any questions or run into problems please contact <a href="mailto:support@blockbridge.com">Blockbridge Support</a></div>
+   <p>This document describes how to install your organization’s web certificate on a
+Blockbridge Controlplane, enabling secure authentication of your clients
+with the Blockbridge Web UI, API and command line tools.</p>
+
+<h2 id="copy-private-key-and-certificate-files">Copy private key and certificate files</h2>
+
+<p>To begin, locate your certificate and private key files. If your CA supplied you
+with an intermediate certificate, you’ll need that as well.</p>
+
+<ul>
+  <li><strong>Ensure all files are PEM-encoded.</strong></li>
+  <li>Copy the certificate to the <code class="highlighter-rouge">/etc/pki/tls/certs</code> directory.</li>
+  <li>If you have an intermediate certificate, place it in <code class="highlighter-rouge">/etc/pki/tls/certs</code> as well.</li>
+  <li>Copy the private key to the <code class="highlighter-rouge">/etc/pki/tls/private</code> directory.</li>
+  <li>Ensure the certificate and key files are owned by root: <code class="highlighter-rouge">chown root &lt;filename&gt;</code>.</li>
+  <li>Set the mode to <code class="highlighter-rouge">600</code> for all certificate and key files: <code class="highlighter-rouge">chmod 600 &lt;filename&gt;</code>.  The files must not be readable by group or world.</li>
+</ul>
+
+<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> The certificate and key files must be present
+on <strong>both</strong> <code class="highlighter-rouge">cm1</code> and <code class="highlighter-rouge">cm2</code> cluster members.</div>
+
+<h2 id="create-a-custom-apache-configuration-file">Create a custom Apache configuration file</h2>
+
+<p>Copy the configuration directives from the <a href="#apache-configuration-template">Apache Configuration
+Template</a> section below into a new file named
+<code class="highlighter-rouge">zz-blockbridge-tls.conf</code>. Replace the following placeholders with information
+appropriate to your installation:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">FQDN</code> - The fully-qualifiied domain name (as specified in your TLS
+certificate). Be sure to fill in your FQDN in both VirtualHost directives.</li>
+  <li><code class="highlighter-rouge">CERT_PATH</code> - The full path to your certificate file.</li>
+  <li><code class="highlighter-rouge">INTERMEDIATE_CERT_PATH</code> - The full path to your CA-provided intermediate
+certificate file, if you have one. If you’ve got an intermediate certificate,
+be sure to uncomment the <code class="highlighter-rouge">SSLCertificateChainFile</code> directive.</li>
+  <li><code class="highlighter-rouge">PRIVATE_KEY_PATH</code> - The full path to your private key file.</li>
+</ul>
+
+<h2 id="install-the-custom-apache-configuration-file">Install the custom Apache configuration file</h2>
+
+<p>Copy your newly created <code class="highlighter-rouge">zz-blockbridge-tls.conf</code> file into
+<code class="highlighter-rouge">/etc/httpd/conf.d</code> on each primary cluster member.</p>
+
+<h2 id="reload-apaches-configuration">Reload Apache’s configuration</h2>
+
+<p>Confirm which cluster member is running services with <code class="highlighter-rouge">blockbridge cluster
+status</code>. On the active member, reload the apache configuration with <code class="highlighter-rouge">systemctl
+reload httpd</code>.</p>
+
+<h2 id="apache-configuration-template">Apache Configuration Template</h2>
+
+<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> Download the configuration file here: <a href="/guide/custom-certs/zz-blockbridge-tls.conf">zz-blockbridge-tls.conf</a></div>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;VirtualHost *:443&gt;
+    ServerName FQDN
+
+    ServerAdmin admin@blockbridge.com
+    DocumentRoot /bb/www/html
+    ErrorLog /bb/www/logs/error_log
+    CustomLog /bb/www/logs/access_log common
+    ProxyRequests off
+
+    # by default, proxy all traffic to the API adapter
+    SSLProxyEngine On
+    SSLProxyCheckPeerCN off
+    SSLProxyCheckPeerExpire off
+    ProxyPass /api https://127.0.0.1:9000/api retry=0 timeout=300
+    ProxyPassReverse /api https://127.0.0.1:9000/api
+
+    # ssl configuration
+    SSLEngine on
+    SSLProtocol ALL -SSLv2 -SSLv3
+    SSLCipherSuite ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA:ECDHE-ECDSA-DES-CBC3-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:DES-CBC3-SHA:!DSS
+    SSLHonorCipherOrder on
+    SSLCertificateFile CERT_PATH
+    # SSLCertificateChainFile INTERMEDIATE_CERT_PATH
+    SSLCertificateKeyFile PRIVATE_KEY_PATH
+
+    &lt;IfModule mod_authz_core.c&gt;
+        SSLProxyCheckPeerName off
+        &lt;Directory *&gt;
+            Require all granted
+        &lt;/Directory&gt;
+        &lt;Proxy *&gt;
+        Require all granted
+        &lt;/Proxy&gt;
+    &lt;/IfModule&gt;
+
+    &lt;IfModule !mod_authz_core.c&gt;
+        &lt;Directory *&gt;
+            Order deny,allow
+            Allow from all
+        &lt;/Directory&gt;
+        &lt;Proxy *&gt;
+            Order deny,allow
+            Allow from all
+        &lt;/Proxy&gt;
+    &lt;/IfModule&gt;
+
+    &lt;IfModule mod_expires.c&gt;
+        &lt;DirectoryMatch "^/bb/www/html/assets"&gt;
+            &lt;filesMatch "-[a-f0-9]{24,}\.(png|css|html|gif|js)$"&gt;
+                # Use of ETag is discouraged when Last-Modified is present
+                Header unset ETag
+                FileETag None
+                # RFC says only cache for 1 year
+                ExpiresActive On
+                ExpiresDefault "access plus 1 year"
+            &lt;/filesMatch&gt;
+        &lt;/DirectoryMatch&gt;
+    &lt;/IfModule&gt;
+
+    &lt;IfModule mod_deflate.c&gt;
+        &lt;Directory "/bb/www/html/assets"&gt;
+            SetOutputFilter DEFLATE
+            AddOutputFilterByType DEFLATE application/javascript
+        &lt;/Directory&gt;
+    &lt;/IfModule&gt;
+&lt;/VirtualHost&gt;
+
+&lt;VirtualHost *:80&gt;
+RewriteEngine On
+RewriteCond %{HTTPS} !on
+RewriteRule ^(.*)$ https://FQDN%{REQUEST_URI}
+&lt;/VirtualHost&gt;
+</code></pre></div></div>
 
 
     <div class="tags">
