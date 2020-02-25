@@ -1,0 +1,24 @@
+# This is your sidebar TOC. The sidebar code loops through sections here and provides the appropriate formatting.
+
+entries:
+- title: sidebar
+  folders:
+  - title: INSTALLING A CUSTOM CERTIFICATE
+    output: web, pdf
+    url: '#installing-a-custom-tls-key-and-certificate'
+    folderitems:
+    - title: Copy Key and Cert Files
+      output: web, pdf
+      url: '#copy-private-key-and-certificate-files-to-each-primary-cluster-member'
+    - title: Create a Custom Apache Config File
+      output: web, pdf
+      url: '#create-a-custom-apache-configuration-file'
+    - title: Install Custom Apache Config File
+      output: web, pdf
+      url: '#install-the-custom-apache-configuration-file'
+    - title: Reload Apache&apos;s Configuration
+      output: web, pdf
+      url: '#reload-apaches-configuration'
+    - title: Apache Configuration Template
+      output: web, pdf
+      url: '#apache-configuration-template'

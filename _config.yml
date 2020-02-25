@@ -93,6 +93,14 @@ defaults:
       comments: false
       search: true
       sidebar: release_5_0
+  - scope:
+      path: "guide/custom-certs"
+      type: "pages"
+    values:
+      layout: "page"
+      comments: false
+      search: true
+      sidebar: custom_certs
 
 plugins:
   - jekyll-redirect-from
