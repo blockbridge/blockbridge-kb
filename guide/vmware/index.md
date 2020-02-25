@@ -55,8 +55,8 @@ VMware iSCSI Networking
 
 1.  **Increase the iSCSI LUN Queue Depth.** [**&#9432;**](#iscsi-lun-queue-depth)
 
-    * This setting has been found to increase performance.
-    * Requires a reboot to take effect.
+    * For a small population of ESXi hosts, increase LunQDepth to 192 for maximum IOPS.
+    * Otherwise, default settings are appropriate.
 
     ~~~~~~
     esxcli system module parameters set -m iscsi_vmk -p iscsivmk_LunQDepth=192
@@ -170,15 +170,25 @@ VMware Storage Devices
       --device=naa.60a010a03ff1bb511962194c40626cd1
     ~~~~~~
 
-1. **Confirm that Queue Full Sample Size and Threshold are 0.** [**&#9432;**](#queue-depth-full)
+1. **Selectively enable Queue Depth Throttling.** [**&#9432;**](#queue-depth-throttling)
 
-    ~~~~~~
-    esxcli storage core device list | grep 'Queue Full'
-       Queue Full Sample Size: 0
-       Queue Full Threshold: 0
-       Queue Full Sample Size: 0
-       Queue Full Threshold: 0
-    ~~~~~~
+   For a small population of ESXi hosts:
+   * Confirm that Queue Full Sample Size is 0.
+
+   ~~~~~~
+   esxcli storage core device list | grep 'Queue Full'
+      Queue Full Sample Size: 0
+      Queue Full Threshold: 0
+      Queue Full Sample Size: 0
+      Queue Full Threshold: 0
+   ~~~~~~
+
+   For a large population of ESXi hosts:
+   * Enable Adaptive Queue Throttling.
+
+   ~~~~~~
+   esxcli storage core device set --device device_name  --queue-full-sample-size 32 --queue-full-threshold 128
+   ~~~~~~
 
 1. **Use this bash script helper to apply esxcli commands to all devices.**
 
@@ -912,18 +922,18 @@ HOST TUNING
 iSCSI LUN Queue Depth
 ---------------------
 
-The iSCSI **LunQDepth** parameter controls the number of concurrent I/O
-operations that ESXi can issue on a single iSCSI session before queuing occurs
-in the host. We recommend that you increase LunQDepth to 192 for a Blockbridge
-LUN. The default value of LunQDepth is 128.
+The **iSCSI LunQDepth** parameter controls the number of concurrent I/O operations
+that ESXi can issue on a single iSCSI session before queuing occurs in the
+host.
 
-The risk of setting this number too low is obvious: performance suffers because
-vSphere can't get enough work out into the LUN. There really isn't a practical
-downside to increasing the value to 192. It's always better to get the I/O out
-to the storage subsystem, rather than leave it queued on the host.
+If your goal is maximum performance from a small population of hosts (i.e., <=
+4), we recommend that you increase LunQDepth to 192. If you have a large number
+of ESXi hosts that are sharing a single datastore, the default value of
+LunQDepth (i.e., 128) is appropriate. In this situation, we recommend that you
+enable [**Disk.QFullSampleSize**](#queue-depth-throttling).
 
 Increasing the queue depth requires a host reboot. Use the following esxcli
-command to increase the depth, then reboot the ESXi host.
+command to increase the queue depth. Then, reboot the ESXi host.
 
     esxcli system module parameters set -m iscsi_vmk -p iscsivmk_LunQDepth=192
 
@@ -986,9 +996,8 @@ core device list: "No of outstanding IOs with competing worlds", like this;
        No of outstanding IOs with competing worlds: 32
 
 If only one guest is sending I/O to a storage device, it's permitted to use the
-full queue depth (128, or 192 if increased as recommended.) As soon as a second
-guest begins accessing the device, by default, the queue depth of each guest
-drops to 32.
+full queue depth. As soon as a second guest begins accessing the device, by
+default, the queue depth of each guest drops to 32.
 
 Generally, we recommend increasing this setting to 64 if you've increased the
 iSCSI LUN queue depth to 192. In situations where multiple guests are accessing
@@ -1006,16 +1015,27 @@ penalized by this setting, try increasing it to the device queue depth (192).
 
     [root@esx:~] esxcli storage core device set -sched-num-req-outstanding 192 -d naa.60a010a0b139fa8b1962194c406263ad
 
-Queue Depth Full
-----------------
+Queue Depth Throttling
+----------------------
 {% include gui.html app="VMware" content="Host -> Configure -> System / Advanced System Settings: Disk.QFullSampleSize" %}
 
 vSphere can dynamically reduce its queue size if the backing storage reports a
-SCSI TASK SET FULL or BUSY status. This behavior allows it to adapt to arrays
-with shallow queue depths. But with the default queue depth of 128 or even 192,
-the Blockbridge dataplane's queue isn't going to report this status. Our
-recommendation is to **leave the Disk.QFullSampleSize parameter set to zero**
-(its default), disabling this feature.
+SCSI TASK SET FULL or BUSY status. When the number of observed conditions
+reaches **QFullSampleSize**, the device queue depth reduces by half.  After
+**QFullThreshold** successful command completions, the queue depth increases by
+one, to a maximum of **LunQDepth**.
+
+{% include warning.html content="It is essential that all ESXi hosts that share a storage device implement that same configuration." %}
+
+**For a small population of ESXi hosts**:
+* Confirm that Queue Full Sample Size is 0.
+
+**For a large population of ESXi hosts**:
+* Enable Adaptive Queue Throttling.
+
+~~~~~~
+esxcli storage core device set --device device_name  --queue-full-sample-size 32 --queue-full-threshold 128
+~~~~~~
 
 Round Robin Path Selection IOPS Limit
 -------------------------------------

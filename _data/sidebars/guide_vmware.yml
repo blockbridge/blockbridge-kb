@@ -77,9 +77,9 @@ entries:
     - title: SchedNumReqOutstanding Depth
       output: web, pdf
       url: '#schednumreqoutstanding-depth'
-    - title: Queue Depth Full
+    - title: Queue Depth Throttling
       output: web, pdf
-      url: '#queue-depth-full'
+      url: '#queue-depth-throttling'
     - title: Round Robin Path Selection IOPS Limit
       output: web, pdf
       url: '#round-robin-path-selection-iops-limit'
