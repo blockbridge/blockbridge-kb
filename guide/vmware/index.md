@@ -8,7 +8,7 @@ toc: false
 ---
 
 This guide provides technical details for deploying VMware ESXi and VMware
-vSphere clusters on Blockbridge iSCSI storage.
+vSphere on Blockbridge iSCSI storage.
 
 Most readers will want to start with the **[Deployment and Tuning
 Quickstart](#deployment--tuning-quickstart)** section. It's an ordered list of
@@ -38,6 +38,20 @@ VMware with Blockbridge:
 
 DEPLOYMENT & TUNING QUICKSTART
 ==============================
+
+This is a quick reference for configuring and tuning VMware backed by
+Blockbridge storage.  For the most trouble-free installation, configure your
+networking first.  Then, provision and attach the storage.  We recommend
+working through the installation in this order:
+
+1. Configure VMware for iSCSI networking.
+1. Provision Blockbridge storage and configure it for secure access.
+1. Attach the storage to VMware, then tune it.
+1. Create a VMFS-6 datastore.
+1. Confirm VMware system settings.
+
+Many of these topics have more information available by selecting the
+information **&#9432;** links next to items where they appear.
 
 
 VMware iSCSI Networking
