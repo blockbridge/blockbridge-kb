@@ -7,49 +7,55 @@ keywords: security,ssl,certificate
 toc: false
 ---
 
-This document describes how to install your organization's web certificate in a
-Blockbridge Controlplane.
+This document describes how to install your organization's web certificate on a
+Blockbridge Controlplane, enabling secure authentication of of your clients
+with the Blockbridge Web UI, API and command line tools.
+
+Copy private key and certificate files to each primary cluster member
+---------------------------------------------------------------------
 
 To begin, locate your certificate and private key files. If your CA supplied you
 with an intermediate certificate, you’ll need that as well. All files must be
 PEM-encoded.
 
-Copy private key and certificate files to each primary cluster member
----------------------------------------------------------------------
+The certificate and key files must be present on both `cm1` and `cm2` cluster
+members.
 
-The certificate and key files must be present on both cm1 and cm2 cluster members.
-Copy the certificate to the **/etc/pki/tls/certs** directory. If you have an
+Copy the certificate to the `/etc/pki/tls/certs` directory. If you have an
 intermediate certificate, place it here as well. Copy the private key to the
-*/etc/pki/tls/private** directory.
+`/etc/pki/tls/private` directory.
+
+Ensure the certificate and key files are owned by root, and are not group or
+world-readable. Set the mode to `600` for all certificate and key files.
+(e.g., `chmod 600 /path/to/file`)
 
 Create a custom Apache configuration file
 -----------------------------------------
 
 Copy the configuration directives from the “Apache Configuration Template”
-section below into a new file named **zz-blockbridge-tls.conf**. Replace the
+section below into a new file named `zz-blockbridge-tls.conf`. Replace the
 following placeholders with information appropriate to your installation:
 
-* **FQDN** - The fully-qualifiied domain name (as specified in your TLS
+* `FQDN` - The fully-qualifiied domain name (as specified in your TLS
   certificate). Be sure to fill in your FQDN in both VirtualHost directives.
-* **CERT_PATH** - The full path to your certificate file.
-* **INTERMEDIATE_CERT_PATH** - The full path to your CA-provided intermediate
+* `CERT_PATH` - The full path to your certificate file.
+* `INTERMEDIATE_CERT_PATH` - The full path to your CA-provided intermediate
   certificate file, if you have one. If you’ve got an intermediate certificate,
-  be sure to uncomment the SSLCertificateChainFile directive.
-* **PRIVATE_KEY_PATH** - The full path to your private key file.
+  be sure to uncomment the `SSLCertificateChainFile` directive.
+* `PRIVATE_KEY_PATH` - The full path to your private key file.
 
 Install the custom Apache configuration file
 --------------------------------------------
 
-Copy your newly created **zz-blockbridge-tls.conf** file into
-**/etc/httpd/conf.d** on each primary cluster member.
+Copy your newly created `zz-blockbridge-tls.conf` file into
+`/etc/httpd/conf.d` on each primary cluster member.
 
 Reload Apache’s configuration
 -----------------------------
 
-Confirm which cluster member is running services with blockbridge cluster
-status. On the active member, reload the apache configuration:
-
-    systemctl reload httpd
+Confirm which cluster member is running services with `blockbridge cluster
+status`. On the active member, reload the apache configuration with `systemctl
+reload httpd`.
 
   
 Apache Configuration Template

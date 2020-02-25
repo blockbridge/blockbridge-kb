@@ -7,7 +7,7 @@ entries:
     output: web, pdf
     url: '#installing-a-custom-tls-key-and-certificate'
     folderitems:
-    - title: Copy Key and Cert Files
+    - title: Copy Key and Certificate Files
       output: web, pdf
       url: '#copy-private-key-and-certificate-files-to-each-primary-cluster-member'
     - title: Create a Custom Apache Config File
