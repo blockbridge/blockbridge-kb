@@ -11,23 +11,21 @@ This document describes how to install your organization's web certificate on a
 Blockbridge Controlplane, enabling secure authentication of of your clients
 with the Blockbridge Web UI, API and command line tools.
 
-Copy private key and certificate files to each primary cluster member
----------------------------------------------------------------------
+Copy private key and certificate files
+--------------------------------------
 
 To begin, locate your certificate and private key files. If your CA supplied you
-with an intermediate certificate, you’ll need that as well. All files must be
-PEM-encoded.
+with an intermediate certificate, you’ll need that as well.
 
-The certificate and key files must be present on both `cm1` and `cm2` cluster
-members.
+* **Ensure all files are PEM-encoded.**
+* Copy the certificate to the `/etc/pki/tls/certs` directory. 
+* If you have an intermediate certificate, place it in `/etc/pki/tls/certs` as well.
+* Copy the private key to the `/etc/pki/tls/private` directory.
+* Ensure the certificate and key files are owned by root: `chown root <filename>`.
+* Set the mode to `600` for all certificate and key files: `chmod 600 <filename>`.  The files must not be readable by group or world.
 
-Copy the certificate to the `/etc/pki/tls/certs` directory. If you have an
-intermediate certificate, place it here as well. Copy the private key to the
-`/etc/pki/tls/private` directory.
-
-Ensure the certificate and key files are owned by root, and are not group or
-world-readable. Set the mode to `600` for all certificate and key files.
-(e.g., `chmod 600 /path/to/file`)
+{% include note.html content="The certificate and key files must be present
+on **both** `cm1` and `cm2` cluster members." %}
 
 Create a custom Apache configuration file
 -----------------------------------------
@@ -60,6 +58,9 @@ reload httpd`.
   
 Apache Configuration Template
 -----------------------------
+
+{% include note.html
+content="Download the configuration file here: [zz-blockbridge-tls.conf](./zz-blockbridge-tls.conf)" %}
 
 ```
 <VirtualHost *:443>
