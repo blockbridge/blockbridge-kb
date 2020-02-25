@@ -4,9 +4,9 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="">
-<meta name="keywords" content=" ">
-<title>Page Not Found | Blockbridge Knowledgebase</title>
+<meta name="description" content="New features in Blockbridge 5.0.">
+<meta name="keywords" content=" release">
+<title>Version 5.0 Release Notes | Blockbridge Knowledgebase</title>
 <!-- Google Fonts -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto&display=swap">
@@ -143,6 +143,202 @@
 <ul id="sidebar" class="sidebar">
   
   
+  
+  
+  <li>
+      <a href="#blockbridge-5-0-release-notes">RELEASE 5.0</a>
+      <ul>
+          
+          
+          
+          <li><a href="#multi-complex">Multi-complex</a></li>
+          
+          
+          
+          
+      </ul>
+   </li>
+     
+      
+  
+  <li>
+      <a href="#management">MANAGEMENT</a>
+      <ul>
+          
+          
+          
+          <li><a href="#management">Datastore Statistics</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#managament">Tenant Usage Reports</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#management">Usage Visualizations</a></li>
+          
+          
+          
+          
+      </ul>
+   </li>
+     
+      
+  
+  <li>
+      <a href="#integrations">INTEGRATIONS</a>
+      <ul>
+          
+          
+          
+          <li><a href="#ats-concurrency-vmware">ATS Concurrency (VMware)</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#portal-filter-openstack">Portal Filter (OpenStack)</a></li>
+          
+          
+          
+          
+      </ul>
+   </li>
+     
+      
+  
+  <li>
+      <a href="#data-mobility">DATA MOBILITY</a>
+      <ul>
+          
+          
+          
+          <li><a href="#inter-dataplane-clones">Inter-Dataplane Clones</a></li>
+          
+          
+          
+          
+      </ul>
+   </li>
+     
+      
+  
+  <li>
+      <a href="#performance">PERFORMANCE</a>
+      <ul>
+          
+          
+          
+          <li><a href="#gcc8-with-lto">GCC8 with LTO</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#segment-cache-hugepages">Segment Cache Hugepages</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#read-performance-improvements">Read Performance Improvements</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#compound-operations">Compound Operations</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#improved-irq-routing">Improved IRQ Routing</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#metadata-encryption-offload">Metadata Encryption Offload</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#compression">Compression</a></li>
+          
+          
+          
+          
+      </ul>
+   </li>
+     
+      
+  
+  <li>
+      <a href="#platform">PLATFORM</a>
+      <ul>
+          
+          
+          
+          <li><a href="#amd-epyc-naples--rome">AMD EPYC Naples & Rome</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#encrypted-cluster-heartbeating">Encrypted Cluster Hearbeating</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#linux-kernel-54">Linux Kernel 5.4</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#centos-77">Centos 7.7</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#cluster-upgrade-performance">Cluster Upgrade Performance</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#volume-check-scheduling">Volume Check Scheduling</a></li>
+          
+          
+          
+          
+      </ul>
+   </li>
+     
+      
+      
       <!-- if you aren't using the accordion, uncomment this block:
          <p class="external">
              <a href="#" id="collapseAll">Collapse All</a> | <a href="#" id="expandAll">Expand All</a>
@@ -159,7 +355,7 @@
           <!-- Content Column -->
           <main class="col-content">
             <div class="post-header">
-   <h1 class="post-title-main">Page Not Found</h1>
+   <h1 class="post-title-main">Version 5.0 Release Notes</h1>
 </div>
 
 
@@ -169,34 +365,191 @@
    
 
     
-    
-<!-- this handles the automatic toc. use ## for subheads to auto-generate the on-page minitoc. if you use html tags, you must supply an ID for the heading element in order for it to appear in the minitoc. -->
-<script>
-$( document ).ready(function() {
-  // Handler for .ready() called.
-
-$('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3,h4' });
-
-/* this offset helps account for the space taken up by the floating toolbar. */
-$('#toc').on('click', 'a', function() {
-  var target = $(this.getAttribute('href'))
-    , scroll_target = target.offset().top
-
-  $(window).scrollTop(scroll_target - 10);
-  return false
-})
-  
-});
-</script>
-
-<div id="toc"></div>
-
-    
 
 
     
 
-   <p>Sorry, but the page you were trying to view does not exist. Try searching for it or looking at the URL to see if it looks correct.</p>
+   <p>Blockbridge Version 5.0 is the GA release of the AnyScale architecture. The major
+feature of this release is <strong>Multi-Complex</strong>.</p>
+
+<h3 id="multi-complex">Multi-Complex</h3>
+
+<p>Multi-Complex provides in-the-box performance scalability designed to take
+advantage of dense NVMe systems and server platforms with high core-count
+processors, with a specific focus on AMD EPYC Naples and Rome. In IOPS dense
+environments, a multi-complex system can reduce hardware footprint by 8 to 1 or
+more! Multi-Complex boosts efficiency by extracting additional performance from
+your hardware.
+<br />
+<br />
+<strong>Conisder multi-complex when you need to</strong>:</p>
+
+<ul>
+  <li>Reduce hardware costs when scaling storage performance</li>
+  <li>Reduce hardware costs for dedicated multi-tenant scenarios</li>
+  <li>Implement classes of storage with independent QoS guarantees</li>
+  <li>Maximize performance density</li>
+</ul>
+
+<p>Multi-complex configurations maintain full compatibility with your existing
+applications and deployments (i.e., VMware, Kubernetes, OpenStack, etc.).</p>
+
+<h2 id="management">Management</h2>
+
+<p>Release 5.0 includes several improvements in the visibility into dataplane
+performance and tenant usage:
+<br />
+<br /></p>
+
+<ul>
+  <li>
+    <p><strong>New Datastore Statistics:</strong> Administrators now have a system-wide view of
+task duration and queueing from the Datastore Statistics tab.</p>
+  </li>
+  <li>
+    <p><strong>Improved Visibility into Tenant Usage:</strong> The tenant usage reports available
+under nodes and accounts now include the datastore, as well as a translation
+of the virtual service serial number to the tenant’s selected label.</p>
+  </li>
+  <li>
+    <p><strong>Performance and Usage Visualizations:</strong> From the administrator’s view of
+the Infrastructure, select the heading of any of the elements under Global
+Usage (e.g., Read Bandwidth, IOPS, Snapshots, etc.)  to toggle a per-datastore
+breakdown that updates in real-time.</p>
+  </li>
+</ul>
+
+<h2 id="integrations">Integrations</h2>
+
+<h3 id="ats-concurrency-vmware">ATS Concurrency (VMware)</h3>
+
+<p>Release 5.0 brings substantial concurrency improvements to the VAAI atomic
+test-and-set (ATS) command, SCSI COMPARE AND WRITE.  VMware uses this command
+for cluster heartbeating and to coordinate VMFS updates between cluster
+members.  In this release, our implementation of the ATS primitive no longer
+detectably impacts other reads and writes to the volume.</p>
+
+<h3 id="portal-filter-openstack">Portal Filter (OpenStack)</h3>
+
+<p>Advanced filtering options in this release allow for more flexible network
+selection capabilities when provisioning Blockbridge storage from OpenStack.</p>
+
+<h2 id="data-mobility">Data Mobility</h2>
+
+<h3 id="inter-dataplane-clones">Inter-Dataplane Clones</h3>
+
+<p>Read-through “thin” clones within the same virtual storage service (VSS) have
+been supported for some time.  Release 5.0 extends support to include cross-VSS
+and cross-dataplane read-copy clones of snapshots.  This new type of clone
+copies data on demand, as needed by user I/O operations.  Read-copy clones may
+also be copied in their entirety via a background task.</p>
+
+<p>(Block clones were available starting in version 4.3 as part of our early
+access program.)</p>
+
+<h2 id="performance">Performance</h2>
+
+<h3 id="gcc8-with-lto">GCC8 with LTO</h3>
+
+<p>We now build all Blockbridge software written in C or C++ with the improved
+gcc8 toolchain.  We’ve seen small performance improvements across the board,
+not to mention improved static checking.  Additionally, our dataplane I/O
+processor now compiles with link-time optimizations that provide a notable
+boost in performance.</p>
+
+<h3 id="segment-cache-hugepages">Segment Cache Hugepages</h3>
+
+<p>The segment cache is a foundation of our low-latency dataplane.  The cache
+typically reserves between four to eight GiB of memory and is used to store
+metadata for recently accessed locations on disk.  We now allocate this cache
+from a pool of 1 GiB “hugepages”, resulting in fewer TLB misses and improved
+performance.</p>
+
+<h3 id="read-performance-improvements">Read Performance Improvements</h3>
+
+<p>The memory management function used to allocate scatter-gather buffers for read
+operations uses an improved algorithm for sourcing contiguous regions of
+memory.  This new cache-friendly technique reduces random memory references
+significantly, increasing performance.</p>
+
+<h3 id="compound-operations">Compound Operations</h3>
+
+<p>Older versions of the dataplane software chopped I/O’s smaller than 128 KiB
+into 4 KiB chunks for processing through the storage stack.  In this release,
+the dataplane now handles most typical cases of I/O’s that are between 4 KiB
+and 128 KiB as a single unit.  This optimization reduces the length of the
+internal task queue significantly, resulting in far lower latencies.</p>
+
+<h3 id="improved-irq-routing">Improved IRQ Routing</h3>
+
+<p>The 5.0 release includes improvements in how the dataplane balances NIC and
+NVMe interrupts to achieve ultra low latency.  Interrupt routing for ethernet
+attached NVMe is now managed according to the current role of the cluster
+member.  And, the IRQ pattern matching logic has improved to allow for smaller,
+simpler configuration.</p>
+
+<h3 id="metadata-encryption-offload">Metadata Encryption Offload</h3>
+
+<p>The dataplane provides at-rest encryption for all metadata.  Previously,
+encryption processing happened in the context of processing user I/O.  In this
+release, the dataplane offloads metadata encryption to other CPU cores.  This
+optimization improves concurrency during write operations significantly.</p>
+
+<h3 id="compression">Compression</h3>
+
+<p>The dataplane was updated to use Zstandard version 1.4.3 for the Economy and
+Adaptive Economy data reduction modes.  This version offers not only faster
+compression and decompression performance but also improved compression.</p>
+
+<h2 id="platform">Platform</h2>
+
+<h3 id="amd-epyc-naples--rome">AMD EPYC Naples &amp; Rome</h3>
+
+<p>Blockbridge now implements optimizations for the AMD EPYC line of server
+processors.  Release 5.0 provides tight integration with the onboard SP5100
+watchdog and improved handling for complex NUMA layouts.</p>
+
+<h3 id="encrypted-cluster-heartbeating">Encrypted Cluster Heartbeating</h3>
+
+<p>By default, Blockbridge 5.0 installs with encrypted cluster heartbeating, using
+a pre-shared key unique to each cluster.  Blockbridge data links have always
+been encrypted.  Now by encrypting the cluster heartbeating, we’re protecting
+against rogue nodes and providing an additional line of defense against
+configuration mistakes.</p>
+
+<h3 id="linux-kernel-54">Linux Kernel 5.4</h3>
+
+<p>Blockbridge now ships and supports our own kernel version based on the latest
+Long Term Support (LTS) linux kernel version 5.4. This kernel provides improved
+NVMe support, the latest network drivers, support for the latest server
+platforms, and the latest bug fixes from upstream linux. The bare-metal and
+cloud images include the blockbridge kernel built-in.</p>
+
+<h3 id="centos-77">Centos 7.7</h3>
+
+<p>The latest CentOS 7.7 release is now the base for all Blockbridge pre-built
+bare-metal and cloud images.</p>
+
+<h3 id="cluster-upgrade-performance">Cluster Upgrade Performance</h3>
+
+<p>Client I/O interruption during an update is now less than half of what it was
+in early 4.x series releases. Two significant changes contribute to the
+performance here.  First, the dataplane now uses multi-core optimized memory
+allocation to initialize the buffer cache on process restart.  Second, clusters
+now upgrade their services in-place, prioritizing the quick restart of the
+dataplane controller and avoiding failover.</p>
+
+<h3 id="volume-check-scheduling">Volume Check Scheduling</h3>
+
+<p>The HEAL volume manager now has tight integration with the disk-level data
+consistency checker.  You can specify a time range for each day of the week
+when it’s acceptable to run consistency checking, in addition to the
+permissible check bandwidth and the number of concurrently checking
+volumes. Planning metrics allow you to tune your desired check SLA with a
+predictable performance impact.</p>
+
+<p><em>(Note: Some of the above features were backported to 4.x releases as part of
+our early access program.)</em></p>
 
 
     <div class="tags">
