@@ -96,7 +96,7 @@ VMware iSCSI Networking
     ~~~~~~
     esxcli network nic ring current set -r 4096 -n vmnicX
     esxcli network nic coalesce set -a false -n vmnicX
-    esxcli network nic coalesce set –-tx-usecs=0 –-rx-usecs=3 –-adaptive-rx=false -n vmnicX
+    esxcli network nic coalesce set --tx-usecs=0 --rx-usecs=3 --adaptive-rx=false -n vmnicX
     ~~~~~~
 
 1. **Apply Mellanox ConnectX-4,5+ NIC Tuning.** [**&#9432;**](#mellanox-specific-optimizations)
@@ -105,7 +105,7 @@ VMware iSCSI Networking
 
     ~~~~~~
     esxcli network nic ring current set -r 4096 -n vmnicX
-    esxcli network nic coalesce set –-tx-usecs=0 –-adaptive-rx=true -n vmnicX
+    esxcli network nic coalesce set --tx-usecs=0 --adaptive-rx=true -n vmnicX
     ~~~~~~
 
 
@@ -1312,7 +1312,7 @@ set a modest value of 3 microseconds for receive coalescing. Be sure to do it
 for all ports.
 
     esxcli network nic ring current set -r 4096 -n vmnicX
-    esxcli network nic coalesce set –-tx-usecs=0 –-rx-usecs=3 –-adaptive-rx=false -n vmnicX
+    esxcli network nic coalesce set --tx-usecs=0 --rx-usecs=3 --adaptive-rx=false -n vmnicX
 
 Verify the tunings:
 
@@ -1332,7 +1332,7 @@ On ConnectX-4 or newer NICs, increase the size of the ring buffer, enable
 adaptive-rx, and disable transmit coalescing:
 
     esxcli network nic ring current set -r 4096 -n vmnicX
-    esxcli network nic coalesce set ---tx-usecs=0 ---adaptive-rx=true -n vmnicX
+    esxcli network nic coalesce set --tx-usecs=0 --adaptive-rx=true -n vmnicX
 
 ---
 
