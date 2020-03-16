@@ -1,0 +1,70 @@
+entries:
+- title: sidebar
+  folders:
+    - title: Volume Management
+      output: web, pdf
+      url: '#blockbridge-volume-management'
+      folderitems:
+      - title: Introduction
+        output: web, pdf
+        url: '#introduction'
+
+    - title: BEHAVIOR
+      output: web, pdf
+      url: '#behavior'
+      folderitems:
+      - title: Volume Types
+        output: web, pdf
+        url: '#volume-types'
+      - title: '- RAID1'
+        output: web, pdf
+        url: '#raid1'
+      - title: '- RAID10'
+        output: web, pdf
+        url: '#raid10'
+      - title: Automated Repairs and Timers
+        output: web, pdf
+        url: '#automated-repairs-and-timers'
+      - title: Repair Optimizations
+        output: web, pdf
+        url: '#repair-optimizations'
+
+    - title: ADMINISTRATION
+      output: web, pdf
+      url: '#administration'
+      folderitems:
+      - title: List Volumes
+        output: web, pdf
+        url: '#list-volumes'
+      - title: Create a Volume
+        output: web, pdf
+        url: '#create-a-volume'
+      - title: Create a Volume Selection Criteria
+        output: web, pdf
+        url: '#create-a-volume-selection-criteria'
+      - title: Remove a Volume
+        output: web, pdf
+        url: '#remove-a-volume'
+      - title: Device Replacement
+        output: web, pdf
+        url: '#device-replacement'
+      - title: Manual Consistency Check
+        output: web, pdf
+        url: '#manual-consistency-check'
+      - title: Rebuild Performance Policy
+        output: web, pdf
+        url: '#rebuild-performance-policy'
+      - title: Check Performance Policy
+        output: web, pdf
+        url: '#check-performance-policy'
+
+    - title: TROUBLESHOOTING
+      output: web, pdf
+      url: '#troubleshooting'
+      folderitems:
+      - title: Description of Volume States
+        output: web, pdf
+        url: '#description-of-volume-states'
+      - title: Description of Volume Alerts
+        output: web, pdf
+        url: '#description-of-volume-alerts'
