@@ -102,6 +102,23 @@ defaults:
       search: true
       sidebar: custom_certs
 
+  - scope:
+      path: "howto/volumes"
+      type: "pages"
+    values:
+      layout: "page"
+      comments: false
+      search: true
+      sidebar: volumes
+
+  - scope:
+      path: "manual/volumectl"
+      type: "pages"
+    values:
+      layout: "page"
+      comments: false
+      search: true
+
 plugins:
   - jekyll-redirect-from
 

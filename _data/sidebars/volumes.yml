@@ -1,0 +1,72 @@
+entries:
+- title: sidebar
+  folders:
+    - title: VOLUME MANAGEMENT
+      output: web, pdf
+      url: '#volume-management'
+      folderitems:
+      - title: Introduction
+        output: web, pdf
+        url: '#introduction'
+
+    - title: BEHAVIOR
+      output: web, pdf
+      url: '#behavior'
+      folderitems:
+      - title: Disk Selection
+        output: web, pdf
+        url: '#disk-selection'
+      - title: Volume Types
+        output: web, pdf
+        url: '#volume-types'
+      - title: Repair Optimizations
+        output: web, pdf
+        url: '#repair-optimizations'
+      - title: Autonomous Repair
+        output: web, pdf
+        url: '#autonomous-repair'
+
+    - title: ADMINISTRATION
+      output: web, pdf
+      url: '#administration'
+      folderitems:
+      - title: List Volumes
+        output: web, pdf
+        url: '#list-volumes'
+      - title: Create a Volume
+        output: web, pdf
+        url: '#create-a-volume'
+      - title: Remove a Volume
+        output: web, pdf
+        url: '#remove-a-volume'
+      - title: Manual Consistency Check
+        output: web, pdf
+        url: '#manual-consistency-check'
+      - title: Consistency Check Performance Policy
+        output: web, pdf
+        url: '#consistent-check-performance-policy'
+      - title: Rebuild Performance Policy
+        output: web, pdf
+        url: '#rebuild-performance-policy'
+      - title: Spare Management
+        output: web, pdf
+        url: '#spare-disk-management'
+
+    - title: TROUBLESHOOTING
+      output: web, pdf
+      url: '#troubleshooting'
+      folderitems:
+      - title: Description of Volume States
+        output: web, pdf
+        url: '#description-of-volume-states'
+      - title: Description of Volume Alerts
+        output: web, pdf
+        url: '#description-of-volume-alerts'
+
+    - title: SEE ALSO
+      output: web, pdf
+      url: '#see-also'
+      folderitems:
+      - title: 'Manual: volumectl'
+        output: web, pdf
+        url: '#manual-volumectl'
