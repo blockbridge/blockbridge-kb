@@ -1,7 +1,7 @@
 entries:
 - title: sidebar
   folders:
-    - title: Volume Management
+    - title: VOLUME MANAGEMENT
       output: web, pdf
       url: '#blockbridge-volume-management'
       folderitems:
@@ -16,12 +16,6 @@ entries:
       - title: Volume Types
         output: web, pdf
         url: '#volume-types'
-      - title: '- RAID1'
-        output: web, pdf
-        url: '#raid1'
-      - title: '- RAID10'
-        output: web, pdf
-        url: '#raid10'
       - title: Automated Repairs and Timers
         output: web, pdf
         url: '#automated-repairs-and-timers'
@@ -45,9 +39,9 @@ entries:
       - title: Remove a Volume
         output: web, pdf
         url: '#remove-a-volume'
-      - title: Device Replacement
+      - title: Disk Replacement
         output: web, pdf
-        url: '#device-replacement'
+        url: '#disk-replacement'
       - title: Manual Consistency Check
         output: web, pdf
         url: '#manual-consistency-check'
@@ -68,3 +62,7 @@ entries:
       - title: Description of Volume Alerts
         output: web, pdf
         url: '#description-of-volume-alerts'
+
+    - title: SEE ALSO
+      output: web, pdf
+      url: '#see-also'
