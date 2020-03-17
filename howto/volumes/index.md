@@ -60,7 +60,7 @@ Full resynchronization is an expensive operation. Volume Manager does everything
 
 Once optimized or full recovery has been performed for the volume, the volume is no longer degraded and data is fully protected.
 
-**NOTE**: disks are chosen for replacement use the full set of attribute provisioning requirements specified in the volume configuration.
+**NOTE**: disks chosen for replacement use the full set of attribute provisioning requirements specified in the volume configuration.
 
 ## Repair Optimizations
 
