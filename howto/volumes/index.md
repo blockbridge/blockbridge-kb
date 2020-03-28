@@ -9,200 +9,377 @@ toc: false
 
 ## Introduction
 
-Blockbridge Volume Manager builds, monitors, and repairs volumes autonomously using pre-configured heuristics. A volume consists of local or remote disks, assembled using properties such as failure domain, media type, fabric, and slot. The attribute provisioning requirements are used to choose disks for the volume when building and repairing. Specific data protection requirements are enforced. On failure of a disk in a volume, Volume Manager performs a query to find a suitable replacement using the defined replacement attributes for the volume. Once a replacement is found, the volume is repaired and brought back to a healthy state.
 
-Volume Manager guarantees that volumes are assembled and repaired using only valid disks for each volume. Specific restrictions and protections are in place that ensure out of date disks previously in the volume are rejected and not used again, both for assembly and repair of the volume. Disks selected to repair a volume are appropriately initialized and data is synchronized.
+The **Blockbridge Volume Manager** implements device-level redundancy for data
+protection and resiliency in the event of component failure. The Volume Manager
+assembles, monitors, and repairs volumes autonomously using pre-defined system
+policies and optional user-specified policies.
 
-Volumes are managed by the **volumectl** command. In a cluster, the **volumectl** command must be executed on the active cluster member with services running.
+Use the **volumectl** command for administration.
+```
+   # volumectl --help
+   Usage:
+       volumectl [OPTIONS] [SUBCOMMAND] [ARG] ...
 
-Blockbridge Volume Manager operates through interaction with Blockbridge Disk Services. The set of disks available to Volume Manager, their properties, failure domain, and enclosure are all defined and managed by Disk Services. It is important to have an understanding of Disk Services and the specific properties associated with disks available to the system to build and manage volumes.
+   Parameters:
+       [SUBCOMMAND]                  subcommand (default: "list")
+       [ARG] ...                     subcommand arguments
+
+   Subcommands:
+       create                        create a new volume
+       start                         start a volume
+       stop                          stop a volume
+       remove, rm, delete            delete a volume
+       info                          retrieve information about a volume
+       list, ls                      retrieve information about all volumes
+       update                        update parameters of a heal volume
+       shutdown_all                  gracefully shutdown all volumes
+       disk_fail                     fail disk in volume
+       check                         consistency check settings/status
+       rebuild                       consistency rebuild settings
+       repair                        volume repair
+       config                        configuration settings
+
+   Options:
+       -h, --help                    print help
+```
+
+{% include tip.html content="In a highly availability cluster, the
+**volumectl** command must be executed on the active cluster member." %}
 
 # Behavior
 
+## Device Selection ##
+
+A **Volume** consists of devices distributed across failure domains such that the
+failure of any component in the system affects at most a single disk in a
+volume. The Volume Manager enforces data distribution policies based on
+hardware capabilities and configuration:
+
+* Systems that consist of **single-port SATA or single-port NVMe devices**
+  connected by high-speed ethernet have enclosure-scoped failure
+  domains. Devices within a single volume must be distributed across
+  independent enclosures.
+
+* Systems that leverage **dual-port SAS or dual-port NVMe devices** and that
+  implement path-level redundancy to devices within an enclosure have
+  device-scoped failure domains. Disks within a single volume may optionally
+  reside in the same enclosure.
+
 ## Volume Types
 
-The vast majority of volumes are created as RAID1 mirrors, typically with two disks. For more advanced use cases a RAID10 volume is supported with a minimum of 3 disks. All disks in a given volume must have identical capacity.
+### Mirrored Volumes
 
-### RAID1
-
-Volume Manager RAID1 volumes are the recommended volume type for most installations. For ethernet-attached installations, Volume Manager automatically enforces a rule to select one disk from each failure domain (host). This ensures any single host failure allows the volume to continue operation, and the data to remain available in a degraded state. Any loss of a disk due to an offline host or a disk failure must be resolved as soon as possible. If multiple disks in a volume are lost permanently, data loss occurs.
-
-Once initialized, each disk in a RAID1 array contains the same data. Changes are written to all disks in parallel. Data is read from any one disk. The volume attempts to distribute read requests across all disks to maximize performance.
-
-### RAID10
-
-For some advanced use-cases, Volume Manager RAID10 are supported. RAID10 volumes operate in what is known as a RAID-1E configuration. This requires a minimum of 3 disks per volume, and only an odd number of disks are supported in a volume (3, 5, 7, etc.). However, the vast majority of RAID10 volume configurations contain 3 disks. For direct-attached SANs, it may be desired to have more than 3 disks in a volume, but this is rare. For 3 disk RAID-1E volumes, a loss of one single disk enables continued operation of the volume and availability of the data in a degraded state. The volume should be repaired as soon as possible. Any multiple disk failure (due to offline host or disk failure) will result in data being unavailable, and any permanent failure will result in data loss.
-
-Volumes of this type assemble in a "near-2" RAID-1E layout. This means each data chunk is mirrored on the next disk in volume, and 2 copies of each chunk are written. For a typical 3 disks RAID-1E, the layout of data on-disk looks like this:
+A **Mirrored Volume** (i.e., RAID1) synchronously replicates data uniformly
+across devices. The contents of the devices are identical. The following table
+illustrates the distribution of data for a volume with 3 disks:
 
 | Offset | Disk1 | Disk2 | Disk3 |
-| ------ | ----- | ----- | ----- |
+|:------:|:-----:|:-----:|:-----:|
+| 0 | A1 | A1 | A1 |
+| 1 | B1 | B1 | B1 |
+| 2 | C1 | C1 | C1 |
+| 3 | D1 | D1 | D1
+
+Writes execute in parallel and are acknowledged after completion on all
+devices. Read requests are actively balanced across disks to distribute the
+load. Permanent data loss occurs after the failure of all devices in a
+volume. The use of devices with volatile write caches in unsupported and may
+result in data loss in the event of unexpected power loss.
+
+### Striped Mirrored Volumes
+
+A **Striped Mirrored Volume** (i.e., RAID1E) synchronously replicates chunks of
+data across devices. Mirrored chunks of data are uniformly distributed across
+devices.  An odd number of devices greater than or equal to 3 disks per volume
+is required. The specific data layout for striped mirror volumes is
+"near-2". The following table illustrates the distribution of data for a volume
+with 3 disks:
+
+| Offset | Disk1 | Disk2 | Disk3 |
+|:------:|:-----:|:-----:|:-----:|
 | 0 | A1 | A1 | B1 |
 | 1 | B1 | C1 | C1 |
 | 2 | A2 | A2 | B2 |
 | 3 | B2 | C2 | C2
 
-Changes are written to each of the two disks mirroring the chunk in parallel. Reads for a particular chunk are spread across the two disks to maximize performance.
-
-Any loss of one disk leaves one mirrored copy of each data chunk on the remaining set of disks. However, a loss of 2 disks causes data to be unavailable and the volume to no longer be viable. If a lost disk comes back (due to host coming back online, or disk functioning again), the volume is repaired.
-
-## Automated Repairs and Timers
-
-In the event of a disk failure, the disk is kicked out of the volume and the volume is degraded. Disk failures can be caused by offline enclosures, offline remote hosts, or actual disk media failures.
-
-Volume Manager attempts to recover the volume from previous member disks before giving up and choosing a new disk replacement. Repair timers ensure a time for previous member disks to come back online and be available for optimized recovery.
-
-*TimeToRepair*: the time to repair timer defaults to 5 minutes. Within these 5 minutes, if a previous member disk that was kicked out of the array comes back online, it is re-added to the volume. Re-add is only possible if the disk's data is still intact. An optimized recovery is performed for the volume.
-
-*TimeToReplace*: once time to repair expires, Volume Manager actively searches for a new replacement disk. If a new replacement disk is available for replacement, a 1-minute timer starts. This 1-minute window is an additional grace period to allow previous member disks from the volume to come back online. After the 1-minute expires, **ALL** previous existing member disks are invalidated and optimized recovery is no longer possible. The new disk is chosen as a replacement, and a full volume resynchronization occurs.
-
-Full resynchronization is an expensive operation. Volume Manager does everything it can to recover from previous member disks before choosing new replacements. However, a disk media failure cannot be avoided in all cases, and disk replacement must be performed to ensure the integrity of the volume data.
-
-Once optimized or full recovery has been performed for the volume, the volume is no longer degraded and data is fully protected.
-
-**NOTE**: disks chosen for replacement use the full set of attribute provisioning requirements specified in the volume configuration.
+Writes execute in parallel and are acknowledged after completion on all devices
+where a chunk resides. Read requests are actively balanced across disks to
+distribute the load. Permanent data loss occurs after the failure of N-1 of the
+devices, where N is the number of mirrors. The use of devices with volatile
+write caches in unsupported and may result in data loss in the event of
+unexpected power loss.
 
 ## Repair Optimizations
 
-All volumes support optimized repair capabilities. In the case of power outage, reboot, host failure, or repair with a disk previously a member of the volume, volume recovery is performed in an optimized way. With optimized repair, only data that was written recently is required to be synchronized in the volume. This allows for a much-reduced recovery time. Without optimized recovery, the volume would not know which data had been written recently and would be required to resynchronize the entire volume. With multi-terabyte volumes, this resynchronization process is quite lengthy. During the resynchronization process volume data protections are degraded (data not fully mirrored across member disks), so it is important to complete the resynchronization as quickly as possible. The builtin optimized repair capabilities provide this critical function.
+Volumes are configured for optimized repair and difference based
+synchronization by default, to minimize recovery time and maximize resiliency
+and availability. The system actively tracks data regions that require
+synchronization in the event of unexpected power outages, reboot, and
+failover. The Volume Manager automatically coordinates optimized repair without
+additional configuration or management.
 
-No additional configuration is necessary, optimized recovery is automatically enabled for all volumes.
+## Autonomous Repair
+
+Volumes provide continued operation in the event of device
+failure. Causes of device failure may include power loss, controller
+malfunction, network failure, enclosure failure, and defective media.
+
+Many failure scenarios are transient and recoverable. The Volume
+Manager uses timer-based heuristics to minimize the duration of
+degraded redundancy.  The Volume Manager prefers to synchronize
+differences between devices over executing full device synchronization
+
+If a permanent device failure occurs, the Volume Manager automatically
+repairs volumes based on the availability of eligible replacement
+devices (i.e., spares). Replacement device eligibility may be
+constrained by per-volume policy, if specified.
+
+The following controls determine the precise timing of recovery
+actions taken by the Volume Manager:
+
+* **TimeToRepair** is the duration of time that the Volume Manager waits
+before searching for a replacement device. If the cause of device
+failure resolves within *TimeToRepair* and the device data appears
+intact, it may be re-added to the volume for optimized recovery. The
+default value of *TimeToRepair* is 5 minutes.
+
+* Upon the expiration of *TimeToRepair*, the volume manager begins
+searching for a replacement device. When a replacement device becomes
+available, the Volume Manager waits **TimeToReplace** before
+initiating replacement. If the cause of device failure resolves within
+*TimeToReplace* and the device data appears intact, it may be re-added
+to the volume for optimized recovery. Otherwise, the device is
+invalidated, and replacement occurs immediately along with full device
+synchronization.
+
+{% include tip.html content="*TimeToReplace* allows for optimized recovery from
+infrastructure failures that uniformly affect the accessibility volume members
+and available replacements." %}
 
 # Administration
 
 ## List Volumes
 
-The **volumectl** command-line utility is used to manage volumes.
-
-Display the currently configured volumes:
+### Display the currently configured volumes
 
     volumectl ls
 
-Display detailed status information about an individual volume or all volumes:
-
-    volumectl info
+### Display detailed information for a single volume
 
     volumectl info <volume>
 
-    volumectl info vol.0
+### Display detailed information for all volumes
+
+    volumectl info
 
 ## Create a Volume
 
-In it's most essential form, a volume **NAME** and **RAID** type are required, along with the number of disks in the volume.
+Blockbridge configuration specifies default device selection rules
+that match the availability requirements of the underlying storage
+architecture. In some cases, a more sophisticated provisioning
+workflow is required for:
 
-Create a volume named *vol.0* in a *RAID1* mirror with *2* disks:
+* device segregation in multi-complex dataplanes
+* increased data redundancy
+* bandwidth aggregation for journal devices
+* placement constraints for disaggregated infrastructures
 
-    volumectl create --name vol.0 --raid 1.2
+### Create a volume using system defaults
 
-The **NAME** parameter specified must be unique for each volume.
+The default volume is a 2 disk mirror. Disks are automatically
+selected from independent failure domains or a single failure domain
+that is internally resilient.
 
-The **RAID** parameter is specified as *<raid-level>*.*<number-of-disks>*
+    volumectl create --name <volume>
 
-No attribute provisioning arguments are specified in the default query.
+    volumectl create --name my.vol
 
-For direct-attached storage configurations, two disks are selected from the locally available disks with an identical capacity. The disks in the lowest numbered slots in the enclosure (if available) are preferred.
+{% include warning.html content="It is not possible to rename a volume
+after creation. Consider future requirements for re-organization when
+choosing a naming scheme." %}
 
-For ethernet-attached storage configurations, one disk from each failure domain is selected with an identical capacity. The disks in the lowest numbered slots in the enclosure (if available) are preferred.
+### Create a volume specifying device selection constraints
 
-**NOTE**: the most common volume type is a "raid 1.2"
+    # Command argument syntax
+    volumectl create --name <volume> --select <query>
 
-## Create a Volume Selection Criteria
+    # Example using a device slot select constaint
+    volumectl create --name my.vol --select slot=0-10
 
-Disk attributes and tags provided by Blockbridge Disk Services allows a volume to be constructed from specific subsets of the disks available. This allows for disks of a particular slot range, type, model, capacity, bus-type, enclosure, etc. to be selected. Attributes may be "selected" to choose disks matching the selection, or "rejected" to reject disks matching the selection.
+    # Example using a device model number select constaint
+    volumectl create --name my.vol --select model=9300_MTFDHAL7T6TDP
 
-Create a volume named *vol.1* in a *RAID1* mirror with *2* disks, choosing disks of matching capacity from slots 0-11 only:
+    # Example using a device bus reject constaint
+    volumectl create --name my.vol --reject bus=sata
 
-    volumectl create --name vol.1 --raid 1.2 --select slot=0-11
+    # Example using multiple constraints
+    volumectl create --name my.vol --select bus=nvme --reject slot=0
 
-Create a volume named *vol.2* in a *RAID1* mirror with *2* disks, choosing disks of matching capacity with model *9300_MTFDHAL7T6TDP* only:
+{% include warning.html content="Selection criteria constraints affect
+the eligible devices for both creation and replacement. The constraint
+can be modified at any time." %}
 
-    volumectl create --name vol.2 --raid 1.2 --select model=9300_MTFDHAL7T6TDP
+{% include tip.html content=" The disk service discovers and catalogs
+the attributes that are available for use in selection
+constraints. Use the `diskctl` command to manage custom attributes and
+rules for applying custom attributes." %}
+
+### Create a volume with a custom data protection mode
+
+    # Command argument syntax
+    volumectl create --name <volume> --raid <level>.<disks>
+
+    # Example specifying a 3 disk mirror
+    volumectl create --name my.vol --raid 1.3
+
+    # Example specifying a 3 disk striped mirror
+    volumectl create --name my.vol --raid 10.3
 
 ## Remove a Volume
 
-Remove a volume named *vol.3* that is no longer needed.
+{% include warning.html content="A volume cannot be removed if it is
+in use. Destage the volume from the corresponding datastore before
+removal." %}
 
-    volumectl rm vol.3
+    # Command argument syntax
+    volumectl rm <volume>...
 
-**NOTE**: To remove a volume it must no longer be in-use. If it is used in a datastore, it must first be destaged and removed from the datastore.
+    # Example specifying a single volume
+    volumectl rm my.vol
 
-## Disk Replacement
-
-Blockbridge Volume Manager works to ensure volumes are healthy and data is replicated according to policy at all times. Inevitably, when a disk failure occurs, Volume Manager monitors the health of the volume, removes the failed disk, and repairs the volume by choosing a suitable replacement. Volume Manager does everything possible to prefer replacement with a valid disk that was a previous member of the volume. This allows for an optimized data recovery procedure, in the case of offline disks coming back and temporary network failures. However, after a timeout period, data integrity of the volume must be maintained, and a new replacement disk must be selected.
-
-Volume Manager searches for a new replacement disk using the selection criteria configured for the volume. A disk is selected that matches the capacity of other disks in the volume. Failure domain policies, selection criteria, and reject criteria are used to determine the subset of valid replacement disks to choose from. A matching disk is chosen and added to the volume. Volume recovery is performed to synchronize data to the new member disk.
-
-If no valid replacement disk is available, Volume Manager continues to search for one until one is found.
-
-In the case of disk media failure, it is recommended to remove the failed media from its slot as soon as possible, and replace it with a new disk of equal capacity in the same slot. Volume Manager will recognize the new disk, and choose it as a replacement to recover the volume.
+    # Example specifying multiple volumes
+    volumectl rm my.vol.0 my.vol.1
 
 ## Manual Consistency Check
 
-Volumes are checked for data integrity periodically according to the check schedule. By default, a volume check is performed every 30 days, during off-hours. However, it is sometimes desired to run a manual check. You may want to run a manual check soon after volume create to ensure the volume was initialized properly, or after a disk was added and volume was repaired. While these manual checks are not necessary, they can bring peace of mind and provide an early extra check on the data integrity of the volume. Particularly, if a volume was created with "assume clean" and disks were zeroed out of band, a manual check ensures that the out of band process was performed by an administrator correctly. This out of band volume initialization is useful to skip a lengthy volume resynchronization during volume create, when disk-level secure erase operations ensure data is zeroed.
+Volumes are automatically checked for data consistency and media
+defects according to the check schedule. You may optionally run a
+manual check for an immediate assurance that a volume was correctly
+initialized or repaired.
 
-View the automatic check schedule:
+{% include tip.html content="If you create a volume with
+`--assume-clean`, we recommend that you run a manual check before the
+volume enters production to ensure that devices are consistent." %}
 
-    volumectl check schedule
-
-To perform a manual check on *vol.0*, use the **volumectl** command to start:
-
-    volumectl check start vol.0
-
-Check progress for the volume is shown in the volume listing:
+### View progress on active consistency checks
 
     volumectl ls
 
-## Spare Disk Management
-
-In any storage system, disk media failure is inevitable. To prepare for disk media failure, and ensure no loss of data protection, configure spare disks in the available enclosures. A spare disk is one that is currently unused in any volume, but matches the disk selection criteria for a volume, and is suitable for immediate replacement. A spare disk allows for Volume Manager to repair and recover a volume due to disk media failure, and allows an administrator to replace the failed media urgently, but not as a critical emergency.
-
-It is recommended that one spare disk be available for every volume configured. This 1-1 ratio of spare disk to volume ensures protection against disk media failure but gives an administrator time to perform disk replacement in the enclosure. However, as the ideal ratio may not always be possible depending on the number of volumes configured and the number of slots available in the enclosure, a plan to have at least one shared spare available across the volumes should be considered. With no spares, any single disk failure requires an immediate disk replacement action to ensure data protection is not degraded.
-
-## Rebuild Performance Policy
-
-The Rebuild Performance Policy dictates per-volume bandwidth limits and the number of volumes simultaneously allowed to perform data repair and recovery operations. These limits apply to new volumes that are performing synchronization after create, and to volumes that are performing recovery to replacement disks. It is recommended to set the rebuild concurrency to the number of volumes configured, and the per-volume bandwidth limit to one about 25% of the disk bandwidth capabilities. For a typical volume composed of NVMe disk media, setting per-volume bandwidth to 1GiB is acceptable.
-
-Show the current limits:
-
-    volumectl rebuild show
-
-Set per-volume rebuild bandwidth limit:
-
-    volumectl rebuild --bw-limit 1GiB
-
-Set rebuild volume concurrency:
-
-    volumectl rebuild --volcount 5
-
-## Check Performance Policy
-
-The Check Performance Policy sets the per-volume bandwidth and volume concurrency for data consistency check operations. These limits apply to both automatic scheduled check operations and manual consistency check operations. The policy also dictates the number of days between automatic scheduled checks.
-
-It is recommended that each volume is checked for data consistency at least once every 30 days. The default bandwidth of 50MiB per-volume and a volume check concurrency of 2 should be sufficient. View the workload estimate to ensure that the bandwidth and volume concurrency settings complete all volume checks within the desired interval.
-
-View or modify the check schedule. **NOTE** times shown are in system local time.
+### View the consistency check schedule
 
     volumectl check schedule
 
-Set per-volume check bandwidth limit:
+### Start a manual consistency check
+
+    volumectl check start vol.0
+
+### Interaction with Automated Checking
+
+Does a successful manual check count as a successful automatic check
+from a scheduling perspective?
+* Yes.
+
+What happens if a manual check is requested while an automatic check
+is running?
+
+* If the request for a manual check specifies a volume that is
+  currently running an automated check, the automated check continues.
+* If the request for a manual check specifies a volume that is
+  currently idle, the manual check will supersede a currently running
+  check.
+
+## Consistency Check Performance Policy
+
+The Consistency Check Performance Policy defines the per-volume
+bandwidth, concurrency constraints, and frequency of consistency check
+operations. The performance aspects of the policy apply to both
+scheduled and manual check operations.
+
+We recommend that each volume is checked for consistency at least once
+every 30 days. Use the workload estimate to ensure that the bandwidth
+and volume concurrency settings are sufficient to ensure that all
+volumes are checked with appropriate frequency.
+
+{% include tip.html content="The times shown in the check scheduler
+are in system local time." %}
+
+### View the check schedule
+
+    volumectl check schedule
+
+### Set the per-volume check bandwidth limit
 
     volumectl check --bw-limit 50MiB
 
-Set check volume concurrency:
+### Set the check volume concurrency
 
-    volumectl rebuild --volcount 2
+    volumectl check --volcount 2
 
-Set the desired interval (days) between volume checks:
+### Set the desired interval (days) between volume checks
 
-    volumectl rebuild --interval 30
+    volumectl check --interval 30
 
-Ensure workload estimate falls within the desired interval:
+### Validate the workload estimate complies with desired interval
 
     volumectl check show
 
     == Workload
     Total capacity        839.167GiB
     Estimated runtime     1 day
+
+## Rebuild Performance Policy
+
+
+The Rebuild Performance Policy specifies the per-volume bandwidth
+limits and concurrency of recovery, repair, and synchronization
+operations.
+
+We recommend that you set rebuild concurrency and per-volume bandwidth
+based on the speed of your backend interconnect and the sequential
+write bandwidth capabilities of your devices. Per-device bandwidth
+should not exceed 50% of the maximum sequential write bandwidth of a
+device. Aggregate bandwidth should not exceed 50% of the backend
+interconnect bandwidth. The following table provides general a general
+recommendation:
+
+| Device Type | Per-Device BW | Concurrency | Total Rebuild BW
+|:------:|:-----:|:-----:|:-----:|:-----:|
+| NVMe | 800 | 4 | 3200
+| SAS  | 400 | 4 | 1600
+| SATA | 200 | 4 | 800
+
+### Show the current rebuild performance policy
+    volumectl rebuild show
+
+### Set the per-volume rebuild bandwidth limit
+    volumectl rebuild --bw-limit 1GiB
+
+### Set the rebuild volume concurrency
+    volumectl rebuild --volcount 5
+
+## Spare Disk Management
+
+The Volume Manager works to ensure that volumes are online and healthy
+at all times. When a permanent device failure occurs, the Volume
+Manager attempts to repair the volume using an available replacement
+device (i.e., spare).
+
+The Volume Manager searches for a replacement disk using the selection
+criteria set in volume configuration. It is essential to know that the
+selection criteria affect the eligibility of replacement devices.
+
+**Successful automatic replacement occurs when:**
+* A volume must is `degraded`, but `online`.
+* An unused device is available that matches the volume's device selection criteria.
+* The unused device has the exact capacity of the failed device.
+
+If a replacement device is unavailable, the Volume Manager asserts the
+`VolumeUnableToRepair` alert and continues to search indefinitely.
+
+{% include tip.html content="We recommend that you deploy a single
+unused device per enclosure. If you have mixed capacity devices, you
+should configure a spare for each capacity." %}
 
 # Troubleshooting
 

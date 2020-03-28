@@ -13,15 +13,18 @@ entries:
       output: web, pdf
       url: '#behavior'
       folderitems:
+      - title: Device Selection
+        output: web, pdf
+        url: '#device-selection'
       - title: Volume Types
         output: web, pdf
         url: '#volume-types'
-      - title: Automated Repairs and Timers
-        output: web, pdf
-        url: '#automated-repairs-and-timers'
       - title: Repair Optimizations
         output: web, pdf
         url: '#repair-optimizations'
+      - title: Autonomous Repair
+        output: web, pdf
+        url: '#autonomous-repair'
 
     - title: ADMINISTRATION
       output: web, pdf
@@ -33,24 +36,21 @@ entries:
       - title: Create a Volume
         output: web, pdf
         url: '#create-a-volume'
-      - title: Create a Volume Selection Criteria
-        output: web, pdf
-        url: '#create-a-volume-selection-criteria'
       - title: Remove a Volume
         output: web, pdf
         url: '#remove-a-volume'
-      - title: Disk Replacement
-        output: web, pdf
-        url: '#disk-replacement'
       - title: Manual Consistency Check
         output: web, pdf
         url: '#manual-consistency-check'
+      - title: Consistency Check Performance Policy
+        output: web, pdf
+        url: '#consistent-check-performance-policy'
       - title: Rebuild Performance Policy
         output: web, pdf
         url: '#rebuild-performance-policy'
-      - title: Check Performance Policy
+      - title: Spare Management
         output: web, pdf
-        url: '#check-performance-policy'
+        url: '#spare-disk-management'
 
     - title: TROUBLESHOOTING
       output: web, pdf
