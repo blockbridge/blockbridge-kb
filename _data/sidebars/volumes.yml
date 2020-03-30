@@ -3,7 +3,7 @@ entries:
   folders:
     - title: VOLUME MANAGEMENT
       output: web, pdf
-      url: '#blockbridge-volume-management'
+      url: '#volume-management'
       folderitems:
       - title: Introduction
         output: web, pdf
@@ -66,3 +66,7 @@ entries:
     - title: SEE ALSO
       output: web, pdf
       url: '#see-also'
+      folderitems:
+      - title: 'Manual: volumectl'
+        output: web, pdf
+        url: '#manual-volumectl'
