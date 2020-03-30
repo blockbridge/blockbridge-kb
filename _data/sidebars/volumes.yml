@@ -13,9 +13,9 @@ entries:
       output: web, pdf
       url: '#behavior'
       folderitems:
-      - title: Device Selection
+      - title: Disk Selection
         output: web, pdf
-        url: '#device-selection'
+        url: '#disk-selection'
       - title: Volume Types
         output: web, pdf
         url: '#volume-types'

@@ -9,7 +9,7 @@ toc: false
 
 ## Introduction
 
-The **Blockbridge Volume Manager** implements device-level redundancy for data
+The **Blockbridge Volume Manager** implements disk-level redundancy for data
 protection and resiliency in the event of component failure. The Volume Manager
 assembles, monitors, and repairs volumes autonomously using pre-defined system
 policies and optional user-specified policies.
@@ -48,21 +48,21 @@ Use the **volumectl** command for administration.
 
 # Behavior
 
-## Device Selection ##
+## Disk Selection ##
 
-A **Volume** consists of devices distributed across failure domains such that the
+A **Volume** consists of disks distributed across failure domains such that the
 failure of any component in the system affects at most a single disk in a
 volume. The Volume Manager enforces data distribution policies based on
 hardware capabilities and configuration:
 
-* Systems that consist of **single-port SATA or single-port NVMe devices**
+* Systems that consist of **single-port SATA or single-port NVMe disks**
   connected by high-speed ethernet have enclosure-scoped failure
-  domains. Devices within a single volume must be distributed across
+  domains. Disks within a single volume must be distributed across
   independent enclosures.
 
-* Systems that leverage **dual-port SAS or dual-port NVMe devices** and that
-  implement path-level redundancy to devices within an enclosure have
-  device-scoped failure domains. Disks within a single volume may optionally
+* Systems that leverage **dual-port SAS or dual-port NVMe disks** and that
+  implement path-level redundancy to disks within an enclosure have
+  disk-scoped failure domains. Disks within a single volume may optionally
   reside in the same enclosure.
 
 ## Volume Types
@@ -70,7 +70,7 @@ hardware capabilities and configuration:
 ### Mirrored Volumes
 
 A **Mirrored Volume** (i.e., RAID1) synchronously replicates data uniformly
-across devices. The contents of the devices are identical. The following table
+across disks. The contents of the disks are identical. The following table
 illustrates the distribution of data for a volume with 3 disks:
 
 | Offset | Disk1 | Disk2 | Disk3 |
@@ -81,16 +81,16 @@ illustrates the distribution of data for a volume with 3 disks:
 | 3 | D1 | D1 | D1
 
 Writes execute in parallel and are acknowledged after completion on all
-devices. Read requests are actively balanced across disks to distribute the
-load. Permanent data loss occurs after the failure of all devices in a
-volume. The use of devices with volatile write caches is unsupported and may
+disks. Read requests are actively balanced across disks to distribute the
+load. Permanent data loss occurs after the failure of all disks in a
+volume. The use of disks with volatile write caches is unsupported and may
 result in data loss in the event of unexpected power loss.
 
 ### Striped Mirrored Volumes
 
 A **Striped Mirrored Volume** (i.e., RAID1E) synchronously replicates chunks of
-data across devices. Mirrored chunks of data are uniformly distributed across
-devices. An odd number of devices greater than or equal to 3 disks per volume
+data across disks. Mirrored chunks of data are uniformly distributed across
+disks. An odd number of disks greater than or equal to 3 disks per volume
 is required. The specific data layout for striped mirrored volumes is
 "near-2". The following table illustrates the distribution of data for a volume
 with 3 disks:
@@ -102,10 +102,10 @@ with 3 disks:
 | 2 | A2 | A2 | B2 |
 | 3 | B2 | C2 | C2
 
-Writes execute in parallel and are acknowledged after completion on all devices
+Writes execute in parallel and are acknowledged after completion on all disks
 where a chunk resides. Read requests are actively balanced across disks to
 distribute the load. Permanent data loss occurs after the failure of N-1 of the
-devices, where N is the number of mirrors. The use of devices with volatile
+disks, where N is the number of mirrors. The use of disks with volatile
 write caches is unsupported and may result in data loss in the event of
 unexpected power loss.
 
@@ -120,36 +120,36 @@ additional configuration or management.
 
 ## Autonomous Repair
 
-Volumes provide continued operation in the event of device
-failure. Causes of device failure may include power loss, controller
+Volumes provide continued operation in the event of disk
+failure. Causes of disk failure may include power loss, controller
 malfunction, network failure, enclosure failure, and defective media.
 
 Many failure scenarios are transient and recoverable. The Volume
 Manager uses timer-based heuristics to minimize the duration of
 degraded redundancy.  The Volume Manager prefers to synchronize
-differences between devices over executing full device synchronization.
+differences between disks over executing full disk synchronization.
 
-If a permanent device failure occurs, the Volume Manager automatically
+If a permanent disk failure occurs, the Volume Manager automatically
 repairs volumes based on the availability of eligible replacement
-devices (i.e., spares). Replacement device eligibility may be
+disks (i.e., spares). Replacement disk eligibility may be
 constrained by per-volume policy, if specified.
 
 The following controls determine the precise timing of recovery
 actions taken by the Volume Manager:
 
 * **TimeToRepair** is the duration of time that the Volume Manager waits
-before searching for a replacement device. If the cause of device
-failure resolves within *TimeToRepair* and the device data appears
+before searching for a replacement disk. If the cause of disk
+failure resolves within *TimeToRepair* and the disk data appears
 intact, it may be re-added to the volume for optimized recovery. The
 default value of *TimeToRepair* is 5 minutes.
 
 * Upon the expiration of *TimeToRepair*, the volume manager begins
-searching for a replacement device. When a replacement device becomes
+searching for a replacement disk. When a replacement disk becomes
 available, the Volume Manager waits **TimeToReplace** before
-initiating replacement. If the cause of device failure resolves within
-*TimeToReplace* and the device data appears intact, it may be re-added
-to the volume for optimized recovery. Otherwise, the device is
-invalidated, and replacement occurs immediately along with full device
+initiating replacement. If the cause of disk failure resolves within
+*TimeToReplace* and the disk data appears intact, it may be re-added
+to the volume for optimized recovery. Otherwise, the disk is
+invalidated, and replacement occurs immediately along with full disk
 synchronization.
 
 {% include tip.html content="*TimeToReplace* allows for optimized recovery from
@@ -253,12 +253,12 @@ and available replacements." %}
 
 ## Create a Volume
 
-Blockbridge configuration specifies default device selection rules
+Blockbridge configuration specifies default disk selection rules
 that match the availability requirements of the underlying storage
 architecture. In some cases, a more sophisticated provisioning
 workflow is required for:
 
-* device segregation in multi-complex dataplanes
+* disk segregation in multi-complex dataplanes
 * increased data redundancy
 * bandwidth aggregation for journal devices
 * placement constraints for disaggregated infrastructures
@@ -302,13 +302,13 @@ that is internally resilient.
 after creation. Consider future requirements for re-organization when
 choosing a naming scheme." %}
 
-### Create a volume specifying device selection constraints
+### Create a volume specifying disk selection constraints
 
 Command argument syntax
 
     volumectl create --name <volume> --select <query>
 
-Example using a device slot select constaint
+Example using a disk slot select constaint
 
     volumectl create --name my.vol --select slot=0-10
 
@@ -338,7 +338,7 @@ Example using a device slot select constaint
     f3047efc-76eb-4d56-96c0-57d6df5066f6  /dev/sdc        949.999GB  9300_MTFDHAL7T6TDP  active in-sync
     4168eda4-81db-4641-8c8e-abd53e067ed5  /dev/nvme2n2    949.999GB  9300_MTFDHAL7T6TDP  active in-sync
 
-Example using a device model number select constaint
+Example using a disk model number select constaint
 
     volumectl create --name my.vol --select model=9300_MTFDHAL7T6TDP
 
@@ -368,7 +368,7 @@ Example using a device model number select constaint
     f3047efc-76eb-4d56-96c0-57d6df5066f6  /dev/sdc        949.999GB  9300_MTFDHAL7T6TDP  active in-sync
     4168eda4-81db-4641-8c8e-abd53e067ed5  /dev/nvme2n2    949.999GB  9300_MTFDHAL7T6TDP  active in-sync
                                            
-Example using a device bus reject constaint
+Example using a disk bus reject constaint
 
     volumectl create --name my.vol --reject bus=sata
 
@@ -430,7 +430,7 @@ Example using multiple constraints
     4168eda4-81db-4641-8c8e-abd53e067ed5  /dev/nvme2n2    949.999GB  9300_MTFDHAL7T6TDP  active in-sync
 
 {% include warning.html content="Selection criteria constraints affect
-the eligible devices for both creation and replacement. The constraint
+the eligible disks for both creation and replacement. The constraint
 can be modified at any time." %}
 
 {% include tip.html content="The disk service discovers and catalogs
@@ -476,7 +476,7 @@ initialized or repaired.
 
 {% include tip.html content="If you create a volume with
 `--assume-clean`, we recommend that you run a manual check before the
-volume enters production to ensure that devices are consistent." %}
+volume enters production to ensure that disks are consistent." %}
 
 ### View progress on active consistency checks
 
@@ -611,13 +611,13 @@ operations.
 
 We recommend that you set rebuild concurrency and per-volume bandwidth
 based on the speed of your backend interconnect and the sequential
-write bandwidth capabilities of your devices. Per-device bandwidth
+write bandwidth capabilities of your disks. Per-disk bandwidth
 should not exceed 50% of the maximum sequential write bandwidth of a
-device. Aggregate bandwidth should not exceed 50% of the backend
+disk. Aggregate bandwidth should not exceed 50% of the backend
 interconnect bandwidth. The following table provides a general
 recommendation:
 
-| Device Type | Per-Device BW | Concurrency | Total Rebuild BW
+| Disk Type | Per-Disk BW | Concurrency | Total Rebuild BW
 |:------:|:-----:|:-----:|:-----:|:-----:|
 | NVMe | 800 | 4 | 3200
 | SAS  | 400 | 4 | 1600
@@ -647,24 +647,24 @@ recommendation:
 ## Spare Disk Management
 
 The Volume Manager works to ensure that volumes are online and healthy
-at all times. When a permanent device failure occurs, the Volume
+at all times. When a permanent disk failure occurs, the Volume
 Manager attempts to repair the volume using an available replacement
-device (i.e., spare).
+disk (i.e., spare).
 
 The Volume Manager searches for a replacement disk using the selection
 criteria set in volume configuration. It is essential to know that the
-selection criteria affect the eligibility of replacement devices.
+selection criteria affect the eligibility of replacement disks.
 
 **Successful automatic replacement occurs when:**
 * A volume must is `degraded`, but `online`.
-* An unused device is available that matches the volume's device selection criteria.
-* The unused device has the exact capacity of the failed device.
+* An unused disk is available that matches the volume's disk selection criteria.
+* The unused disk has the exact capacity of the failed disk.
 
-If a replacement device is unavailable, the Volume Manager asserts the
+If a replacement disk is unavailable, the Volume Manager asserts the
 `VolumeUnableToRepair` alert and continues to search indefinitely.
 
 {% include tip.html content="We recommend that you deploy a single
-unused device per enclosure. If you have mixed capacity devices, you
+unused disk per enclosure. If you have mixed capacity disks, you
 should configure a spare for each capacity." %}
 
 # Troubleshooting
