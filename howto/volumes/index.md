@@ -512,7 +512,7 @@ removal." %}
 
 Command argument syntax
 
-    volumectl rm <volume>...
+    volumectl rm <volume>
 
 Example removing a volume
 
