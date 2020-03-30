@@ -449,9 +449,60 @@ Example specifying a 3 disk mirror
 
     volumectl create --name my.vol --raid 1.3
 
+    == Volume: my.vol
+    uuid                  7a655e62-eeb8-4e7d-92af-5af0ad149c26
+    capacity              884.722GiB
+    created               2020-03-30T19:50:53+00:00
+    modified              2020-03-30T20:14:42+00:00
+    raid level            raid1
+    raid disks            3
+    active disks          3
+    device                /dev/md/my.vol   (md124)
+    container             /dev/md/my.vol:c (md125)
+    state                 online (resyncing, 0%)
+    status                volume is resyncing after creation or unclean shutdown
+    
+    == MD parameters
+    chunk size            N/A
+    
+    == Disk Query Attributes
+    unique                agent_id
+    
+    == Disks in Volume
+    ID                                    Devname         Raw Size   Model               State [1]
+    ------------------------------------  --------------  ---------  ------------------  --------------
+    e9e956f6-506a-4394-a879-04ef16f10923  /dev/sdc        949.999GB  9300_MTFDHAL7T6TDP  active in-sync
+    4168eda4-81db-4641-8c8e-abd53e067ed5  /dev/nvme2n2p1  949.999GB  9300_MTFDHAL7T6TDP  active in-sync
+    e3356e59-e345-423c-aaeb-c26f3142a4d2  /dev/sdf        949.999GB  9300_MTFDHAL7T6TDP  active in-sync
+
 Example specifying a 3 disk striped mirror (i.e., RAID1E)
 
     volumectl create --name my.vol --raid 10.3
+
+    == Volume: my.vol
+    uuid                  507bfdd5-d529-4f14-a5da-03651c746949
+    capacity              1.296TiB
+    created               2020-03-30T20:20:37+00:00
+    modified              2020-03-30T20:20:45+00:00
+    raid level            raid10
+    raid disks            3
+    active disks          3
+    device                /dev/md/my.vol   (md124)
+    container             /dev/md/my.vol:c (md125)
+    state                 online
+    
+    == MD parameters
+    chunk size            128.0KiB
+
+    == Disk Query Attributes
+    unique                agent_id
+    
+    == Disks in Volume
+    ID                                    Devname         Raw Size   Model               State [1]
+    ------------------------------------  --------------  ---------  ------------------  --------------
+    e9e956f6-506a-4394-a879-04ef16f10923  /dev/sdc        949.999GB  9300_MTFDHAL7T6TDP  active in-sync
+    4168eda4-81db-4641-8c8e-abd53e067ed5  /dev/nvme2n2p1  949.999GB  9300_MTFDHAL7T6TDP  active in-sync
+    e3356e59-e345-423c-aaeb-c26f3142a4d2  /dev/sdf        949.999GB  9300_MTFDHAL7T6TDP  active in-sync
 
 ## Remove a Volume
 
