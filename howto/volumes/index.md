@@ -707,11 +707,11 @@ criteria set in volume configuration. It is essential to know that the
 selection criteria affect the eligibility of replacement disks.
 
 **Successful automatic replacement occurs when:**
-* A volume must is `degraded`, but `online`.
+* A volume is `degraded`, but `online`.
 * An unused disk is available that matches the volume's disk selection criteria.
 * The unused disk has the exact capacity of the failed disk.
 
-If a replacement disk is unavailable, the Volume Manager asserts the
+If a replacement disk is unavailable, the Volume Manager raises the
 `VolumeUnableToRepair` alert and continues to search indefinitely.
 
 {% include tip.html content="We recommend that you deploy a single
@@ -729,7 +729,7 @@ should configure a spare for each capacity." %}
 | online (resyncing)  | Volume is online; data is synchronizing after creation, failover, or power failure |
 | online (recovering) | Volume is online; data is synchronizing data to a replacement disk |
 | repairing           | Volume is online but degraded; missing a disk and searching for a replacement |
-| building            | Volume is offline; created and attempting to find disks and initialize disks |
+| building            | Volume is offline; created and attempting to allocate and initialize disks |
 | recover             | Volume is offline; attempting to start an existing volume |
 | stopping            | Volume is stopping due to service move or administrator action |
 | stopped             | Volume is stopped and offline, unavailable |
@@ -741,7 +741,7 @@ should configure a spare for each capacity." %}
 | VolumeProtectionDegraded | Volume is missing a disk or performing data recovery to a replacement disk |
 | VolumeRepairing          | Volume is synchronizing data to a replacement disk |
 | VolumeUnableToRepair     | Volume is missing a disk and unable to find a replacement |
-| VolumeOffline            | Service Outage; volume is unable to start due to double disk failure |
+| VolumeOffline            | Volume is offline and unable to start |
 | VolumeMismatchesFound    | Volume data integrity check found inconsistencies between member disks |
 
 # See Also
