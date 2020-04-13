@@ -43,7 +43,7 @@ Use the **volumectl** command for administration.
        -h, --help                    print help
 ```
 
-{% include tip.html content="In a highly availability cluster, the
+{% include tip.html content="In a highly availabile cluster, the
 **volumectl** command must be executed on the active cluster member." %}
 
 # Behavior
@@ -162,7 +162,7 @@ and available replacements." %}
 
 ### Display the currently configured volumes
 
-    volumectl ls
+    # volumectl ls
 
     Name [1]         State    Capacity   Level  Chunk size  Disks  Device
     ---------------  -------  ---------  -----  ----------  -----  -----------------------
@@ -171,9 +171,9 @@ and available replacements." %}
 
 ### Display detailed information for a single volume
 
-    volumectl info <volume>
+    # volumectl info <volume>
 
-    volumectl info vol.1
+    # volumectl info vol.1
 
     == Volume: vol.1
     uuid                  7e3959f0-00be-4801-854a-6c9eb8d7ccc5
@@ -201,7 +201,7 @@ and available replacements." %}
 
 ### Display detailed information for all volumes
 
-    volumectl info
+    # volumectl info
 
     == Volume: vol.1
     uuid                  7e3959f0-00be-4801-854a-6c9eb8d7ccc5
@@ -269,9 +269,9 @@ The default volume is a 2 disk mirror. Disks are automatically
 selected from independent failure domains or a single failure domain
 that is internally resilient.
 
-    volumectl create --name <volume>
+    # volumectl create --name <volume>
 
-    volumectl create --name my.vol
+    # volumectl create --name my.vol
 
     == Volume: my.vol
     uuid                  ce66ef84-61d4-49c1-b52b-c1332d30be8e
@@ -306,11 +306,11 @@ choosing a naming scheme." %}
 
 Command argument syntax
 
-    volumectl create --name <volume> --select <query>
+    # volumectl create --name <volume> --select <query>
 
 Example using a disk slot select constaint
 
-    volumectl create --name my.vol --select slot=0-10
+    # volumectl create --name my.vol --select slot=0-10
 
     == Volume: my.vol
     uuid                  ce66ef84-61d4-49c1-b52b-c1332d30be8e
@@ -340,7 +340,7 @@ Example using a disk slot select constaint
 
 Example using a disk model number select constaint
 
-    volumectl create --name my.vol --select model=9300_MTFDHAL7T6TDP
+    # volumectl create --name my.vol --select model=9300_MTFDHAL7T6TDP
 
     == Volume: my.vol
     uuid                  ce66ef84-61d4-49c1-b52b-c1332d30be8e
@@ -370,7 +370,7 @@ Example using a disk model number select constaint
                                            
 Example using a disk bus reject constaint
 
-    volumectl create --name my.vol --reject bus=sata
+    # volumectl create --name my.vol --reject bus=sata
 
     == Volume: my.vol
     uuid                  ce66ef84-61d4-49c1-b52b-c1332d30be8e
@@ -400,7 +400,7 @@ Example using a disk bus reject constaint
 
 Example using multiple constraints
 
-    volumectl create --name my.vol --select bus=nvme --select model=9300_MTFDHAL7T6TDP --reject slot=0
+    # volumectl create --name my.vol --select bus=nvme --select model=9300_MTFDHAL7T6TDP --reject slot=0
 
     == Volume: my.vol
     uuid                  ce66ef84-61d4-49c1-b52b-c1332d30be8e
@@ -443,11 +443,11 @@ The **RAID** parameter is specified as *\<raid-level>*.*\<number-of-disks>*
 
 Command argument syntax
 
-    volumectl create --name <volume> --raid <level>.<disks>
+    # volumectl create --name <volume> --raid <level>.<disks>
 
 Example specifying a 3 disk mirror
 
-    volumectl create --name my.vol --raid 1.3
+    # volumectl create --name my.vol --raid 1.3
 
     == Volume: my.vol
     uuid                  7a655e62-eeb8-4e7d-92af-5af0ad149c26
@@ -477,7 +477,7 @@ Example specifying a 3 disk mirror
 
 Example specifying a 3 disk striped mirror (i.e., RAID1E)
 
-    volumectl create --name my.vol --raid 10.3
+    # volumectl create --name my.vol --raid 10.3
 
     == Volume: my.vol
     uuid                  507bfdd5-d529-4f14-a5da-03651c746949
@@ -512,11 +512,11 @@ removal." %}
 
 Command argument syntax
 
-    volumectl rm <volume>
+    # volumectl rm <volume>
 
 Example removing a volume
 
-    volumectl rm my.vol
+    # volumectl rm my.vol
 
 ## Manual Consistency Check
 
@@ -531,7 +531,7 @@ volume enters production to ensure that disks are consistent." %}
 
 ### View progress on active consistency checks
 
-    volumectl ls
+    # volumectl ls
 
     Name [1]         State                   Capacity   Level  Chunk size  Disks  Device
     ---------------  ----------------------  ---------  -----  ----------  -----  -----------------------
@@ -540,9 +540,10 @@ volume enters production to ensure that disks are consistent." %}
 
 ### View the consistency check schedule
 
-    volumectl check schedule
+    # volumectl check schedule
 
-    # healctl check
+    # volumectl check
+
     == History
     Name [1]         Last Checked               When         Mismatches
     ---------------  -------------------------  -----------  ----------
@@ -571,7 +572,7 @@ volume enters production to ensure that disks are consistent." %}
 
 ### Start a manual consistency check
 
-    volumectl check start vol.1
+    # volumectl check start vol.1
 
 ### Interaction with Automated Checking
 
@@ -606,7 +607,7 @@ are in system local time." %}
 
 ### View the check schedule
 
-    volumectl check schedule
+    # volumectl check schedule
 
     == Schedule
     Index  Day of Week  Start  End
@@ -621,7 +622,7 @@ are in system local time." %}
 
 ### Set the per-volume check bandwidth limit
 
-    volumectl check --bw-limit 50MiB
+    # volumectl check --bw-limit 50MiB
 
     == Settings
     Volume bandwidth limit  50.0MiB
@@ -630,7 +631,7 @@ are in system local time." %}
 
 ### Set the check volume concurrency
 
-    volumectl check --volcount 2
+    # volumectl check --volcount 2
 
     == Settings
     Volume bandwidth limit  50.0MiB
@@ -639,7 +640,7 @@ are in system local time." %}
 
 ### Set the desired interval (days) between volume checks
 
-    volumectl check --interval 30
+    # volumectl check --interval 30
 
     == Settings
     Volume bandwidth limit  50.0MiB
@@ -648,7 +649,7 @@ are in system local time." %}
 
 ### Validate the workload estimate complies with desired interval
 
-    volumectl check show
+    # volumectl check show
 
     == Workload
     Total capacity        839.167GiB
@@ -675,21 +676,24 @@ recommendation:
 | SATA | 200 | 4 | 800
 
 ### Show the current rebuild performance policy
-    volumectl rebuild show
+
+    # volumectl rebuild show
 
     == Volume Rebuild Settings
     Volume bandwidth limit  1.0GiB
     Rebuild concurrency     2
 
 ### Set the per-volume rebuild bandwidth limit
-    volumectl rebuild --bw-limit 1GiB
+
+    # volumectl rebuild --bw-limit 1GiB
 
     == Volume Rebuild Settings
     Volume bandwidth limit  1.0GiB
     Rebuild concurrency     2
 
 ### Set the rebuild volume concurrency
-    volumectl rebuild --volcount 5
+
+    # volumectl rebuild --volcount 5
 
     == Volume Rebuild Settings
     Volume bandwidth limit  1.0GiB
