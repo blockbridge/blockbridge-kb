@@ -11,9 +11,9 @@ fetch:
 
 publish: fetch
 	docker build -f Dockerfile.publish -t blockbridge-kb:build .
-	@sudo rm -rf _site
+	@rm -rf _site
 	@mkdir -p _site
-	docker run -u $(shell id -u):$(shell id -g) -i -e SITE=$(SITE) -v $(PWD):/src -v $(PWD)/_site:/site blockbridge-kb:build
+	docker run -u $(shell id -u):$(shell id -g) -i -e SITE=$(SITE) -v $(CURDIR):/src -v $(CURDIR)/_site:/site blockbridge-kb:build
 	@echo site published to _site
 
 commit:
