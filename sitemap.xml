@@ -14,19 +14,37 @@
   
   
   <url>
-    <loc>https://kb.blockbridge.com/release/5.0/index.html</loc>
-  </url>
-  
-  
-  
-  <url>
     <loc>https://kb.blockbridge.com/guide/custom-certs/index.html</loc>
   </url>
   
   
   
   <url>
+    <loc>https://kb.blockbridge.com/howto/volumes/index.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://kb.blockbridge.com/manual/volumectl/index.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://kb.blockbridge.com/release/5.0/index.html</loc>
+  </url>
+  
+  
+  
+  <url>
     <loc>https://kb.blockbridge.com/guide/vmware/index.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://kb.blockbridge.com/guide/squid/index.html</loc>
   </url>
   
   

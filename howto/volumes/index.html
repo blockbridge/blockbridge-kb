@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A detailed howto for Blockbridge Volume Management.">
+<meta name="keywords" content=" volumes volume management">
+<title>Volume Management | Blockbridge Knowledgebase</title>
+<!-- Google Fonts -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto&display=swap">
+
+<link rel="stylesheet" href="/css/syntax.css">
+
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<!--<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">-->
+<link rel="stylesheet" href="/css/modern-business.css">
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<link rel="stylesheet" href="/css/customstyles.css">
+<link rel="stylesheet" href="/css/sidebar.css">
+<link rel="stylesheet" href="/css/boxshadowproperties.css">
+<!-- most color styles are extracted out to here -->
+<link rel="stylesheet" href="/css/theme-blockbridge.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script src="/js/jquery.navgoco.min.js"></script>
+
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Anchor.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/2.0.0/anchor.min.js"></script>
+<script src="/js/toc.js"></script>
+<script src="/js/customscripts.js"></script>
+
+<link rel="shortcut icon" href="/images/bb-favicon.ico" type="image/png">
+
+<script>var clicky_site_ids = clicky_site_ids || []; clicky_site_ids.push(101238799);</script>
+<script async src="//static.getclicky.com/js"></script>
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+
+    <script>
+        $(document).ready(function() {
+          // Initialize navgoco with default options
+          $("#mysidebar").navgoco({
+            caretHtml: '',
+            accordion: false,
+            openClass: 'active', // open
+            save: false, // leave false or nav highlighting doesn't work right
+            cookie: {
+              name: 'navgoco',
+              expires: false,
+              path: '/'
+            },
+            slide: {
+              duration: 400,
+              easing: 'swing'
+            }
+          });
+
+          $("#collapseAll").click(function(e) {
+                e.preventDefault();
+                $("#mysidebar").navgoco('toggle', false);
+            });
+
+            $("#expandAll").click(function(e) {
+                e.preventDefault();
+                $("#mysidebar").navgoco('toggle', true);
+            });
+
+        });
+
+    </script>
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
+    <script>
+        $(document).ready(function() {
+            $("#tg-sb-link").click(function() {
+                $("#tg-sb-sidebar").toggle();
+                $("#tg-sb-content").toggleClass('col-md-9');
+                $("#tg-sb-content").toggleClass('col-md-12');
+                $("#tg-sb-icon").toggleClass('fa-toggle-on');
+                $("#tg-sb-icon").toggleClass('fa-toggle-off');
+            });
+        });
+    </script>
+    
+
+</head>
+<body>
+  <!-- Navigation -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid topnavlinks">
+        <div class="navbar-header">
+            <div class="navbar-brand"><svg class="bb-logo" width="100%" xmlns="http://www.w3.org/2000/svg" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 346 40" enable-background="new 0 0 346 40" space="preserve">
+  <path fill="#FFFFFF" d="M85.328613,31.876953L90.526855,0.72998h12.858887c2.340332,0,4.255859,0.209961,5.745117,0.62793 c1.489746,0.418457,2.739746,1.274414,3.750977,2.566895c1.010742,1.293457,1.515625,2.806641,1.515625,4.541016 c0,1.902344-0.600098,3.518066-1.800781,4.848633c-1.201172,1.331543-2.8125,2.225098-4.833496,2.681152 c3.419922,1.20166,5.129883,3.461426,5.129883,6.777832c0,2.416992-0.817383,4.540039-2.451172,6.365234 s-4.350586,2.738281-8.150391,2.738281H85.328613z M95.493652,24.986328h4.652832c1.444336,0,2.440918-0.304688,2.987793-0.913086 c0.547363-0.608398,0.821777-1.269531,0.821777-1.985352c0-0.881836-0.300781-1.59375-0.902344-2.132812 c-0.601074-0.540039-1.495117-0.810547-2.681641-0.810547h-3.90332L95.493652,24.986328z M97.557129,12.618652h3.563477 c2.847656,0,4.271484-0.943359,4.271484-2.82959c0-1.657715-1.127441-2.487305-3.382324-2.487305h-3.564941L97.557129,12.618652z"/>
+  <path fill="#FFFFFF" d="M129.130859,0.72998l-5.196777,31.146973h-8.76123l5.19873-31.146973H129.130859z"/>
+  <path fill="#FFFFFF" d="M140.753906,32.561523c-3.20752,0-5.901367-0.954102-8.08252-2.864258 c-2.181152-1.908203-3.271484-4.513672-3.271484-7.814453c0-3.970703,1.265137-7.23291,3.79541-9.788574 c2.530762-2.555664,5.726562-3.833496,9.587402-3.833496c3.526367,0,6.32666,1,8.401367,3 c2.075195,2.000977,3.112305,4.469238,3.112305,7.405273c0,4.365234-1.333984,7.772461-4.000977,10.22168 C147.627441,31.336914,144.447266,32.561523,140.753906,32.561523z M141.118652,26.948242 c1.595703,0,2.678711-1.186523,3.248535-3.55957c0.570312-2.373047,0.855469-4.357422,0.855469-5.956055 c0-2.433105-0.882324-3.650879-2.64502-3.650879c-1.56543,0-2.648438,1.213867-3.249023,3.640137 c-0.600586,2.426758-0.900879,4.408203-0.900879,5.943359C138.427734,25.754883,139.324707,26.948242,141.118652,26.948242z"/>
+  <path fill="#FFFFFF" d="M171.578125,22.932617l6.953125,1.710938c-1.246094,2.981445-2.880859,5.046875-4.900879,6.195312 c-2.021973,1.147461-4.111816,1.722656-6.27002,1.722656c-3.176758,0-5.771973-1.008789-7.786133-3.026367 c-2.013672-2.017578-3.020508-4.610352-3.020508-7.776367c0-3.608398,1.188965-6.79834,3.567871-9.570312 c2.378906-2.77002,5.528809-4.156738,9.450195-4.156738c2.842285,0,5.251465,0.855957,7.227051,2.567871 c1.975586,1.710938,2.963867,3.912598,2.963867,6.605469l-7.819824,0.913086c0-2.494629-0.843262-3.742188-2.530273-3.742188 c-1.444336,0-2.470215,1.021484-3.078125,3.063477s-0.912109,3.825195-0.912109,5.349609 c0,2.255859,0.851074,3.383789,2.553711,3.383789C169.647949,26.172852,170.848633,25.092773,171.578125,22.932617z"/>
+  <path fill="#FFFFFF" d="M208.717773,8.836426l-4.012695,3.602051c-2.220703,1.990234-3.77832,3.441895-4.675781,4.353516 l5.541992,15.084961h-8.745117l-3.182617-9.854492l-3.962891,3.580078l-1.051758,6.274414h-8.113281l5.198242-31.146973h8.134766 l-2.888672,17.239746l1.666016-1.666016c0.500977-0.533203,0.926758-0.958984,1.275391-1.279297l6.775391-6.187988H208.717773z"/>
+  <path fill="#FFFFFF" d="M221.697266,0.72998l-1.841797,10.977539c1.200195-1.430664,2.269531-2.374023,3.210938-2.830078 c0.941406-0.456543,1.998047-0.685547,3.167969-0.685547c2.216797,0,3.993164,0.787109,5.330078,2.361816 c1.335938,1.574219,2.004883,3.898438,2.004883,6.970703c0,3.773438-1.056641,7.195312-3.168945,10.268555 c-2.112305,3.072266-5.043945,4.608398-8.796875,4.608398c-3.555664,0-6.032227-1.459961-7.429688-4.380859l-2.579102,3.856445 h-3.994141l5.199219-31.146973H221.697266z M217.824219,23.800781c0,0.851562,0.060547,1.4375,0.182617,1.756836 c0.12207,0.318359,0.387695,0.623047,0.796875,0.912109s0.917969,0.432617,1.524414,0.432617 c0.774414,0,1.438477-0.253906,1.992188-0.764648c0.554688-0.508789,1.085938-1.638672,1.59375-3.387695 c0.508789-1.75,0.763672-3.613281,0.763672-5.59082c0-2.296387-0.802734-3.445312-2.40918-3.445312 c-1.545898,0-2.65918,1.172852-3.34082,3.517578L217.824219,23.800781z"/>
+  <path fill="#FFFFFF" d="M238.8125,8.831055h7.674805l-0.919922,5.55957c1.598633-4.163574,4.042969-6.244141,7.333008-6.244141 c0.258789,0,0.616211,0.037598,1.073242,0.114258l-1.025391,8.214844c-0.791016-0.046875-1.31543-0.069336-1.574219-0.069336 c-1.900391,0-3.294922,0.445312-4.18457,1.333984s-1.523438,2.463867-1.901367,4.726562l-1.567383,9.410156h-8.761719 L238.8125,8.831055z"/>
+  <path fill="#FFFFFF" d="M266.025391,8.831055l-3.857422,23.045898h-8.945312l3.857422-23.045898H266.025391z M267.503906,0 l-1.134766,6.777344h-8.946289L258.556641,0H267.503906z"/>
+  <path fill="#FFFFFF" d="M294.807617,0.72998l-5.198242,31.146973h-8.181641l0.564453-3.485352 c-1.884766,2.780273-4.164062,4.169922-6.838867,4.169922c-2.082031,0-3.875-0.821289-5.379883-2.464844 c-1.503906-1.642578-2.256836-3.993164-2.256836-7.049805c0-3.789062,1.041992-7.210449,3.125977-10.269043 c2.083008-3.056641,4.751953-4.585938,8.006836-4.585938c2.783203,0,4.660156,1.096191,5.633789,3.287598l1.787109-10.749512 H294.807617z M283.329102,17.021484c0.044922-0.243164,0.067383-0.50293,0.067383-0.776855 c0-0.65332-0.232422-1.20752-0.695312-1.663574c-0.461914-0.456543-1.019531-0.68457-1.672852-0.68457 c-1.5625,0-2.688477,1.205566-3.378906,3.616211c-0.69043,2.412109-1.035156,4.416016-1.035156,6.012695 c0,2.099609,0.814453,3.149414,2.444336,3.149414c1.614258,0,2.6875-1.048828,3.220703-3.147461L283.329102,17.021484z"/>
+  <path fill="#FFFFFF" d="M320.798828,2.281738l-0.547852,5.75c-0.911133-0.105469-1.595703-0.15918-2.051758-0.15918 c-1.686523,0-2.834961,0.615723-3.442383,1.848633c2.356445,1.414062,3.53418,3.247559,3.53418,5.498535 c0,1.962891-0.766602,3.705078-2.299805,5.224609c-1.533203,1.521484-4.348633,2.282227-8.446289,2.282227 c-0.866211,0-1.579102-0.030273-2.140625-0.09082c-0.819336-0.091797-1.396484-0.136719-1.729492-0.136719 c-0.554688,0-1.010742,0.162109-1.37207,0.487305s-0.541016,0.699219-0.541016,1.121094 c0,0.363281,0.121094,0.65625,0.364258,0.882812s0.524414,0.359375,0.84375,0.395508 c0.319336,0.039062,1.686523,0.094727,4.104492,0.169922c2.644531,0.092773,4.357422,0.1875,5.140625,0.287109 c0.783203,0.098633,1.645508,0.400391,2.587891,0.902344c0.941406,0.50293,1.683594,1.208008,2.222656,2.114258 s0.80957,1.922852,0.80957,3.050781c0,2.163086-0.958008,4.052734-2.873047,5.667969 C313.046875,39.192383,309.421875,40,304.086914,40c-8.071289,0-12.106445-1.856445-12.106445-5.567383 c0-1.931641,1.37207-3.415039,4.117188-4.449219c-1.483398-0.989258-2.224609-2.213867-2.224609-3.673828 c0-2.555664,1.864258-4.373047,5.594727-5.453125c-2.134766-1.202148-3.201172-2.913086-3.201172-5.134766 c0-2.022949,0.880859-3.772461,2.644531-5.248047c1.763672-1.474609,4.727539-2.212891,8.891602-2.212891 c1.277344,0,2.470703,0.11377,3.580078,0.341797c0.65332-4.304688,3.009766-6.457031,7.068359-6.457031 C319.058594,2.145508,319.841797,2.19043,320.798828,2.281738z M300.527344,31.876953 c-0.865234,0.516602-1.296875,1.049805-1.296875,1.59668c0,1.15625,1.896484,1.734375,5.688477,1.734375 c1.865234,0,3.21875-0.118164,4.061523-0.353516c0.84082-0.235352,1.261719-0.696289,1.261719-1.380859 c0-0.456055-0.197266-0.756836-0.59082-0.901367c-0.395508-0.143555-1.251953-0.24707-2.571289-0.306641 C303.256836,32.09668,301.073242,31.967773,300.527344,31.876953z M307.154297,18.574219 c0.96875,0,1.729492-0.342773,2.282227-1.027344s0.828125-1.459961,0.828125-2.327148 c0-1.688477-0.832031-2.533203-2.49707-2.533203c-1.029297,0-1.813477,0.351074-2.350586,1.050781 s-0.805664,1.52832-0.805664,2.486328c0,0.745117,0.242188,1.323242,0.726562,1.734375S306.427734,18.574219,307.154297,18.574219z"/>
+  <path fill="#FFFFFF" d="M345.650391,22.042969h-15.868164c-0.076172,0.625977-0.114258,1.092773-0.114258,1.397461 c0,1.008789,0.323242,1.796875,0.96875,2.362305c0.645508,0.566406,1.462891,0.848633,2.451172,0.848633 c1.869141,0,3.191406-0.972656,3.966797-2.920898l7.751953,1.255859c-1.00293,2.256836-2.625977,4.084961-4.868164,5.480469 c-2.241211,1.396484-4.730469,2.094727-7.466797,2.094727c-3.43457,0-6.220703-0.976562-8.355469-2.931641 c-2.135742-1.955078-3.204102-4.621094-3.204102-7.999023c0-3.665039,1.262695-6.810547,3.786133-9.434082 c2.522461-2.624512,5.821289-3.936035,9.894531-3.936035c3.450195,0,6.197266,1.01709,8.242188,3.052246 c2.043945,2.035156,3.06543,4.737793,3.06543,8.109863C345.900391,20.182617,345.816406,21.055664,345.650391,22.042969z M337.350586,17.615234c0.076172-0.470703,0.115234-0.835938,0.115234-1.094727c0-0.821777-0.255859-1.536133-0.763672-2.144531 c-0.510742-0.608398-1.220703-0.912598-2.132812-0.912598c-0.972656,0-1.853516,0.368164-2.644531,1.106445 s-1.276367,1.753418-1.458984,3.04541H337.350586z"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" fill="#4F8CCA" d="M34.401367,0.722168h22.350098c0,0,1.194336,0,1.15625,1.239258 L53.055664,30.75c-0.20752,1.061523-1.129395,1.125977-1.129395,1.125977h-22.41748c0,0-1.026367,0-0.961914-1.219727 l4.873047-28.866211C33.411133,0.790039,34.401367,0.722168,34.401367,0.722168z"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" fill="#6AA9DC" d="M62.686035,0.722168h22.350098c0,0,1.194336,0,1.15625,1.239258 L81.34082,30.75c-0.20752,1.061523-1.129883,1.125977-1.129883,1.125977H57.793945c0,0-1.026855,0-0.961914-1.219727 l4.873047-28.866211C61.696289,0.790039,62.686035,0.722168,62.686035,0.722168z"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" fill="#3B6BA0" d="M5.856934,0.722168h22.350098c0,0,1.194336,0,1.15625,1.239258 L24.511719,30.75c-0.20752,1.061523-1.129883,1.125977-1.129883,1.125977H0.964844c0,0-1.026855,0-0.961914-1.219727 L4.875977,1.790039C4.867188,0.790039,5.856934,0.722168,5.856934,0.722168z"/>
+</svg></div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+
+
+  <!-- Page Content -->
+  <div class="container-fluid">
+    <div id="main">
+      <!-- Content Row -->
+      <div class="row">
+
+        <div class="col-body">
+          <!-- row-oriented flex container -->
+          
+
+          <!-- Sidebar Column -->
+          <nav class="col-nav hidden-sm hidden-xs" id="tg-sb-sidebar">
+            
+
+<ul id="sidebar" class="sidebar">
+  
+  
+  
+  
+  <li>
+      <a href="#volume-management">VOLUME MANAGEMENT</a>
+      <ul>
+          
+          
+          
+          <li><a href="#introduction">Introduction</a></li>
+          
+          
+          
+          
+      </ul>
+   </li>
+     
+      
+  
+  <li>
+      <a href="#behavior">BEHAVIOR</a>
+      <ul>
+          
+          
+          
+          <li><a href="#disk-selection">Disk Selection</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#volume-types">Volume Types</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#repair-optimizations">Repair Optimizations</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#autonomous-repair">Autonomous Repair</a></li>
+          
+          
+          
+          
+      </ul>
+   </li>
+     
+      
+  
+  <li>
+      <a href="#administration">ADMINISTRATION</a>
+      <ul>
+          
+          
+          
+          <li><a href="#list-volumes">List Volumes</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#create-a-volume">Create a Volume</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#remove-a-volume">Remove a Volume</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#manual-consistency-check">Manual Consistency Check</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#consistent-check-performance-policy">Consistency Check Performance Policy</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#rebuild-performance-policy">Rebuild Performance Policy</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#spare-disk-management">Spare Management</a></li>
+          
+          
+          
+          
+      </ul>
+   </li>
+     
+      
+  
+  <li>
+      <a href="#troubleshooting">TROUBLESHOOTING</a>
+      <ul>
+          
+          
+          
+          <li><a href="#description-of-volume-states">Description of Volume States</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#description-of-volume-alerts">Description of Volume Alerts</a></li>
+          
+          
+          
+          
+      </ul>
+   </li>
+     
+      
+  
+  <li>
+      <a href="#see-also">SEE ALSO</a>
+      <ul>
+          
+          
+          
+          <li><a href="#manual-volumectl">Manual: volumectl</a></li>
+          
+          
+          
+          
+      </ul>
+   </li>
+     
+      
+      
+      <!-- if you aren't using the accordion, uncomment this block:
+         <p class="external">
+             <a href="#" id="collapseAll">Collapse All</a> | <a href="#" id="expandAll">Expand All</a>
+         </p>
+         -->
+</ul>
+
+<!-- this highlights the active parent class in the navgoco sidebar. this is critical so that the parent expands when you're viewing a page. This must appear below the sidebar code above. Otherwise, if placed inside customscripts.js, the script runs before the sidebar code runs and the class never gets inserted.-->
+<script>$("li.active").parents('li').toggleClass("active");</script>
+
+          </nav>
+          
+
+          <!-- Content Column -->
+          <main class="col-content">
+            <div class="post-header">
+   <h1 class="post-title-main">Volume Management</h1>
+</div>
+
+
+
+<div class="post-content">
+
+   
+
+    
+
+
+    
+
+   <h2 id="introduction">Introduction</h2>
+
+<p>The <strong>Blockbridge Volume Manager</strong> implements disk-level redundancy for data
+protection and resiliency in the event of component failure. The Volume Manager
+assembles, monitors, and repairs volumes autonomously using pre-defined system
+policies and optional user-specified policies.</p>
+
+<p>Use the <strong>volumectl</strong> command for administration.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   # volumectl --help
+   Usage:
+       volumectl [OPTIONS] [SUBCOMMAND] [ARG] ...
+
+   Parameters:
+       [SUBCOMMAND]                  subcommand (default: "list")
+       [ARG] ...                     subcommand arguments
+
+   Subcommands:
+       create                        create a new volume
+       start                         start a volume
+       stop                          stop a volume
+       remove, rm, delete            delete a volume
+       info                          retrieve information about a volume
+       list, ls                      retrieve information about all volumes
+       update                        update parameters of a volume
+       shutdown_all                  gracefully shutdown all volumes
+       disk_fail                     fail disk in volume
+       check                         consistency check settings/status
+       rebuild                       consistency rebuild settings
+       repair                        volume repair
+       config                        configuration settings
+
+   Options:
+       -h, --help                    print help
+</code></pre></div></div>
+
+<div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> In a highly availabile cluster, the
+<strong>volumectl</strong> command must be executed on the active cluster member.</div>
+
+<h1 id="behavior">Behavior</h1>
+
+<h2 id="disk-selection">Disk Selection</h2>
+
+<p>A <strong>Volume</strong> consists of disks distributed across failure domains such that the
+failure of any component in the system affects at most a single disk in a
+volume. The Volume Manager enforces data distribution policies based on
+hardware capabilities and configuration:</p>
+
+<ul>
+  <li>
+    <p>Systems that consist of <strong>single-port SATA or single-port NVMe disks</strong>
+connected by high-speed ethernet have enclosure-scoped failure
+domains. Disks within a single volume must be distributed across
+independent enclosures.</p>
+  </li>
+  <li>
+    <p>Systems that leverage <strong>dual-port SAS or dual-port NVMe disks</strong> and that
+implement path-level redundancy to disks within an enclosure have
+disk-scoped failure domains. Disks within a single volume may optionally
+reside in the same enclosure.</p>
+  </li>
+</ul>
+
+<h2 id="volume-types">Volume Types</h2>
+
+<h3 id="mirrored-volumes">Mirrored Volumes</h3>
+
+<p>A <strong>Mirrored Volume</strong> (i.e., RAID1) synchronously replicates data uniformly
+across disks. The contents of the disks are identical. The following table
+illustrates the distribution of data for a volume with 3 disks:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">Offset</th>
+      <th style="text-align: center">Disk1</th>
+      <th style="text-align: center">Disk2</th>
+      <th style="text-align: center">Disk3</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">A1</td>
+      <td style="text-align: center">A1</td>
+      <td style="text-align: center">A1</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">B1</td>
+      <td style="text-align: center">B1</td>
+      <td style="text-align: center">B1</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">C1</td>
+      <td style="text-align: center">C1</td>
+      <td style="text-align: center">C1</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">D1</td>
+      <td style="text-align: center">D1</td>
+      <td style="text-align: center">D1</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Writes execute in parallel and are acknowledged after completion on all
+disks. Read requests are actively balanced across disks to distribute the
+load. Permanent data loss occurs after the failure of all disks in a
+volume. The use of disks with volatile write caches is unsupported and may
+result in data loss in the event of unexpected power loss.</p>
+
+<h3 id="striped-mirrored-volumes">Striped Mirrored Volumes</h3>
+
+<p>A <strong>Striped Mirrored Volume</strong> (i.e., RAID1E) synchronously replicates chunks of
+data across disks. Mirrored chunks of data are uniformly distributed across
+disks. An odd number of disks greater than or equal to 3 disks per volume
+is required. The specific data layout for striped mirrored volumes is
+“near-2”. The following table illustrates the distribution of data for a volume
+with 3 disks:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">Offset</th>
+      <th style="text-align: center">Disk1</th>
+      <th style="text-align: center">Disk2</th>
+      <th style="text-align: center">Disk3</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">0</td>
+      <td style="text-align: center">A1</td>
+      <td style="text-align: center">A1</td>
+      <td style="text-align: center">B1</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">1</td>
+      <td style="text-align: center">B1</td>
+      <td style="text-align: center">C1</td>
+      <td style="text-align: center">C1</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">2</td>
+      <td style="text-align: center">A2</td>
+      <td style="text-align: center">A2</td>
+      <td style="text-align: center">B2</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">3</td>
+      <td style="text-align: center">B2</td>
+      <td style="text-align: center">C2</td>
+      <td style="text-align: center">C2</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Writes execute in parallel and are acknowledged after completion on all disks
+where a chunk resides. Read requests are actively balanced across disks to
+distribute the load. Permanent data loss occurs after the failure of N-1 of the
+disks, where N is the number of mirrors. The use of disks with volatile
+write caches is unsupported and may result in data loss in the event of
+unexpected power loss.</p>
+
+<h2 id="repair-optimizations">Repair Optimizations</h2>
+
+<p>Volumes are configured for optimized repair and difference based
+synchronization by default, to minimize recovery time and maximize resiliency
+and availability. The system actively tracks data regions that require
+synchronization in the event of unexpected power outages, reboot, and
+failover. The Volume Manager automatically coordinates optimized repair without
+additional configuration or management.</p>
+
+<h2 id="autonomous-repair">Autonomous Repair</h2>
+
+<p>Volumes provide continued operation in the event of disk
+failure. Causes of disk failure may include power loss, controller
+malfunction, network failure, enclosure failure, and defective media.</p>
+
+<p>Many failure scenarios are transient and recoverable. The Volume
+Manager uses timer-based heuristics to minimize the duration of
+degraded redundancy.  The Volume Manager prefers to synchronize
+differences between disks over executing full disk synchronization.</p>
+
+<p>If a permanent disk failure occurs, the Volume Manager automatically
+repairs volumes based on the availability of eligible replacement
+disks (i.e., spares). Replacement disk eligibility may be
+constrained by per-volume policy, if specified.</p>
+
+<p>The following controls determine the precise timing of recovery
+actions taken by the Volume Manager:</p>
+
+<ul>
+  <li>
+    <p><strong>TimeToRepair</strong> is the duration of time that the Volume Manager waits
+before searching for a replacement disk. If the cause of disk
+failure resolves within <em>TimeToRepair</em> and the disk data appears
+intact, it may be re-added to the volume for optimized recovery. The
+default value of <em>TimeToRepair</em> is 5 minutes.</p>
+  </li>
+  <li>
+    <p>Upon the expiration of <em>TimeToRepair</em>, the volume manager begins
+searching for a replacement disk. When a replacement disk becomes
+available, the Volume Manager waits <strong>TimeToReplace</strong> before
+initiating replacement. If the cause of disk failure resolves within
+<em>TimeToReplace</em> and the disk data appears intact, it may be re-added
+to the volume for optimized recovery. Otherwise, the disk is
+invalidated, and replacement occurs immediately along with full disk
+synchronization.</p>
+  </li>
+</ul>
+
+<div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> <em>TimeToReplace</em> allows for optimized recovery from
+infrastructure failures that uniformly affect the accessibility of volume members
+and available replacements.</div>
+
+<h1 id="administration">Administration</h1>
+
+<h2 id="list-volumes">List Volumes</h2>
+
+<h3 id="display-the-currently-configured-volumes">Display the currently configured volumes</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># volumectl ls
+
+Name [1]         State    Capacity   Level  Chunk size  Disks  Device
+---------------  -------  ---------  -----  ----------  -----  -----------------------
+vol.1            online   949.963GB  raid1  N/A         2/2    /dev/md/vol.1
+vol.2            online   949.963GB  raid1  N/A         2/2    /dev/md/vol.2
+</code></pre></div></div>
+
+<h3 id="display-detailed-information-for-a-single-volume">Display detailed information for a single volume</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># volumectl info &lt;volume&gt;
+
+# volumectl info vol.1
+
+== Volume: vol.1
+uuid                  7e3959f0-00be-4801-854a-6c9eb8d7ccc5
+capacity              884.722GiB
+created               2020-03-30T18:46:44+00:00
+modified              2020-03-30T18:46:48+00:00
+raid level            raid1
+raid disks            2
+active disks          2
+device                /dev/md/vol.1   (md124)
+container             /dev/md/vol.1:c (md125)
+state                 online
+
+== MD parameters
+chunk size            N/A
+
+== Disk Query Attributes
+unique                agent_id
+
+== Disks in Volume
+ID                                    Devname         Raw Size   Model               State [1]
+------------------------------------  --------------  ---------  ------------------  --------------
+e9e956f6-506a-4394-a879-04ef16f10923  /dev/sdf        949.999GB  9300_MTFDHAL7T6TDP  active in-sync
+257169ee-d4ad-40c5-a739-7c6e2631f54e  /dev/nvme2n3    949.999GB  9300_MTFDHAL7T6TDP  active in-sync
+</code></pre></div></div>
+
+<h3 id="display-detailed-information-for-all-volumes">Display detailed information for all volumes</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># volumectl info
+
+== Volume: vol.1
+uuid                  7e3959f0-00be-4801-854a-6c9eb8d7ccc5
+capacity              884.722GiB
+created               2020-03-30T18:46:44+00:00
+modified              2020-03-30T18:46:48+00:00
+raid level            raid1
+raid disks            2
+active disks          2
+device                /dev/md/vol.1   (md124)
+container             /dev/md/vol.1:c (md125)
+state                 online
+
+== MD parameters
+chunk size            N/A
+
+== Disk Query Attributes
+unique                agent_id
+
+== Disks in Volume
+ID                                    Devname         Raw Size   Model               State [1]
+------------------------------------  --------------  ---------  ------------------  --------------
+e9e956f6-506a-4394-a879-04ef16f10923  /dev/sdf        949.999GB  9300_MTFDHAL7T6TDP  active in-sync
+257169ee-d4ad-40c5-a739-7c6e2631f54e  /dev/nvme2n3    949.999GB  9300_MTFDHAL7T6TDP  active in-sync
+
+== Volume: vol.2
+uuid                  2df09591-0cf7-4269-930d-fb6bc84e6872
+capacity              884.722GiB
+created               2020-03-30T18:46:53+00:00
+modified              2020-03-30T18:46:56+00:00
+raid level            raid1
+raid disks            2
+active disks          2
+device                /dev/md/vol.2   (md122)
+container             /dev/md/vol.2:c (md123)
+state                 online
+
+== MD parameters
+chunk size            N/A
+
+== Disk Query Attributes
+unique                agent_id
+
+== Disks in Volume
+ID                                    Devname         Raw Size   Model               State [1]
+------------------------------------  --------------  ---------  ------------------  --------------
+e80881ae-be73-4ede-b5c1-d44685815b59  /dev/sdg        949.999GB  9300_MTFDHAL7T6TDP  active in-sync
+b7877ba2-1dde-49d6-95c7-c66ad2b39f4e  /dev/nvme2n4    949.999GB  9300_MTFDHAL7T6TDP  active in-sync
+</code></pre></div></div>
+
+<h2 id="create-a-volume">Create a Volume</h2>
+
+<p>Blockbridge configuration specifies default disk selection rules
+that match the availability requirements of the underlying storage
+architecture. In some cases, a more sophisticated provisioning
+workflow is required for:</p>
+
+<ul>
+  <li>disk segregation in multi-complex dataplanes</li>
+  <li>increased data redundancy</li>
+  <li>bandwidth aggregation for journal devices</li>
+  <li>placement constraints for disaggregated infrastructures</li>
+</ul>
+
+<h3 id="create-a-volume-using-system-defaults">Create a volume using system defaults</h3>
+
+<p>The default volume is a 2 disk mirror. Disks are automatically
+selected from independent failure domains or a single failure domain
+that is internally resilient.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># volumectl create --name &lt;volume&gt;
+
+# volumectl create --name my.vol
+
+== Volume: my.vol
+uuid                  ce66ef84-61d4-49c1-b52b-c1332d30be8e
+capacity              884.722GiB
+created               2020-03-30T18:51:50+00:00
+modified              2020-03-30T18:51:53+00:00
+raid level            raid1
+raid disks            2
+active disks          2
+device                /dev/md/my.vol   (md120)
+container             /dev/md/my.vol:c (md121)
+state                 online (resyncing, 0%)
+status                volume is resyncing after creation or unclean shutdown
+
+== MD parameters
+chunk size            N/A
+
+== Disk Query Attributes
+unique                agent_id
+
+== Disks in Volume
+ID                                    Devname         Raw Size   Model               State [1]
+------------------------------------  --------------  ---------  ------------------  --------------
+f3047efc-76eb-4d56-96c0-57d6df5066f6  /dev/sdc        949.999GB  9300_MTFDHAL7T6TDP  active in-sync
+4168eda4-81db-4641-8c8e-abd53e067ed5  /dev/nvme2n2p1  949.999GB  9300_MTFDHAL7T6TDP  active in-sync
+</code></pre></div></div>
+
+<div class="alert alert-danger" role="alert"><i class="fa fa-exclamation-circle"></i> <b>Warning:</b> It is not possible to rename a volume
+after creation. Consider future requirements for re-organization when
+choosing a naming scheme.</div>
+
+<h3 id="create-a-volume-specifying-disk-selection-constraints">Create a volume specifying disk selection constraints</h3>
+
+<p>Command argument syntax</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># volumectl create --name &lt;volume&gt; --select &lt;query&gt;
+</code></pre></div></div>
+
+<p>Example using a disk slot select constaint</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># volumectl create --name my.vol --select slot=0-10
+
+== Volume: my.vol
+uuid                  ce66ef84-61d4-49c1-b52b-c1332d30be8e
+capacity              884.722GiB
+created               2020-03-30T18:51:50+00:00
+modified              2020-03-30T18:51:53+00:00
+raid level            raid1
+raid disks            2
+active disks          2
+device                /dev/md/my.vol   (md120)
+container             /dev/md/my.vol:c (md121)
+state                 online (resyncing, 0%)
+status                volume is resyncing after creation or unclean shutdown
+
+== MD parameters
+chunk size            N/A
+
+== Disk Query Attributes
+select                slot=0-10
+unique                agent_id
+
+== Disks in Volume
+ID                                    Devname         Raw Size   Model               State [1]
+------------------------------------  --------------  ---------  ------------------  --------------
+f3047efc-76eb-4d56-96c0-57d6df5066f6  /dev/sdc        949.999GB  9300_MTFDHAL7T6TDP  active in-sync
+4168eda4-81db-4641-8c8e-abd53e067ed5  /dev/nvme2n2    949.999GB  9300_MTFDHAL7T6TDP  active in-sync
+</code></pre></div></div>
+
+<p>Example using a disk model number select constaint</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># volumectl create --name my.vol --select model=9300_MTFDHAL7T6TDP
+
+== Volume: my.vol
+uuid                  ce66ef84-61d4-49c1-b52b-c1332d30be8e
+capacity              884.722GiB
+created               2020-03-30T18:51:50+00:00
+modified              2020-03-30T18:51:53+00:00
+raid level            raid1
+raid disks            2
+active disks          2
+device                /dev/md/my.vol   (md120)
+container             /dev/md/my.vol:c (md121)
+state                 online (resyncing, 0%)
+status                volume is resyncing after creation or unclean shutdown
+
+== MD parameters
+chunk size            N/A
+
+== Disk Query Attributes
+select                model=9300_MTFDHAL7T6TDP
+unique                agent_id
+
+== Disks in Volume
+ID                                    Devname         Raw Size   Model               State [1]
+------------------------------------  --------------  ---------  ------------------  --------------
+f3047efc-76eb-4d56-96c0-57d6df5066f6  /dev/sdc        949.999GB  9300_MTFDHAL7T6TDP  active in-sync
+4168eda4-81db-4641-8c8e-abd53e067ed5  /dev/nvme2n2    949.999GB  9300_MTFDHAL7T6TDP  active in-sync
+</code></pre></div></div>
+
+<p>Example using a disk bus reject constaint</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># volumectl create --name my.vol --reject bus=sata
+
+== Volume: my.vol
+uuid                  ce66ef84-61d4-49c1-b52b-c1332d30be8e
+capacity              884.722GiB
+created               2020-03-30T18:51:50+00:00
+modified              2020-03-30T18:51:53+00:00
+raid level            raid1
+raid disks            2
+active disks          2
+device                /dev/md/my.vol   (md120)
+container             /dev/md/my.vol:c (md121)
+state                 online (resyncing, 0%)
+status                volume is resyncing after creation or unclean shutdown
+
+== MD parameters
+chunk size            N/A
+
+== Disk Query Attributes
+reject                bus=sata
+unique                agent_id
+
+== Disks in Volume
+ID                                    Devname         Raw Size   Model               State [1]
+------------------------------------  --------------  ---------  ------------------  --------------
+f3047efc-76eb-4d56-96c0-57d6df5066f6  /dev/sdc        949.999GB  9300_MTFDHAL7T6TDP  active in-sync
+4168eda4-81db-4641-8c8e-abd53e067ed5  /dev/nvme2n2    949.999GB  9300_MTFDHAL7T6TDP  active in-sync
+</code></pre></div></div>
+
+<p>Example using multiple constraints</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># volumectl create --name my.vol --select bus=nvme --select model=9300_MTFDHAL7T6TDP --reject slot=0
+
+== Volume: my.vol
+uuid                  ce66ef84-61d4-49c1-b52b-c1332d30be8e
+capacity              884.722GiB
+created               2020-03-30T18:51:50+00:00
+modified              2020-03-30T18:51:53+00:00
+raid level            raid1
+raid disks            2
+active disks          2
+device                /dev/md/my.vol   (md120)
+container             /dev/md/my.vol:c (md121)
+state                 online (resyncing, 0%)
+status                volume is resyncing after creation or unclean shutdown
+
+== MD parameters
+chunk size            N/A
+
+== Disk Query Attributes
+select                bus=nvme, model=9300_MTFDHAL7T6TDP
+reject                slot=0
+unique                agent_id
+
+== Disks in Volume
+ID                                    Devname         Raw Size   Model               State [1]
+------------------------------------  --------------  ---------  ------------------  --------------
+f3047efc-76eb-4d56-96c0-57d6df5066f6  /dev/sdc        949.999GB  9300_MTFDHAL7T6TDP  active in-sync
+4168eda4-81db-4641-8c8e-abd53e067ed5  /dev/nvme2n2    949.999GB  9300_MTFDHAL7T6TDP  active in-sync
+</code></pre></div></div>
+
+<div class="alert alert-danger" role="alert"><i class="fa fa-exclamation-circle"></i> <b>Warning:</b> Selection criteria constraints affect
+the eligible disks for both creation and replacement. The constraint
+can be modified at any time.</div>
+
+<div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> The disk service discovers and catalogs
+the attributes that are available for use in selection
+constraints. Use the <code class="highlighter-rouge">diskctl</code> command to manage custom attributes and
+rules for applying custom attributes.</div>
+
+<h3 id="create-a-volume-with-a-custom-data-protection-mode">Create a volume with a custom data protection mode</h3>
+<p>The <strong>RAID</strong> parameter is specified as <em>&lt;raid-level&gt;</em>.<em>&lt;number-of-disks&gt;</em></p>
+
+<p>Command argument syntax</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># volumectl create --name &lt;volume&gt; --raid &lt;level&gt;.&lt;disks&gt;
+</code></pre></div></div>
+
+<p>Example specifying a 3 disk mirror</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># volumectl create --name my.vol --raid 1.3
+
+== Volume: my.vol
+uuid                  7a655e62-eeb8-4e7d-92af-5af0ad149c26
+capacity              884.722GiB
+created               2020-03-30T19:50:53+00:00
+modified              2020-03-30T20:14:42+00:00
+raid level            raid1
+raid disks            3
+active disks          3
+device                /dev/md/my.vol   (md124)
+container             /dev/md/my.vol:c (md125)
+state                 online (resyncing, 0%)
+status                volume is resyncing after creation or unclean shutdown
+
+== MD parameters
+chunk size            N/A
+
+== Disk Query Attributes
+unique                agent_id
+
+== Disks in Volume
+ID                                    Devname         Raw Size   Model               State [1]
+------------------------------------  --------------  ---------  ------------------  --------------
+e9e956f6-506a-4394-a879-04ef16f10923  /dev/sdc        949.999GB  9300_MTFDHAL7T6TDP  active in-sync
+4168eda4-81db-4641-8c8e-abd53e067ed5  /dev/nvme2n2p1  949.999GB  9300_MTFDHAL7T6TDP  active in-sync
+e3356e59-e345-423c-aaeb-c26f3142a4d2  /dev/sdf        949.999GB  9300_MTFDHAL7T6TDP  active in-sync
+</code></pre></div></div>
+
+<p>Example specifying a 3 disk striped mirror (i.e., RAID1E)</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># volumectl create --name my.vol --raid 10.3
+
+== Volume: my.vol
+uuid                  507bfdd5-d529-4f14-a5da-03651c746949
+capacity              1.296TiB
+created               2020-03-30T20:20:37+00:00
+modified              2020-03-30T20:20:45+00:00
+raid level            raid10
+raid disks            3
+active disks          3
+device                /dev/md/my.vol   (md124)
+container             /dev/md/my.vol:c (md125)
+state                 online
+
+== MD parameters
+chunk size            128.0KiB
+
+== Disk Query Attributes
+unique                agent_id
+
+== Disks in Volume
+ID                                    Devname         Raw Size   Model               State [1]
+------------------------------------  --------------  ---------  ------------------  --------------
+e9e956f6-506a-4394-a879-04ef16f10923  /dev/sdc        949.999GB  9300_MTFDHAL7T6TDP  active in-sync
+4168eda4-81db-4641-8c8e-abd53e067ed5  /dev/nvme2n2p1  949.999GB  9300_MTFDHAL7T6TDP  active in-sync
+e3356e59-e345-423c-aaeb-c26f3142a4d2  /dev/sdf        949.999GB  9300_MTFDHAL7T6TDP  active in-sync
+</code></pre></div></div>
+
+<h2 id="remove-a-volume">Remove a Volume</h2>
+
+<div class="alert alert-danger" role="alert"><i class="fa fa-exclamation-circle"></i> <b>Warning:</b> A volume cannot be removed if it is
+in use. Destage the volume from the corresponding datastore before
+removal.</div>
+
+<p>Command argument syntax</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># volumectl rm &lt;volume&gt;
+</code></pre></div></div>
+
+<p>Example removing a volume</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># volumectl rm my.vol
+</code></pre></div></div>
+
+<h2 id="manual-consistency-check">Manual Consistency Check</h2>
+
+<p>Volumes are automatically checked for data consistency and media
+defects according to the check schedule. You may optionally run a
+manual check for an immediate assurance that a volume was correctly
+initialized or repaired.</p>
+
+<div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> If you create a volume with
+<code class="highlighter-rouge">--assume-clean</code>, we recommend that you run a manual check before the
+volume enters production to ensure that disks are consistent.</div>
+
+<h3 id="view-progress-on-active-consistency-checks">View progress on active consistency checks</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># volumectl ls
+
+Name [1]         State                   Capacity   Level  Chunk size  Disks  Device
+---------------  ----------------------  ---------  -----  ----------  -----  -----------------------
+vol.1            online (checking, 27%)  949.963GB  raid1  N/A         2/2    /dev/md/vol.1
+vol.2            online (checking, 12%)  949.963GB  raid1  N/A         2/2    /dev/md/vol.2
+</code></pre></div></div>
+
+<h3 id="view-the-consistency-check-schedule">View the consistency check schedule</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># volumectl check schedule
+
+# volumectl check
+
+== History
+Name [1]         Last Checked               When         Mismatches
+---------------  -------------------------  -----------  ----------
+vol.1            2020-03-30 19:18:43 +0000  Today        0
+vol.2            2020-03-30 19:21:14 +0000  Today        0
+
+== Schedule
+Index  Day of Week  Start  End
+-----  -----------  -----  -----
+0      Monday       01:00  05:00
+1      Tuesday      01:00  05:00
+2      Wednesday    01:00  05:00
+3      Thursday     01:00  05:00
+4      Friday       01:00  05:00
+5      Saturday     01:00  05:00
+6      Sunday       01:00  05:00
+
+== Settings
+Volume bandwidth limit  1.0GiB
+Volume concurrency      2
+Check interval          Every 30 days
+
+== Workload
+Total capacity        3.4559TiB
+Estimated runtime     1 day
+</code></pre></div></div>
+
+<h3 id="start-a-manual-consistency-check">Start a manual consistency check</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># volumectl check start vol.1
+</code></pre></div></div>
+
+<h3 id="interaction-with-automated-checking">Interaction with Automated Checking</h3>
+
+<p>Does a successful manual check count as a successful automatic check
+from a scheduling perspective?</p>
+
+<ul>
+  <li>Yes.</li>
+</ul>
+
+<p>What happens if a manual check is requested while an automatic check
+is running?</p>
+
+<ul>
+  <li>If the request for a manual check specifies a volume that is
+currently running an automated check, the automated check continues.</li>
+  <li>If the request for a manual check specifies a volume that is
+currently idle, the manual check will supersede a currently running
+check.</li>
+</ul>
+
+<h2 id="consistency-check-performance-policy">Consistency Check Performance Policy</h2>
+
+<p>The Consistency Check Performance Policy defines the per-volume
+bandwidth, concurrency constraints, and frequency of consistency check
+operations. The performance aspects of the policy apply to both
+scheduled and manual check operations.</p>
+
+<p>We recommend that each volume is checked for consistency at least once
+every 30 days. Use the workload estimate to ensure that the bandwidth
+and volume concurrency settings are sufficient to ensure that all
+volumes are checked with appropriate frequency.</p>
+
+<div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> The times shown in the check scheduler
+are in system local time.</div>
+
+<h3 id="view-the-check-schedule">View the check schedule</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># volumectl check schedule
+
+== Schedule
+Index  Day of Week  Start  End
+-----  -----------  -----  -----
+0      Monday       01:00  05:00
+1      Tuesday      01:00  05:00
+2      Wednesday    01:00  05:00
+3      Thursday     01:00  05:00
+4      Friday       01:00  05:00
+5      Saturday     01:00  05:00
+6      Sunday       01:00  05:00
+</code></pre></div></div>
+
+<h3 id="set-the-per-volume-check-bandwidth-limit">Set the per-volume check bandwidth limit</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># volumectl check --bw-limit 50MiB
+
+== Settings
+Volume bandwidth limit  50.0MiB
+Volume concurrency      2
+Check interval          Every 30 days
+</code></pre></div></div>
+
+<h3 id="set-the-check-volume-concurrency">Set the check volume concurrency</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># volumectl check --volcount 2
+
+== Settings
+Volume bandwidth limit  50.0MiB
+Volume concurrency      2
+Check interval          Every 30 days
+</code></pre></div></div>
+
+<h3 id="set-the-desired-interval-days-between-volume-checks">Set the desired interval (days) between volume checks</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># volumectl check --interval 30
+
+== Settings
+Volume bandwidth limit  50.0MiB
+Volume concurrency      2
+Check interval          Every 30 days
+</code></pre></div></div>
+
+<h3 id="validate-the-workload-estimate-complies-with-desired-interval">Validate the workload estimate complies with desired interval</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># volumectl check show
+
+== Workload
+Total capacity        839.167GiB
+Estimated runtime     1 day
+</code></pre></div></div>
+
+<h2 id="rebuild-performance-policy">Rebuild Performance Policy</h2>
+
+<p>The Rebuild Performance Policy specifies the per-volume bandwidth
+limits and concurrency of recovery, repair, and synchronization
+operations.</p>
+
+<p>We recommend that you set rebuild concurrency and per-volume bandwidth
+based on the speed of your backend interconnect and the sequential
+write bandwidth capabilities of your disks. Per-disk bandwidth
+should not exceed 50% of the maximum sequential write bandwidth of a
+disk. Aggregate bandwidth should not exceed 50% of the backend
+interconnect bandwidth. The following table provides a general
+recommendation:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">Disk Type</th>
+      <th style="text-align: center">Per-Disk BW</th>
+      <th style="text-align: center">Concurrency</th>
+      <th style="text-align: center">Total Rebuild BW</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">NVMe</td>
+      <td style="text-align: center">800</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">3200</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">SAS</td>
+      <td style="text-align: center">400</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">1600</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">SATA</td>
+      <td style="text-align: center">200</td>
+      <td style="text-align: center">4</td>
+      <td style="text-align: center">800</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="show-the-current-rebuild-performance-policy">Show the current rebuild performance policy</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># volumectl rebuild show
+
+== Volume Rebuild Settings
+Volume bandwidth limit  1.0GiB
+Rebuild concurrency     2
+</code></pre></div></div>
+
+<h3 id="set-the-per-volume-rebuild-bandwidth-limit">Set the per-volume rebuild bandwidth limit</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># volumectl rebuild --bw-limit 1GiB
+
+== Volume Rebuild Settings
+Volume bandwidth limit  1.0GiB
+Rebuild concurrency     2
+</code></pre></div></div>
+
+<h3 id="set-the-rebuild-volume-concurrency">Set the rebuild volume concurrency</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># volumectl rebuild --volcount 5
+
+== Volume Rebuild Settings
+Volume bandwidth limit  1.0GiB
+Rebuild concurrency     5
+</code></pre></div></div>
+
+<h2 id="spare-disk-management">Spare Disk Management</h2>
+
+<p>The Volume Manager works to ensure that volumes are online and healthy
+at all times. When a permanent disk failure occurs, the Volume
+Manager attempts to repair the volume using an available replacement
+disk (i.e., spare).</p>
+
+<p>The Volume Manager searches for a replacement disk using the selection
+criteria set in volume configuration. It is essential to know that the
+selection criteria affect the eligibility of replacement disks.</p>
+
+<p><strong>Successful automatic replacement occurs when:</strong></p>
+<ul>
+  <li>A volume is <code class="highlighter-rouge">degraded</code>, but <code class="highlighter-rouge">online</code>.</li>
+  <li>An unused disk is available that matches the volume’s disk selection criteria.</li>
+  <li>The unused disk has the exact capacity of the failed disk.</li>
+</ul>
+
+<p>If a replacement disk is unavailable, the Volume Manager raises the
+<code class="highlighter-rouge">VolumeUnableToRepair</code> alert and continues to search indefinitely.</p>
+
+<div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> We recommend that you deploy a single
+unused disk per enclosure. If you have mixed capacity disks, you
+should configure a spare for each capacity.</div>
+
+<h1 id="troubleshooting">Troubleshooting</h1>
+
+<h2 id="description-of-volume-states">Description of Volume States</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Volume State</th>
+      <th style="text-align: left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">online</td>
+      <td style="text-align: left">Volume is online and healthy</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">online (checking)</td>
+      <td style="text-align: left">Volume is online; data integrity check in progress</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">online (resyncing)</td>
+      <td style="text-align: left">Volume is online; data is synchronizing after creation, failover, or power failure</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">online (recovering)</td>
+      <td style="text-align: left">Volume is online; data is synchronizing data to a replacement disk</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">repairing</td>
+      <td style="text-align: left">Volume is online but degraded; missing a disk and searching for a replacement</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">building</td>
+      <td style="text-align: left">Volume is offline; created and attempting to allocate and initialize disks</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">recover</td>
+      <td style="text-align: left">Volume is offline; attempting to start an existing volume</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">stopping</td>
+      <td style="text-align: left">Volume is stopping due to service move or administrator action</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">stopped</td>
+      <td style="text-align: left">Volume is stopped and offline, unavailable</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="description-of-volume-alerts">Description of Volume Alerts</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Volume Alert</th>
+      <th style="text-align: left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">VolumeProtectionDegraded</td>
+      <td style="text-align: left">Volume is missing a disk or performing data recovery to a replacement disk</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">VolumeRepairing</td>
+      <td style="text-align: left">Volume is synchronizing data to a replacement disk</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">VolumeUnableToRepair</td>
+      <td style="text-align: left">Volume is missing a disk and unable to find a replacement</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">VolumeOffline</td>
+      <td style="text-align: left">Volume is offline and unable to start</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">VolumeMismatchesFound</td>
+      <td style="text-align: left">Volume data integrity check found inconsistencies between member disks</td>
+    </tr>
+  </tbody>
+</table>
+
+<h1 id="see-also">See Also</h1>
+
+<h2 id="manual-volumectl">Manual: volumectl</h2>
+
+<p>For a complete guide on using the volumectl command see the <a href="/manual/volumectl">volumectl manual</a></p>
+
+
+    <div class="tags">
+        
+    </div>
+
+</div>
+
+<hr class="shaded"/>
+
+<footer>
+            <div class="row">
+                <div class="col-lg-12 footer">
+               &copy;2020 Blockbridge Networks LLC. All rights reserved. <br />
+ Site last generated: Jun 8, 2020
+                </div>
+            </div>
+</footer>
+
+
+          </main>
+
+          <!-- /.col-body -->
+        </div>
+
+        <!-- /.row -->
+      </div>
+      <!-- /#main -->
+    </div>
+  </div>
+
+</body>
+
+</html>

@@ -15,17 +15,6 @@
 
 
 {
-"title": "Version 5.0 Release Notes",
-"tags": "",
-"keywords": "release",
-"url": "/release/5.0/index.html",
-"summary": ""
-}
-,
-
-
-
-{
 "title": "Installing a Custom TLS Key and Certificate",
 "tags": "",
 "keywords": "security,ssl,certificate",
@@ -37,10 +26,54 @@
 
 
 {
+"title": "Volume Management",
+"tags": "",
+"keywords": "volumes volume management",
+"url": "/howto/volumes/index.html",
+"summary": ""
+}
+,
+
+
+
+{
+"title": "manual: volumectl",
+"tags": "",
+"keywords": "volumectl volume volumes",
+"url": "/manual/volumectl/index.html",
+"summary": ""
+}
+,
+
+
+
+{
+"title": "Version 5.0 Release Notes",
+"tags": "",
+"keywords": "release",
+"url": "/release/5.0/index.html",
+"summary": ""
+}
+,
+
+
+
+{
 "title": "Blockbridge VMware Storage Guide",
 "tags": "",
 "keywords": "vmware",
 "url": "/guide/vmware/index.html",
+"summary": ""
+}
+,
+
+
+
+{
+"title": "Installing and configuring Squid",
+"tags": "",
+"keywords": "security,proxy,squid",
+"url": "/guide/squid/index.html",
 "summary": ""
 }
 ,

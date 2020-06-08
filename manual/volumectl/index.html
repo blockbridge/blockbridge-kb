@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="volumectl manual">
+<meta name="keywords" content=" volumectl volume volumes">
+<title>manual: volumectl | Blockbridge Knowledgebase</title>
+<!-- Google Fonts -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto&display=swap">
+
+<link rel="stylesheet" href="/css/syntax.css">
+
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<!--<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">-->
+<link rel="stylesheet" href="/css/modern-business.css">
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<link rel="stylesheet" href="/css/customstyles.css">
+<link rel="stylesheet" href="/css/sidebar.css">
+<link rel="stylesheet" href="/css/boxshadowproperties.css">
+<!-- most color styles are extracted out to here -->
+<link rel="stylesheet" href="/css/theme-blockbridge.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script src="/js/jquery.navgoco.min.js"></script>
+
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Anchor.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/2.0.0/anchor.min.js"></script>
+<script src="/js/toc.js"></script>
+<script src="/js/customscripts.js"></script>
+
+<link rel="shortcut icon" href="/images/bb-favicon.ico" type="image/png">
+
+<script>var clicky_site_ids = clicky_site_ids || []; clicky_site_ids.push(101238799);</script>
+<script async src="//static.getclicky.com/js"></script>
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+
+    <script>
+        $(document).ready(function() {
+          // Initialize navgoco with default options
+          $("#mysidebar").navgoco({
+            caretHtml: '',
+            accordion: false,
+            openClass: 'active', // open
+            save: false, // leave false or nav highlighting doesn't work right
+            cookie: {
+              name: 'navgoco',
+              expires: false,
+              path: '/'
+            },
+            slide: {
+              duration: 400,
+              easing: 'swing'
+            }
+          });
+
+          $("#collapseAll").click(function(e) {
+                e.preventDefault();
+                $("#mysidebar").navgoco('toggle', false);
+            });
+
+            $("#expandAll").click(function(e) {
+                e.preventDefault();
+                $("#mysidebar").navgoco('toggle', true);
+            });
+
+        });
+
+    </script>
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
+    <script>
+        $(document).ready(function() {
+            $("#tg-sb-link").click(function() {
+                $("#tg-sb-sidebar").toggle();
+                $("#tg-sb-content").toggleClass('col-md-9');
+                $("#tg-sb-content").toggleClass('col-md-12');
+                $("#tg-sb-icon").toggleClass('fa-toggle-on');
+                $("#tg-sb-icon").toggleClass('fa-toggle-off');
+            });
+        });
+    </script>
+    
+
+</head>
+<body>
+  <!-- Navigation -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid topnavlinks">
+        <div class="navbar-header">
+            <div class="navbar-brand"><svg class="bb-logo" width="100%" xmlns="http://www.w3.org/2000/svg" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 346 40" enable-background="new 0 0 346 40" space="preserve">
+  <path fill="#FFFFFF" d="M85.328613,31.876953L90.526855,0.72998h12.858887c2.340332,0,4.255859,0.209961,5.745117,0.62793 c1.489746,0.418457,2.739746,1.274414,3.750977,2.566895c1.010742,1.293457,1.515625,2.806641,1.515625,4.541016 c0,1.902344-0.600098,3.518066-1.800781,4.848633c-1.201172,1.331543-2.8125,2.225098-4.833496,2.681152 c3.419922,1.20166,5.129883,3.461426,5.129883,6.777832c0,2.416992-0.817383,4.540039-2.451172,6.365234 s-4.350586,2.738281-8.150391,2.738281H85.328613z M95.493652,24.986328h4.652832c1.444336,0,2.440918-0.304688,2.987793-0.913086 c0.547363-0.608398,0.821777-1.269531,0.821777-1.985352c0-0.881836-0.300781-1.59375-0.902344-2.132812 c-0.601074-0.540039-1.495117-0.810547-2.681641-0.810547h-3.90332L95.493652,24.986328z M97.557129,12.618652h3.563477 c2.847656,0,4.271484-0.943359,4.271484-2.82959c0-1.657715-1.127441-2.487305-3.382324-2.487305h-3.564941L97.557129,12.618652z"/>
+  <path fill="#FFFFFF" d="M129.130859,0.72998l-5.196777,31.146973h-8.76123l5.19873-31.146973H129.130859z"/>
+  <path fill="#FFFFFF" d="M140.753906,32.561523c-3.20752,0-5.901367-0.954102-8.08252-2.864258 c-2.181152-1.908203-3.271484-4.513672-3.271484-7.814453c0-3.970703,1.265137-7.23291,3.79541-9.788574 c2.530762-2.555664,5.726562-3.833496,9.587402-3.833496c3.526367,0,6.32666,1,8.401367,3 c2.075195,2.000977,3.112305,4.469238,3.112305,7.405273c0,4.365234-1.333984,7.772461-4.000977,10.22168 C147.627441,31.336914,144.447266,32.561523,140.753906,32.561523z M141.118652,26.948242 c1.595703,0,2.678711-1.186523,3.248535-3.55957c0.570312-2.373047,0.855469-4.357422,0.855469-5.956055 c0-2.433105-0.882324-3.650879-2.64502-3.650879c-1.56543,0-2.648438,1.213867-3.249023,3.640137 c-0.600586,2.426758-0.900879,4.408203-0.900879,5.943359C138.427734,25.754883,139.324707,26.948242,141.118652,26.948242z"/>
+  <path fill="#FFFFFF" d="M171.578125,22.932617l6.953125,1.710938c-1.246094,2.981445-2.880859,5.046875-4.900879,6.195312 c-2.021973,1.147461-4.111816,1.722656-6.27002,1.722656c-3.176758,0-5.771973-1.008789-7.786133-3.026367 c-2.013672-2.017578-3.020508-4.610352-3.020508-7.776367c0-3.608398,1.188965-6.79834,3.567871-9.570312 c2.378906-2.77002,5.528809-4.156738,9.450195-4.156738c2.842285,0,5.251465,0.855957,7.227051,2.567871 c1.975586,1.710938,2.963867,3.912598,2.963867,6.605469l-7.819824,0.913086c0-2.494629-0.843262-3.742188-2.530273-3.742188 c-1.444336,0-2.470215,1.021484-3.078125,3.063477s-0.912109,3.825195-0.912109,5.349609 c0,2.255859,0.851074,3.383789,2.553711,3.383789C169.647949,26.172852,170.848633,25.092773,171.578125,22.932617z"/>
+  <path fill="#FFFFFF" d="M208.717773,8.836426l-4.012695,3.602051c-2.220703,1.990234-3.77832,3.441895-4.675781,4.353516 l5.541992,15.084961h-8.745117l-3.182617-9.854492l-3.962891,3.580078l-1.051758,6.274414h-8.113281l5.198242-31.146973h8.134766 l-2.888672,17.239746l1.666016-1.666016c0.500977-0.533203,0.926758-0.958984,1.275391-1.279297l6.775391-6.187988H208.717773z"/>
+  <path fill="#FFFFFF" d="M221.697266,0.72998l-1.841797,10.977539c1.200195-1.430664,2.269531-2.374023,3.210938-2.830078 c0.941406-0.456543,1.998047-0.685547,3.167969-0.685547c2.216797,0,3.993164,0.787109,5.330078,2.361816 c1.335938,1.574219,2.004883,3.898438,2.004883,6.970703c0,3.773438-1.056641,7.195312-3.168945,10.268555 c-2.112305,3.072266-5.043945,4.608398-8.796875,4.608398c-3.555664,0-6.032227-1.459961-7.429688-4.380859l-2.579102,3.856445 h-3.994141l5.199219-31.146973H221.697266z M217.824219,23.800781c0,0.851562,0.060547,1.4375,0.182617,1.756836 c0.12207,0.318359,0.387695,0.623047,0.796875,0.912109s0.917969,0.432617,1.524414,0.432617 c0.774414,0,1.438477-0.253906,1.992188-0.764648c0.554688-0.508789,1.085938-1.638672,1.59375-3.387695 c0.508789-1.75,0.763672-3.613281,0.763672-5.59082c0-2.296387-0.802734-3.445312-2.40918-3.445312 c-1.545898,0-2.65918,1.172852-3.34082,3.517578L217.824219,23.800781z"/>
+  <path fill="#FFFFFF" d="M238.8125,8.831055h7.674805l-0.919922,5.55957c1.598633-4.163574,4.042969-6.244141,7.333008-6.244141 c0.258789,0,0.616211,0.037598,1.073242,0.114258l-1.025391,8.214844c-0.791016-0.046875-1.31543-0.069336-1.574219-0.069336 c-1.900391,0-3.294922,0.445312-4.18457,1.333984s-1.523438,2.463867-1.901367,4.726562l-1.567383,9.410156h-8.761719 L238.8125,8.831055z"/>
+  <path fill="#FFFFFF" d="M266.025391,8.831055l-3.857422,23.045898h-8.945312l3.857422-23.045898H266.025391z M267.503906,0 l-1.134766,6.777344h-8.946289L258.556641,0H267.503906z"/>
+  <path fill="#FFFFFF" d="M294.807617,0.72998l-5.198242,31.146973h-8.181641l0.564453-3.485352 c-1.884766,2.780273-4.164062,4.169922-6.838867,4.169922c-2.082031,0-3.875-0.821289-5.379883-2.464844 c-1.503906-1.642578-2.256836-3.993164-2.256836-7.049805c0-3.789062,1.041992-7.210449,3.125977-10.269043 c2.083008-3.056641,4.751953-4.585938,8.006836-4.585938c2.783203,0,4.660156,1.096191,5.633789,3.287598l1.787109-10.749512 H294.807617z M283.329102,17.021484c0.044922-0.243164,0.067383-0.50293,0.067383-0.776855 c0-0.65332-0.232422-1.20752-0.695312-1.663574c-0.461914-0.456543-1.019531-0.68457-1.672852-0.68457 c-1.5625,0-2.688477,1.205566-3.378906,3.616211c-0.69043,2.412109-1.035156,4.416016-1.035156,6.012695 c0,2.099609,0.814453,3.149414,2.444336,3.149414c1.614258,0,2.6875-1.048828,3.220703-3.147461L283.329102,17.021484z"/>
+  <path fill="#FFFFFF" d="M320.798828,2.281738l-0.547852,5.75c-0.911133-0.105469-1.595703-0.15918-2.051758-0.15918 c-1.686523,0-2.834961,0.615723-3.442383,1.848633c2.356445,1.414062,3.53418,3.247559,3.53418,5.498535 c0,1.962891-0.766602,3.705078-2.299805,5.224609c-1.533203,1.521484-4.348633,2.282227-8.446289,2.282227 c-0.866211,0-1.579102-0.030273-2.140625-0.09082c-0.819336-0.091797-1.396484-0.136719-1.729492-0.136719 c-0.554688,0-1.010742,0.162109-1.37207,0.487305s-0.541016,0.699219-0.541016,1.121094 c0,0.363281,0.121094,0.65625,0.364258,0.882812s0.524414,0.359375,0.84375,0.395508 c0.319336,0.039062,1.686523,0.094727,4.104492,0.169922c2.644531,0.092773,4.357422,0.1875,5.140625,0.287109 c0.783203,0.098633,1.645508,0.400391,2.587891,0.902344c0.941406,0.50293,1.683594,1.208008,2.222656,2.114258 s0.80957,1.922852,0.80957,3.050781c0,2.163086-0.958008,4.052734-2.873047,5.667969 C313.046875,39.192383,309.421875,40,304.086914,40c-8.071289,0-12.106445-1.856445-12.106445-5.567383 c0-1.931641,1.37207-3.415039,4.117188-4.449219c-1.483398-0.989258-2.224609-2.213867-2.224609-3.673828 c0-2.555664,1.864258-4.373047,5.594727-5.453125c-2.134766-1.202148-3.201172-2.913086-3.201172-5.134766 c0-2.022949,0.880859-3.772461,2.644531-5.248047c1.763672-1.474609,4.727539-2.212891,8.891602-2.212891 c1.277344,0,2.470703,0.11377,3.580078,0.341797c0.65332-4.304688,3.009766-6.457031,7.068359-6.457031 C319.058594,2.145508,319.841797,2.19043,320.798828,2.281738z M300.527344,31.876953 c-0.865234,0.516602-1.296875,1.049805-1.296875,1.59668c0,1.15625,1.896484,1.734375,5.688477,1.734375 c1.865234,0,3.21875-0.118164,4.061523-0.353516c0.84082-0.235352,1.261719-0.696289,1.261719-1.380859 c0-0.456055-0.197266-0.756836-0.59082-0.901367c-0.395508-0.143555-1.251953-0.24707-2.571289-0.306641 C303.256836,32.09668,301.073242,31.967773,300.527344,31.876953z M307.154297,18.574219 c0.96875,0,1.729492-0.342773,2.282227-1.027344s0.828125-1.459961,0.828125-2.327148 c0-1.688477-0.832031-2.533203-2.49707-2.533203c-1.029297,0-1.813477,0.351074-2.350586,1.050781 s-0.805664,1.52832-0.805664,2.486328c0,0.745117,0.242188,1.323242,0.726562,1.734375S306.427734,18.574219,307.154297,18.574219z"/>
+  <path fill="#FFFFFF" d="M345.650391,22.042969h-15.868164c-0.076172,0.625977-0.114258,1.092773-0.114258,1.397461 c0,1.008789,0.323242,1.796875,0.96875,2.362305c0.645508,0.566406,1.462891,0.848633,2.451172,0.848633 c1.869141,0,3.191406-0.972656,3.966797-2.920898l7.751953,1.255859c-1.00293,2.256836-2.625977,4.084961-4.868164,5.480469 c-2.241211,1.396484-4.730469,2.094727-7.466797,2.094727c-3.43457,0-6.220703-0.976562-8.355469-2.931641 c-2.135742-1.955078-3.204102-4.621094-3.204102-7.999023c0-3.665039,1.262695-6.810547,3.786133-9.434082 c2.522461-2.624512,5.821289-3.936035,9.894531-3.936035c3.450195,0,6.197266,1.01709,8.242188,3.052246 c2.043945,2.035156,3.06543,4.737793,3.06543,8.109863C345.900391,20.182617,345.816406,21.055664,345.650391,22.042969z M337.350586,17.615234c0.076172-0.470703,0.115234-0.835938,0.115234-1.094727c0-0.821777-0.255859-1.536133-0.763672-2.144531 c-0.510742-0.608398-1.220703-0.912598-2.132812-0.912598c-0.972656,0-1.853516,0.368164-2.644531,1.106445 s-1.276367,1.753418-1.458984,3.04541H337.350586z"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" fill="#4F8CCA" d="M34.401367,0.722168h22.350098c0,0,1.194336,0,1.15625,1.239258 L53.055664,30.75c-0.20752,1.061523-1.129395,1.125977-1.129395,1.125977h-22.41748c0,0-1.026367,0-0.961914-1.219727 l4.873047-28.866211C33.411133,0.790039,34.401367,0.722168,34.401367,0.722168z"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" fill="#6AA9DC" d="M62.686035,0.722168h22.350098c0,0,1.194336,0,1.15625,1.239258 L81.34082,30.75c-0.20752,1.061523-1.129883,1.125977-1.129883,1.125977H57.793945c0,0-1.026855,0-0.961914-1.219727 l4.873047-28.866211C61.696289,0.790039,62.686035,0.722168,62.686035,0.722168z"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" fill="#3B6BA0" d="M5.856934,0.722168h22.350098c0,0,1.194336,0,1.15625,1.239258 L24.511719,30.75c-0.20752,1.061523-1.129883,1.125977-1.129883,1.125977H0.964844c0,0-1.026855,0-0.961914-1.219727 L4.875977,1.790039C4.867188,0.790039,5.856934,0.722168,5.856934,0.722168z"/>
+</svg></div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+
+
+  <!-- Page Content -->
+  <div class="container-fluid">
+    <div id="main">
+      <!-- Content Row -->
+      <div class="row">
+
+        <div class="col-body">
+          <!-- row-oriented flex container -->
+          
+
+          <!-- Sidebar Column -->
+          <nav class="col-nav hidden-sm hidden-xs" id="tg-sb-sidebar">
+            
+
+<ul id="sidebar" class="sidebar">
+  
+  
+      <!-- if you aren't using the accordion, uncomment this block:
+         <p class="external">
+             <a href="#" id="collapseAll">Collapse All</a> | <a href="#" id="expandAll">Expand All</a>
+         </p>
+         -->
+</ul>
+
+<!-- this highlights the active parent class in the navgoco sidebar. this is critical so that the parent expands when you're viewing a page. This must appear below the sidebar code above. Otherwise, if placed inside customscripts.js, the script runs before the sidebar code runs and the class never gets inserted.-->
+<script>$("li.active").parents('li').toggleClass("active");</script>
+
+          </nav>
+          
+
+          <!-- Content Column -->
+          <main class="col-content">
+            <div class="post-header">
+   <h1 class="post-title-main">manual: volumectl</h1>
+</div>
+
+
+
+<div class="post-content">
+
+   
+
+    
+    
+<!-- this handles the automatic toc. use ## for subheads to auto-generate the on-page minitoc. if you use html tags, you must supply an ID for the heading element in order for it to appear in the minitoc. -->
+<script>
+$( document ).ready(function() {
+  // Handler for .ready() called.
+
+$('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3,h4' });
+
+/* this offset helps account for the space taken up by the floating toolbar. */
+$('#toc').on('click', 'a', function() {
+  var target = $(this.getAttribute('href'))
+    , scroll_target = target.offset().top
+
+  $(window).scrollTop(scroll_target - 10);
+  return false
+})
+  
+});
+</script>
+
+<div id="toc"></div>
+
+    
+
+
+    
+
+   <h2 id="summary">Summary</h2>
+
+<p>The Blockbridge Volume Manager builds software RAID array volumes, monitors them, and repairs them autonomously. Using properties such as failure domain, media type, fabric, and slot, the volume manager assembles volumes by querying the available devices and building a volume with the specified data protection requirements.</p>
+
+<p>On failure of a device in a volume, the Volume Manager again queries available devices, chooses an appropriate replacement, and repairs the volume back to a healthy state.</p>
+
+<h2 id="synopsis">Synopsis</h2>
+
+<p>$ volumectl</p>
+
+<p>$ volumectl ls</p>
+
+<p>$ volumectl create –name <em>&lt;volume&gt;</em> –raid <em>&lt;raid-level&gt;.&lt;raid-disks&gt;</em></p>
+
+<p>$ volumectl info <em>&lt;volume&gt;</em></p>
+
+<p>$ volumectl rm <em>&lt;volume&gt;</em></p>
+
+<p>$ volumectl check</p>
+
+<h2 id="volumectl">volumectl</h2>
+
+<p>User interaction with the volume manager is done through the <strong>volumectl</strong> command-line utility. Using <strong>volumectl</strong>, a user can create a volume, list existing volumes, get detailed information about an existing volume, stop or remove a volume, and perform specific volume actions.</p>
+
+<h2 id="create-a-volume">CREATE A VOLUME</h2>
+
+<h3 id="command">Command</h3>
+
+<p><em>volumectl create</em></p>
+
+<h3 id="required-parameters">Required Parameters</h3>
+
+<p><strong>–name</strong> <em>&lt;volume&gt;</em></p>
+
+<p>The unique name for the volume.</p>
+
+<p><strong>–raid</strong> <em>&lt;raid-level&gt;.&lt;raid-disks&gt;[.replication-factor]</em></p>
+
+<p>Specify the RAID level, the number of disks in the volume, and (optional) replication factor.</p>
+
+<p>RAID levels 1, 1E, and 10 are supported. The number of disks must be a minimum of 2 for RAID1, 3 for RAID1E,  and 3 for RAID10. RAID10 requires an odd number of disks. By default, for those RAID levels where it makes sense, the replication factor is equal to the number of disks. The default replication factor is good for most volumes. If a different replication factor is desired (for example, a RAID10 with 4 disks and a near-layout replication factor of 2), specify the additional replication factor parameter.</p>
+
+<h3 id="attribute-provisioning-options">Attribute Provisioning Options</h3>
+
+<p><strong>–select</strong> <em>&lt;attributes&gt;</em></p>
+
+<p>From the set of disks specified in <strong>–from</strong> (or all disks, if no <strong>–from</strong> specified), select only those disks that match the given attributes. This is a logical AND operation. Like <strong>–from</strong>, <strong>–select</strong> applies to disks selected for volume creation as well as those selected for repair.</p>
+
+<p><em>&lt;attributes&gt;</em> is specified as a <strong>key=val</strong> pair, e.g.: <strong>bus=scsi</strong></p>
+
+<p><strong>–reject</strong> <em>&lt;attributes&gt;</em></p>
+
+<p>From the set of disks specified in <strong>–from</strong> (or all disks, if no <strong>–from</strong> specified), reject those disks that match the given attributes.</p>
+
+<p><em>&lt;attributes&gt;</em> is specified as a <strong>key=val</strong> pair, e.g.: <strong>bus=scsi</strong></p>
+
+<p><strong>–from</strong> <em>&lt;attributes&gt;</em></p>
+
+<p>Create and repair volume using only disks with the following attributes. May be specified multiple times to incorporate more disks with different sets of attributes. This is a logical OR operation.</p>
+
+<p><em>&lt;attributes&gt;</em> is specified as a <strong>key=val</strong> pair, e.g.: <strong>bus=scsi</strong></p>
+
+<p><strong>–unique</strong> <em>&lt;attribute&gt;</em></p>
+
+<p>Require disks in the volume to be unique across the specified attribute. If a volume is desired to be built across failure domains, or across a particular disk attribute, the <strong>–unique</strong> option can be used to ensure unique disk selection. Perhaps a volume is desired to always use one disk from each enclosure or bus or vendor in the system.</p>
+
+<p><em>&lt;attribute&gt;</em> is specified as a <strong>key</strong> value of an attribute, e.g.: <strong>agent_id</strong></p>
+
+<p><strong>NOTE:</strong> To ensure disks are selected from unique disk services in an ethernet-attached installation, specify <strong>–unique agent_id</strong>.</p>
+
+<h3 id="array-options">Array Options</h3>
+
+<p><strong>–chunk-size</strong> <em>&lt;bytes&gt;</em></p>
+
+<p>The volume chunk size. The <em>chunk</em> is the size unit of which data is replicated between drives. The chunk size can impact performance of the volume. It is only valid for RAID10.</p>
+
+<p><strong>–bitmap</strong> <em>(default: true)</em></p>
+
+<p>Specifying the <strong>–bitmap</strong> option creates an external bitmap regardless of volume size, and can also improve performance by placing the bitmap on a fast class of drive. The bitmap is used for optimized volume recovery when adding back a previous member disk of a volume. Bitmaps are created by default.</p>
+
+<p><strong>–bitmap-chunk</strong> <em>&lt;bytes&gt;</em></p>
+
+<p>Specify bitmap chunk size. Specifies the size that one bit represents in
+the write-intent bitmap. This impacts the size of bitmap required to represent
+data in the volume, and also impacts the amount of data that needs to be
+re-synchronized in case of failure. Larger chunk size means smaller bitmap.
+But larger chunk size means potential more data transfer for re-synchronize.</p>
+
+<p><strong>–assume-clean</strong> <em>&lt;true/false&gt;</em> <em>(default: false)</em></p>
+
+<p>When creating a volume, assume that all drives are zeroed/clean. By assuming clean, no synchronize operation is required when the volume is first created.  For large arrays, this can save substantial time and data transfer. However, assume clean is not recommended as array “check” operations will show array inconsistencies because all drive data has not been initialized. The default is to disable assume clean (ie: drives will be initialized). Specify this option to change the default.</p>
+
+<p>NOTE: If performing a volume check on the array, the ‘mismatch_cnt’ may be non-zero for volumes created with <strong>–assume-clean</strong>. This does not mean that there is an error
+in this case.</p>
+
+<h3 id="examples">Examples</h3>
+
+<p>Create a RAID10 volume with 5 disks</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ volumectl create --name raid10a.vol --raid 10.5
+== Volume: raid10a.vol
+uuid                  9168f398-3e64-4166-a08e-137a19edb2ff
+capacity              1.0913TiB                           
+created               2016-10-05T14:58:30-04:00           
+modified              2016-10-05T14:58:30-04:00           
+raid level            raid10                              
+raid disks            5                                   
+device                /dev/md/raid10a.vol                  
+state                 online                              
+    
+== MD parameters
+chunk size            512.0KiB
+    
+== Disks in Volume
+ID [3]                Devname  Enclosure [1]       Slot [2]  Raw Size   Model     
+--------------------  -------  ------------------  --------  ---------  ----------
+ZBC090DC0000822150Z3  sdd      0x500304801ec1553f  0         400.088GB  S630DC-400
+ZBC090CG0000822150Z3  sdf      0x500304801ec1553f  1         400.088GB  S630DC-400
+ZBC090FY0000822150Z3  sde      0x500304801ec1553f  2         400.088GB  S630DC-400
+ZBC090FR0000822150Z3  sdg      0x500304801ec1553f  3         400.088GB  S630DC-400
+ZBC090FM0000822150Z3  sdh      0x500304801ec1553f  4         400.088GB  S630DC-400
+</code></pre></div></div>
+
+<p>Create a RAID10 volume with 5 disks of a specific model number</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ volumectl create --name raid10b.vol --raid 10.5 --select model=S630DC-400
+== Volume: raid10b.vol
+uuid                  c99edbae-4239-4731-ab24-9cb0ae712989
+capacity              1.0913TiB                           
+created               2016-10-05T14:59:12-04:00           
+modified              2016-10-05T14:59:12-04:00           
+raid level            raid10b                               
+raid disks            5                                   
+device                /dev/md/raid10b.vol                   
+state                 online                              
+
+== MD parameters
+chunk size            512.0KiB
+
+== Disk Attribute Requirements
+select                model=S630DC-400
+
+== Disks in Volume
+ID [3]                Devname  Enclosure [1]       Slot [2]  Raw Size   Model     
+--------------------  -------  ------------------  --------  ---------  ----------
+ZBC090030000822150Z3  sdj      0x500304801ec1553f  6         400.088GB  S630DC-400
+ZBC090GY0000822150Z3  sdk      0x500304801ec1553f  7         400.088GB  S630DC-400
+ZBC090GG0000822150Z3  sdl      0x500304801ec1553f  8         400.088GB  S630DC-400
+ZBC090FZ0000822150Z3  sdm      0x500304801ec1553f  9         400.088GB  S630DC-400
+ZBC090CH0000822150Z3  sdn      0x500304801ec1553f  10        400.088GB  S630DC-400
+</code></pre></div></div>
+
+<h2 id="list-volumes">LIST VOLUMES</h2>
+
+<h3 id="command-1">Command</h3>
+
+<p><em>volumectl</em></p>
+
+<p><em>volumectl ls</em></p>
+
+<p><em>volumectl list</em></p>
+
+<p>Display a summary of currently configured volumes.</p>
+
+<h3 id="examples-1">Examples</h3>
+
+<p>Display volume summary</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ volumectl ls
+Name [1]    State   Capacity  Level   Chunk size  Disks  Device            
+----------  ------  --------  ------  ----------  -----  ------------------
+raid1.vol   online  31.983GB  raid1   N/A         3      /dev/md/raid1.vol 
+raid10a.vol online  1.1999TB  raid10  512.0KiB    5      /dev/md/raid10a.vol 
+raid10b.vol online  1.1999TB  raid10  512.0KiB    5      /dev/md/raid10b.vol
+</code></pre></div></div>
+
+<h2 id="show-volume-information">SHOW VOLUME INFORMATION</h2>
+
+<h3 id="command-2">Command</h3>
+
+<p><em>volumectl info</em></p>
+
+<p><em>volumectl info &lt;volume&gt;</em></p>
+
+<p>Display detailed volume information about currently configured volumes, or the volume name specified.</p>
+
+<h2 id="start-a-volume">START A VOLUME</h2>
+
+<h3 id="command-3">Command</h3>
+
+<p><em>volumectl start &lt;volume&gt;</em></p>
+
+<p>Start an existing volume that is in the <strong>stopped</strong> state.</p>
+
+<h2 id="stop-a-volume">STOP A VOLUME</h2>
+
+<h3 id="command-4">Command</h3>
+
+<p><em>volumectl stop &lt;volume&gt;</em></p>
+
+<p>Stop an existing volume that is currently running.</p>
+
+<p><strong>NOTE:</strong> if a volume is <em>in-use</em>, it will not be able to stop. This could mean the dataplane currently has the volume open. If you need to stop a volume that is being used by the dataplane, the dataplane services must first be stopped.</p>
+
+<h2 id="remove-a-volume">REMOVE A VOLUME</h2>
+
+<h3 id="command-5">Command</h3>
+
+<p><em>volumectl rm &lt;volume&gt;</em></p>
+
+<p>Remove an existing volume.</p>
+
+<p><strong>NOTE:</strong> This is a <strong>destructive</strong> operation. All data on the volume will be lost. Make sure your data is backed up, or no longer needed.</p>
+
+<h2 id="update-volumes-attribute-provisioning-options">UPDATE VOLUME’S ATTRIBUTE PROVISIONING OPTIONS</h2>
+
+<h3 id="command-6">Command</h3>
+
+<p><em>volumectl update &lt;volume&gt;</em></p>
+
+<h3 id="attribute-provisioning-options-1">Attribute Provisioning Options</h3>
+
+<p><strong>–select</strong> <em>&lt;attributes&gt;</em></p>
+
+<p>From the set of disks specified in <strong>–from</strong> (or all disks, if no <strong>–from</strong> specified), select only those disks that match the given attributes. This is a logical AND operation.</p>
+
+<p><em>&lt;attributes&gt;</em> is specified as a <strong>key=val</strong> pair, e.g.: <strong>bus=scsi</strong></p>
+
+<p><strong>–reject</strong> <em>&lt;attributes&gt;</em></p>
+
+<p>From the set of disks specified in <strong>–from</strong> (or all disks, if no <strong>–from</strong> specified), reject those disks that match the given attributes.</p>
+
+<p><em>&lt;attributes&gt;</em> is specified as a <strong>key=val</strong> pair, e.g.: <strong>bus=scsi</strong></p>
+
+<p><strong>–from</strong> <em>&lt;attributes&gt;</em></p>
+
+<p>Create and repair volume using only disks with the following attributes. May be specified multiple times to incorporate more disks with different sets of attributes. This is a logical OR operation.</p>
+
+<p><em>&lt;attributes&gt;</em> is specified as a <strong>key=val</strong> pair, e.g.: <strong>bus=scsi</strong></p>
+
+<p><strong>–unique</strong> <em>&lt;attribute&gt;</em></p>
+
+<p>Require disks in the volume to be unique across the specified attribute. If a volume is desired to be built across failure domains, or across a particular disk attribute, the <strong>–unique</strong> option can be used to ensure unique disk selection. Perhaps a volume is desired to always use one disk from each enclosure or bus or vendor in the system.</p>
+
+<p><em>&lt;attribute&gt;</em> is specified as a <strong>key</strong> value of an attribute, e.g.: <strong>agent_id</strong></p>
+
+<p><strong>NOTE:</strong> To ensure disks are selected from unique disk services in an ethernet-attached installation, specify <strong>–unique agent_id</strong>.</p>
+
+<p><strong>–clear-from</strong></p>
+
+<p>Clear the <strong>from</strong> attributes.</p>
+
+<p><strong>–clear-select</strong></p>
+
+<p>Clear the <strong>select</strong> attributes.</p>
+
+<p><strong>–clear-rejects</strong></p>
+
+<p>Clear the <strong>reject</strong> attributes.</p>
+
+<h2 id="volume-consistency-check-information">VOLUME CONSISTENCY CHECK INFORMATION</h2>
+
+<h3 id="command-7">Command</h3>
+
+<p><em>volumectl check</em></p>
+
+<p><em>volumectl check show</em></p>
+
+<p><em>volumectl check info</em></p>
+
+<p><em>volumectl check ls</em></p>
+
+<p>Show volume consistency check history, schedule, settings, and workload estimate.</p>
+
+<h3 id="examples-2">Examples</h3>
+
+<p>Show volume consistency check information.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ volumectl check
+== History
+Name [1]    Last Checked               When   Mismatches
+--------    -------------------------  -----  ----------
+raid1.vol   2019-06-11 04:46:43 -0400  Today  0         
+raid10a.vol 2019-06-11 04:55:16 -0400  Today  0         
+raid10b.vol 2019-06-11 04:47:13 -0400  Today  0         
+
+== Schedule
+Index  Day of Week  Start  End  
+-----  -----------  -----  -----
+0      Monday       01:00  05:00
+1      Tuesday      01:00  05:00
+2      Wednesday    01:00  05:00
+3      Thursday     01:00  05:00
+4      Friday       01:00  05:00
+5      Saturday     01:00  05:00
+6      Sunday       01:00  05:00
+
+== Settings
+Volume bandwidth limit  1.0GiB   
+Volume concurrency      2        
+Check interval          Every 30 days
+
+== Workload
+Total capacity        1.0038TiB
+Estimated runtime     1 day    
+</code></pre></div></div>
+
+<h2 id="volume-consistency-check-settings">VOLUME CONSISTENCY CHECK SETTINGS</h2>
+
+<h3 id="bandwidth-limit">Bandwidth Limit</h3>
+
+<p><em>volumectl check –bw-limit &lt;limit&gt;</em></p>
+
+<p>Set the per-volume bandwidth limit. This is the maximum bandwidth that a consistency check will use for a volume.</p>
+
+<h3 id="example">Example</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ volumectl check --bw-limit 1GiB
+</code></pre></div></div>
+
+<h3 id="volume-count">Volume Count</h3>
+
+<p><em>volumectl check –volcount &lt;count&gt;</em></p>
+
+<p>Set the number of volumes that can simultaneously perform a consistency check.</p>
+
+<h3 id="example-1">Example</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ volumectl check --volcount 2
+</code></pre></div></div>
+
+<h3 id="check-interval">Check Interval</h3>
+
+<p><em>volumectl check –interval &lt;days&gt;</em></p>
+
+<p>Set the number of days between consistency checks for a volume. A volume will be checked every <em>&lt;days&gt;</em> days.</p>
+
+<h3 id="example-2">Example</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ volumectl check --interval 30
+</code></pre></div></div>
+
+<h2 id="volume-consistency-check-schedule">VOLUME CONSISTENCY CHECK SCHEDULE</h2>
+
+<h3 id="command-8">Command</h3>
+
+<p><em>volumectl check schedule</em></p>
+
+<p>Show volume consistency check schedule.</p>
+
+<p><strong>NOTE:</strong> The volume consistency check schedule start/end times are displayed and interpreted in the timezone configured on the host. If the host configured as UTC, the times in the check schedule are considered UTC. If the host configured as America/New_York, the times in the check schedule are considered America/New_York.</p>
+
+<h3 id="examples-3">Examples</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ volumectl check schedule
+== Schedule
+Index  Day of Week  Start  End  
+-----  -----------  -----  -----
+0      Monday       01:00  05:00
+1      Tuesday      01:00  05:00
+2      Wednesday    01:00  05:00
+3      Thursday     01:00  05:00
+4      Friday       01:00  05:00
+5      Saturday     01:00  05:00
+6      Sunday       01:00  05:00
+</code></pre></div></div>
+
+<h2 id="add-time-range-to-volume-consistency-check-schedule">ADD TIME RANGE TO VOLUME CONSISTENCY CHECK SCHEDULE</h2>
+
+<p><em>volumectl check schedule add</em></p>
+
+<h3 id="required-parameters-1">Required Parameters</h3>
+
+<p><strong>DAY</strong> the day of the week (Monday-Sunday)</p>
+
+<p><strong>START</strong> the start time of the range from 00-23</p>
+
+<p><strong>END</strong> the end time of the range from 00-23</p>
+
+<h3 id="example-3">Example</h3>
+
+<p>Add a time range to the check schedule on Sundays</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ volumectl check schedule add sunday 6 12
+== Schedule
+Index  Day of Week  Start  End  
+-----  -----------  -----  -----
+0      Monday       01:00  05:00
+1      Tuesday      01:00  05:00
+2      Wednesday    01:00  05:00
+3      Thursday     01:00  05:00
+4      Friday       01:00  05:00
+5      Saturday     01:00  05:00
+6      Sunday       01:00  05:00
+7      Sunday       06:00  12:00
+</code></pre></div></div>
+
+<h2 id="remove-time-range-from-volume-consistency-check-schedule">REMOVE TIME RANGE FROM VOLUME CONSISTENCY CHECK SCHEDULE</h2>
+
+<p><em>volumectl check schedule remove</em></p>
+
+<h3 id="required-parameters-2">Required Parameters</h3>
+
+<p><strong>INDEX</strong> the check schedule index as shown in <strong>volumectl check schedule</strong></p>
+
+<h3 id="example-4">Example</h3>
+
+<p>Remove a time range from the check schedule:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ volumectl check schedule remove 7
+== Schedule
+Index  Day of Week  Start  End  
+-----  -----------  -----  -----
+0      Monday       01:00  05:00
+1      Tuesday      01:00  05:00
+2      Wednesday    01:00  05:00
+3      Thursday     01:00  05:00
+4      Friday       01:00  05:00
+5      Saturday     01:00  05:00
+6      Sunday       01:00  05:00
+</code></pre></div></div>
+
+<h2 id="clear-the-check-schedule">CLEAR THE CHECK SCHEDULE</h2>
+
+<p><em>volumectl check schedule clear</em></p>
+
+<p><strong>NOTE:</strong> by clearing the check schedule, no volume consistency checks will be performed at any time, unless manually done by the user.</p>
+
+<h3 id="example-5">Example</h3>
+
+<p>Remove a time range from the check schedule:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ volumectl check schedule clear
+== Schedule
+Index  Day of Week  Start  End  
+-----  -----------  -----  -----
+</code></pre></div></div>
+
+<h2 id="set-default-check-schedule">SET DEFAULT CHECK SCHEDULE</h2>
+
+<p><em>volumectl check schedule default</em></p>
+
+<h3 id="example-6">Example</h3>
+
+<p>Set the consistency check schedule back to the default</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ volumectl check schedule default
+== Schedule
+Index  Day of Week  Start  End  
+-----  -----------  -----  -----
+0      Monday       01:00  05:00
+1      Tuesday      01:00  05:00
+2      Wednesday    01:00  05:00
+3      Thursday     01:00  05:00
+4      Friday       01:00  05:00
+5      Saturday     01:00  05:00
+6      Sunday       01:00  05:00
+</code></pre></div></div>
+
+<h2 id="volume-rebuild-settings">VOLUME REBUILD SETTINGS</h2>
+
+<p>Volume rebuild settings are used when a volume requires recovery, such as when data is being synchronized when a volume is first created, or when data is being recovered such as when a new replacement disk is added to a volume after a failure. These settings are global.</p>
+
+<h3 id="bandwidth-limit-1">Bandwidth Limit</h3>
+
+<p><em>volumectl rebuild –bw-limit &lt;limit&gt;</em></p>
+
+<p>Set the per-volume bandwidth limit. This is the maximum bandwidth that a volume recovery operation will use for a volume.</p>
+
+<h3 id="example-7">Example</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ volumectl rebuild --bw-limit 1GiB
+</code></pre></div></div>
+
+<h3 id="volume-count-1">Volume Count</h3>
+
+<p><em>volumectl rebuild –volcount &lt;count&gt;</em></p>
+
+<p>Set the number of volumes that can simultaneously perform a recovery operation.</p>
+
+<h3 id="example-8">Example</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ volumectl rebuild --volcount 2
+</code></pre></div></div>
+
+<h3 id="show-volume-rebuild-settings">Show volume rebuild settings</h3>
+
+<p><em>volumectl rebuild</em></p>
+
+<p><em>volumectl rebuild show</em></p>
+
+<h3 id="example-9">Example</h3>
+
+<p>Show the volume rebuild settings.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ volumectl rebuild
+== Volume Rebuild Settings
+Volume bandwidth limit  1.0GiB
+Rebuild concurrency     1     
+</code></pre></div></div>
+
+<h2 id="reporting-bugs">REPORTING BUGS</h2>
+
+<p>Please send bug reports to <a href="mailto:support@blockbridge.com">support@blockbridge.com</a></p>
+
+
+    <div class="tags">
+        
+    </div>
+
+</div>
+
+<hr class="shaded"/>
+
+<footer>
+            <div class="row">
+                <div class="col-lg-12 footer">
+               &copy;2020 Blockbridge Networks LLC. All rights reserved. <br />
+ Site last generated: Jun 8, 2020
+                </div>
+            </div>
+</footer>
+
+
+          </main>
+
+          <!-- /.col-body -->
+        </div>
+
+        <!-- /.row -->
+      </div>
+      <!-- /#main -->
+    </div>
+  </div>
+
+</body>
+
+</html>

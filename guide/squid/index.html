@@ -4,9 +4,9 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Follow this procedure to install your organization's web certificate in the Blockbridge Controlplane.">
-<meta name="keywords" content=" security,ssl,certificate">
-<title>Installing a Custom TLS Key and Certificate | Blockbridge Knowledgebase</title>
+<meta name="description" content="Follow this procedure to install and configure a Squid Proxy server">
+<meta name="keywords" content=" security,proxy,squid">
+<title>Installing and configuring Squid | Blockbridge Knowledgebase</title>
 <!-- Google Fonts -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto&display=swap">
@@ -144,52 +144,6 @@
 <ul id="sidebar" class="sidebar">
   
   
-  
-  
-  <li>
-      <a href="#installing-a-custom-tls-key-and-certificate">INSTALLING A CUSTOM CERTIFICATE</a>
-      <ul>
-          
-          
-          
-          <li><a href="#copy-private-key-and-certificate-files">Copy Private Key and Certificate Files</a></li>
-          
-          
-          
-          
-          
-          
-          <li><a href="#create-a-custom-apache-configuration-file">Create a Custom Apache Config File</a></li>
-          
-          
-          
-          
-          
-          
-          <li><a href="#install-the-custom-apache-configuration-file">Install Custom Apache Config File</a></li>
-          
-          
-          
-          
-          
-          
-          <li><a href="#reload-apaches-configuration">Reload Apache&apos;s Configuration</a></li>
-          
-          
-          
-          
-          
-          
-          <li><a href="#apache-configuration-template">Apache Configuration Template</a></li>
-          
-          
-          
-          
-      </ul>
-   </li>
-     
-      
-      
       <!-- if you aren't using the accordion, uncomment this block:
          <p class="external">
              <a href="#" id="collapseAll">Collapse All</a> | <a href="#" id="expandAll">Expand All</a>
@@ -206,7 +160,7 @@
           <!-- Content Column -->
           <main class="col-content">
             <div class="post-header">
-   <h1 class="post-title-main">Installing a Custom TLS Key and Certificate</h1>
+   <h1 class="post-title-main">Installing and configuring Squid</h1>
 </div>
 
 
@@ -220,131 +174,167 @@
 
     
 
-   <p>This document describes how to install your organization’s web certificate on a
-Blockbridge Controlplane, enabling secure authentication of your clients
-with the Blockbridge Web UI, API and command line tools.</p>
+   <p>This document describes how to install and configure the Squid HTTP proxy server
+on a CentOS 7 host. This will allow network-isolated Blockbridge nodes to use
+various Internet-based support functions. (e.g., remote support, software
+update and service alerts.)</p>
 
-<h2 id="copy-private-key-and-certificate-files">Copy private key and certificate files</h2>
+<h2 id="configure-network-access">Configure network access</h2>
 
-<p>To begin, locate your certificate and private key files. If your CA supplied you
-with an intermediate certificate, you’ll need that as well.</p>
-
-<ul>
-  <li><strong>Ensure all files are PEM-encoded.</strong></li>
-  <li>Copy the certificate to the <code class="highlighter-rouge">/etc/pki/tls/certs</code> directory.</li>
-  <li>If you have an intermediate certificate, place it in <code class="highlighter-rouge">/etc/pki/tls/certs</code> as well.</li>
-  <li>Copy the private key to the <code class="highlighter-rouge">/etc/pki/tls/private</code> directory.</li>
-  <li>Ensure the certificate and key files are owned by root: <code class="highlighter-rouge">chown root &lt;filename&gt;</code>.</li>
-  <li>Set the mode to <code class="highlighter-rouge">600</code> for all certificate and key files: <code class="highlighter-rouge">chmod 600 &lt;filename&gt;</code>.  The files must not be readable by group or world.</li>
-</ul>
-
-<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> The certificate and key files must be present
-on <strong>both</strong> <code class="highlighter-rouge">cm1</code> and <code class="highlighter-rouge">cm2</code> cluster members.</div>
-
-<h2 id="create-a-custom-apache-configuration-file">Create a custom Apache configuration file</h2>
-
-<p>Copy the configuration directives from the <a href="#apache-configuration-template">Apache Configuration
-Template</a> section below into a new file named
-<code class="highlighter-rouge">zz-blockbridge-tls.conf</code>. Replace the following placeholders with information
-appropriate to your installation:</p>
+<p>The proxy host provides internal clients with a means to access the outside world:</p>
 
 <ul>
-  <li><code class="highlighter-rouge">FQDN</code> - The fully-qualifiied domain name (as specified in your TLS
-certificate). Be sure to fill in your FQDN in both VirtualHost directives.</li>
-  <li><code class="highlighter-rouge">CERT_PATH</code> - The full path to your certificate file.</li>
-  <li><code class="highlighter-rouge">INTERMEDIATE_CERT_PATH</code> - The full path to your CA-provided intermediate
-certificate file, if you have one. If you’ve got an intermediate certificate,
-be sure to uncomment the <code class="highlighter-rouge">SSLCertificateChainFile</code> directive.</li>
-  <li><code class="highlighter-rouge">PRIVATE_KEY_PATH</code> - The full path to your private key file.</li>
+  <li>Blockbridge nodes on a restricted subnet must be allowed to connect to the
+proxy host.</li>
+  <li>The proxy host must be allowed to connect to the Internet.</li>
 </ul>
 
-<h2 id="install-the-custom-apache-configuration-file">Install the custom Apache configuration file</h2>
+<p>In this example we’ll be assuming the following network topology:</p>
 
-<p>Copy your newly created <code class="highlighter-rouge">zz-blockbridge-tls.conf</code> file into
-<code class="highlighter-rouge">/etc/httpd/conf.d</code> on each primary cluster member.</p>
+<ul>
+  <li>All internal clients are on the <code class="highlighter-rouge">10.10.10.0/24</code> network.</li>
+  <li>The proxy server’s IP address on the private network is <code class="highlighter-rouge">10.10.10.6</code>.</li>
+  <li>The proxy listens for service on the default port of 3128.</li>
+</ul>
 
-<h2 id="reload-apaches-configuration">Reload Apache’s configuration</h2>
+<h2 id="install-and-enable-squid">Install and enable Squid</h2>
 
-<p>Confirm which cluster member is running services with <code class="highlighter-rouge">blockbridge cluster
-status</code>. On the active member, reload the apache configuration with <code class="highlighter-rouge">systemctl
-reload httpd</code>.</p>
+<p>Using yum, install the <code class="highlighter-rouge">squid</code> package:</p>
 
-<h2 id="apache-configuration-template">Apache Configuration Template</h2>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo yum install -y squid
+</code></pre></div></div>
 
-<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> Download the configuration file here: <a href="/guide/custom-certs/zz-blockbridge-tls.conf">zz-blockbridge-tls.conf</a></div>
+<p>Enable and start <code class="highlighter-rouge">squid</code>:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;VirtualHost *:443&gt;
-    ServerName FQDN
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo systemctl enable --now squid
+</code></pre></div></div>
 
-    ServerAdmin admin@blockbridge.com
-    DocumentRoot /bb/www/html
-    ErrorLog /bb/www/logs/error_log
-    CustomLog /bb/www/logs/access_log common
-    ProxyRequests off
+<p>Confirm that the proxy service is running and healthy:</p>
 
-    # by default, proxy all traffic to the API adapter
-    SSLProxyEngine On
-    SSLProxyCheckPeerCN off
-    SSLProxyCheckPeerExpire off
-    ProxyPass /api https://127.0.0.1:9000/api retry=0 timeout=300
-    ProxyPassReverse /api https://127.0.0.1:9000/api
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ systemctl status squid
+● squid.service - Squid caching proxy
+   Loaded: loaded (/usr/lib/systemd/system/squid.service; enabled; vendor preset: disabled)
+   Active: active (running) since Thu 2020-05-28 16:35:49 UTC; 1min 30s ago
+  Process: 16517 ExecStart=/usr/sbin/squid $SQUID_OPTS -f $SQUID_CONF (code=exited, status=0/SUCCESS)
+  Process: 16511 ExecStartPre=/usr/libexec/squid/cache_swap.sh (code=exited, status=0/SUCCESS)
+ Main PID: 16519 (squid)
+   CGroup: /system.slice/squid.service
+           ├─16519 /usr/sbin/squid -f /etc/squid/squid.conf
+           ├─16521 (squid-1) -f /etc/squid/squid.conf
+           └─16522 (logfile-daemon) /var/log/squid/access.log
 
-    # ssl configuration
-    SSLEngine on
-    SSLProtocol ALL -SSLv2 -SSLv3
-    SSLCipherSuite ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256:ECDHE-ECDSA-AES128-SHA:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA:ECDHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA256:DHE-RSA-AES256-SHA:ECDHE-ECDSA-DES-CBC3-SHA:ECDHE-RSA-DES-CBC3-SHA:EDH-RSA-DES-CBC3-SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-SHA:AES256-SHA:DES-CBC3-SHA:!DSS
-    SSLHonorCipherOrder on
-    SSLCertificateFile CERT_PATH
-    # SSLCertificateChainFile INTERMEDIATE_CERT_PATH
-    SSLCertificateKeyFile PRIVATE_KEY_PATH
+May 28 16:35:49 mcdebug.localnet systemd[1]: Starting Squid caching proxy...
+May 28 16:35:49 mcdebug.localnet squid[16519]: Squid Parent: will start 1 kids
+May 28 16:35:49 mcdebug.localnet squid[16519]: Squid Parent: (squid-1) process 16521 started
+May 28 16:35:49 mcdebug.localnet systemd[1]: Started Squid caching proxy.
+</code></pre></div></div>
 
-    &lt;IfModule mod_authz_core.c&gt;
-        SSLProxyCheckPeerName off
-        &lt;Directory *&gt;
-            Require all granted
-        &lt;/Directory&gt;
-        &lt;Proxy *&gt;
-        Require all granted
-        &lt;/Proxy&gt;
-    &lt;/IfModule&gt;
+<h2 id="review-and-customize-configuration">Review and Customize Configuration</h2>
 
-    &lt;IfModule !mod_authz_core.c&gt;
-        &lt;Directory *&gt;
-            Order deny,allow
-            Allow from all
-        &lt;/Directory&gt;
-        &lt;Proxy *&gt;
-            Order deny,allow
-            Allow from all
-        &lt;/Proxy&gt;
-    &lt;/IfModule&gt;
+<p>Squid’s service configuration file is located at <code class="highlighter-rouge">/etc/squid/squid.conf</code>. While
+the CentOS squid package ships with some reasonable defaults, we recommend
+reviewing the configuration to make sure it fits with your company and network
+policies.</p>
 
-    &lt;IfModule mod_expires.c&gt;
-        &lt;DirectoryMatch "^/bb/www/html/assets"&gt;
-            &lt;filesMatch "-[a-f0-9]{24,}\.(png|css|html|gif|js)$"&gt;
-                # Use of ETag is discouraged when Last-Modified is present
-                Header unset ETag
-                FileETag None
-                # RFC says only cache for 1 year
-                ExpiresActive On
-                ExpiresDefault "access plus 1 year"
-            &lt;/filesMatch&gt;
-        &lt;/DirectoryMatch&gt;
-    &lt;/IfModule&gt;
+<p>By default, a <code class="highlighter-rouge">localnet</code> acl permits client access from address ranges typically
+used for internal or link-local networks:</p>
 
-    &lt;IfModule mod_deflate.c&gt;
-        &lt;Directory "/bb/www/html/assets"&gt;
-            SetOutputFilter DEFLATE
-            AddOutputFilterByType DEFLATE application/javascript
-        &lt;/Directory&gt;
-    &lt;/IfModule&gt;
-&lt;/VirtualHost&gt;
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>acl localnet src 10.0.0.0/8     # RFC1918 possible internal network
+acl localnet src 172.16.0.0/12  # RFC1918 possible internal network
+acl localnet src 192.168.0.0/16 # RFC1918 possible internal network
+acl localnet src fc00::/7       # RFC 4193 local private network range
+acl localnet src fe80::/10      # RFC 4291 link-local (directly plugged) machines
+</code></pre></div></div>
 
-&lt;VirtualHost *:80&gt;
-RewriteEngine On
-RewriteCond %{HTTPS} !on
-RewriteRule ^(.*)$ https://FQDN%{REQUEST_URI}
-&lt;/VirtualHost&gt;
+<p>Add or remove acl entries if the pre-configured <code class="highlighter-rouge">localnet</code> ACL is too permissive
+or doesn’t cover your client IP range. For our example, we tighten up the
+permitted range of client addresses:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code># acl localnet src 10.0.0.0/8     # RFC1918 possible internal network
+# acl localnet src 172.16.0.0/12  # RFC1918 possible internal network
+# acl localnet src 192.168.0.0/16 # RFC1918 possible internal network
+# acl localnet src fc00::/7       # RFC 4193 local private network range
+# acl localnet src fe80::/10      # RFC 4291 link-local (directly plugged) machines
+acl localnet src 10.10.10.0/24    # Only permit internal client access
+</code></pre></div></div>
+
+<p>The <code class="highlighter-rouge">SSL_ports</code> and <code class="highlighter-rouge">Safe_ports</code> ACLs are used to restrict what ports the proxy
+is allowed to connect <em>to</em>. To proxy Blockbridge software updates and remote
+support, you’ll need:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>acl SSL_ports port 443
+acl Safe_ports port 80
+acl Safe_ports port 443
+</code></pre></div></div>
+
+<p>Feel free to restrict other ports, as needed.</p>
+
+<p>To specify the port Squid is listening on, use the <code class="highlighter-rouge">http_port</code> directive. By
+default, squid accepts connections on all locally configured IP addresses. We
+recommend binding squid’s listening port to its internal IP address. This puts
+an additional safeguard in place to prevent externally sourced traffic from
+reaching the proxy service. The <code class="highlighter-rouge">http_port</code> directive allows an address to be
+specified.</p>
+
+<p>For our example configuration, we bind to the proxy server’s address on the
+internal subnet. For testing purposes, we also bind to localhost:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http_port 10.10.10.6:3128
+http_port localhost:3128
+</code></pre></div></div>
+
+<p>After modifying <code class="highlighter-rouge">/etc/squid/squid.conf</code>, restart the squid service and confirm
+that it’s running and healthy:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo systemctl restart squid
+$ systemctl status squid
+● squid.service - Squid caching proxy
+   Loaded: loaded (/usr/lib/systemd/system/squid.service; enabled; vendor preset: disabled)
+   Active: active (running) since Fri 2020-05-29 17:07:34 UTC; 4s ago
+  Process: 23097 ExecStop=/usr/sbin/squid -k shutdown -f $SQUID_CONF (code=exited, status=0/SUCCESS)
+  Process: 23106 ExecStart=/usr/sbin/squid $SQUID_OPTS -f $SQUID_CONF (code=exited, status=0/SUCCESS)
+  Process: 23100 ExecStartPre=/usr/libexec/squid/cache_swap.sh (code=exited, status=0/SUCCESS)
+ Main PID: 23108 (squid)
+   CGroup: /system.slice/squid.service
+           ├─23108 /usr/sbin/squid -f /etc/squid/squid.conf
+           ├─23110 (squid-1) -f /etc/squid/squid.conf
+           └─23111 (logfile-daemon) /var/log/squid/access.log
+
+May 29 17:07:34 mcdebug.localnet systemd[1]: Starting Squid caching proxy...
+May 29 17:07:34 mcdebug.localnet squid[23108]: Squid Parent: will start 1 kids
+May 29 17:07:34 mcdebug.localnet squid[23108]: Squid Parent: (squid-1) process 23110 started
+May 29 17:07:34 mcdebug.localnet systemd[1]: Started Squid caching proxy.
+</code></pre></div></div>
+
+<h2 id="verifying-proxy-configuration">Verifying Proxy Configuration</h2>
+
+<p>The command line utility <code class="highlighter-rouge">curl</code> is an easy way to verify your proxy server
+configuration. To start with, perform a couple tests from the proxy server
+itself. This ensures the service is running and able to reach the Internet.
+First test <code class="highlighter-rouge">http</code> requests:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ all_proxy=http://localhost:3128 curl --head -sS http://get.blockbridge.com/install
+HTTP/1.1 200 OK
+[...additional output...]
+</code></pre></div></div>
+
+<p>Next ensure the proxy server handles <code class="highlighter-rouge">https</code> requests:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ all_proxy=http://localhost:3128 curl --head -sS https://get.blockbridge.com/install
+HTTP/1.1 200 Connection established
+[...additional output...]
+</code></pre></div></div>
+
+<p>Finally, repeat the tests from an internal client node, replacing <code class="highlighter-rouge">localhost</code>
+with the proxy server’s internal service address:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ all_proxy=http://10.10.10.6:3128 curl --head -sS http://get.blockbridge.com/install
+HTTP/1.1 200 OK
+[...additional output...]
+
+$ all_proxy=http://10.10.10.6:3128 curl --head -sS https://get.blockbridge.com/install
+HTTP/1.1 200 Connection established
+[...additional output...]
 </code></pre></div></div>
 
 
