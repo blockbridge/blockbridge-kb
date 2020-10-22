@@ -1,0 +1,33 @@
+# This is your sidebar TOC. The sidebar code loops through sections here and provides the appropriate formatting.
+
+entries:
+- title: sidebar
+  folders:
+  - title: Overview
+    output: web, pdf
+    url: '#using-blockbridge-storage-at-fdcservers'
+    folderitems:
+    - title: Provision Dedicated Storage
+      output: web, pdf
+      url: '#provision-dedicated-storage'
+    - title: Installing Blockbridge Tools
+      output: web, pdf
+      url: '#install-blockbridge-tools'
+    - title: Initial Setup
+      output: web, pdf
+      url: '#initial-setup'
+    - title: Provision a Disk
+      output: web, pdf
+      url: '#provision-a-disk'
+    - title: Host Attach
+      output: web, pdf
+      url: '#host-attach'
+    - title: Inspecting Attached Storage
+      output: web, pdf
+      url: '#inspecting-attached-storage'
+    - title: Host Detach
+      output: web, pdf
+      url: '#host-detach'
+    - title: Next Steps
+      output: web, pdf
+      url: '#next-steps'

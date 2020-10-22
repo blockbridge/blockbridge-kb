@@ -101,6 +101,14 @@ defaults:
       comments: false
       search: true
       sidebar: custom_certs
+  - scope:
+      path: "guide/fdcservers"
+      type: "pages"
+    values:
+      layout: "page"
+      comments: false
+      search: true
+      sidebar: fdcservers
 
   - scope:
       path: "howto/volumes"
