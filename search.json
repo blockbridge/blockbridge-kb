@@ -26,6 +26,17 @@
 
 
 {
+"title": "Using Blockbridge Storage with Kubernetes",
+"tags": "",
+"keywords": "kubernetes,containers",
+"url": "/guide/kubernetes/index.html",
+"summary": ""
+}
+,
+
+
+
+{
 "title": "Volume Management",
 "tags": "",
 "keywords": "volumes volume management",
@@ -59,10 +70,10 @@
 
 
 {
-"title": "Blockbridge VMware Storage Guide",
+"title": "Installing and configuring Squid",
 "tags": "",
-"keywords": "vmware",
-"url": "/guide/vmware/index.html",
+"keywords": "security,proxy,squid",
+"url": "/guide/squid/index.html",
 "summary": ""
 }
 ,
@@ -70,10 +81,10 @@
 
 
 {
-"title": "Installing and configuring Squid",
+"title": "Blockbridge VMware Storage Guide",
 "tags": "",
-"keywords": "security,proxy,squid",
-"url": "/guide/squid/index.html",
+"keywords": "vmware",
+"url": "/guide/vmware/index.html",
 "summary": ""
 }
 ,
