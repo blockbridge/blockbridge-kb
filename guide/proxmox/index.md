@@ -63,10 +63,12 @@ there is a list of plugin types that are known to be shared, but I don't see any
 way to alter that list.)
 
 After editing `storage.cfg` (or updating the blockbridge plugin) I always
-restart the `pvedaemon` service. I don't know if it's strictly necessary, though:
+restart the `pvedaemon` and `pveproxy` services. It seems to actually be
+required to get the GUI backend to use the new plugin code, while the command
+line tools load the plugin directly and need no restarting.
 
 ```
-# systemctl restart pvedaemon
+# systemctl restart pvedaemon pveproxy
 ```
 
 ## Notes
