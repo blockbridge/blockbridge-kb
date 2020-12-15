@@ -15,7 +15,7 @@ On each Proxmox node, install the cli package. This version is from a special br
 
 ```
 # wget http://zion/shared/josh/blockbridge-cli_5.0.0-1416_amd64.deb
-# dpkg -i blockbridge-cli_5.0.0-1416_amd64.deb
+# apt install ./blockbridge-cli_5.0.0-1416_amd64.deb
 ```
 
 ### Install blockbridge-proxmox
@@ -24,7 +24,7 @@ On each Proxmox node, install the Blockbridge storage plugin:
 
 ```
 # wget http://zion/shared/josh/blockbridge-proxmox_5.0.0-1_all.deb
-# dpkg -i blockbridge-proxmox_5.0.0-1_all.deb
+# apt install ./blockbridge-proxmox_5.0.0-1_all.deb
 ```
 
 ### Install optional bits
