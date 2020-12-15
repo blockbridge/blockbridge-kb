@@ -84,3 +84,45 @@ investigation.
 The driver logs all incoming API calls with their parameters to syslog at
 LOG_INFO level. It also logs the arguments used when executing any `bb`
 commands. You can see the logs using `journalctl -f | grep blockbridge:`.
+
+### Driver configuration options
+
+Here's the full dump of driver options from the driver source:
+
+```
+api_url => {
+    description => "Blockbridge management API URL",
+    type => 'string',
+},
+auth_token => {
+    description => "API access token",
+    type => 'string',
+},
+ssl_verify_peer => {
+    description => "Enable or disable peer certificate verification",
+    type => 'boolean',
+},
+service_type => {
+    description => "Override default service template selection",
+    type => 'string',
+},
+query_include => {
+    description => "List of tags to include when provisioning storage",
+    type => 'string',
+    format => 'string-list',
+},
+query_exclude => {
+    description => "List of tags to exclude when provisioning storage",
+    type => 'string',
+    format => 'string-list',
+},
+transport_encryption => {
+    description => "Specify transport encryption protocol",
+    type => 'string',
+    enum => [ 'tls', 'ipsec', 'none' ],
+},
+multipath => {
+    description => "Specify transport encryption protocol",
+    type => 'boolean',
+}
+```
