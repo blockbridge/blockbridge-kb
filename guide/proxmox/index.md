@@ -1,0 +1,70 @@
+---
+layout: page
+title: Using Blockbridge Storage with Proxmox VE
+description: Follow this procedure to install and configure the Blockbridge Proxmox Plugin
+permalink: /guide/proxmox/index.html
+keywords: proxmox
+toc: false
+---
+
+## Quickstart
+
+### Install blockbridge-cli
+
+On each Proxmox node, install the cli package. This version is from a special branch with proxmox enhancements/fixes:
+
+```
+# wget http://zion/shared/josh/blockbridge-cli_5.0.0-1416_amd64.deb
+# dpkg -i blockbridge-cli_5.0.0-1416_amd64.deb
+```
+
+### Install blockbridge-proxmox
+
+On each Proxmox node, install the Blockbridge storage plugin:
+
+```
+# wget http://zion/shared/josh/blockbridge-proxmox_5.0.0-1_all.deb
+# dpkg -i blockbridge-proxmox_5.0.0-1_all.deb
+```
+
+### Install optional bits
+
+If you want to use TLS, install stunnel
+
+```
+# apt install stunnel
+```
+
+### Create a persistent authorization for Proxmox use
+
+You know how to do this :)
+
+### Add a blockbridge storage definition
+
+Configure a blockbridge storage backend by additing a block to
+`/etc/pve/storage.cfg`. The `/etc/pve` directory is an automatically
+synchronized filesystem (proxmox cluster filesystem, or just pmxcfs), so you
+only need to edit the file on one node and it will be synchronized to all nodes.
+For example:
+
+```
+blockbridge: dogfood
+	api_url https://dogfood.blockbridge.com/api
+	auth_token 1/nalF+/S1pO............2qitqUX79LWtpw
+	ssl_verify_peer 1
+	shared 1
+```
+
+You must include the `shared 1` configuration, otherwise proxmox won't consider
+it to be "shared" storage, and will attempt to manually copy data when migrating
+a VM, instead of just attaching the device on the target hypervisor. I haven't
+figured out how to get the driver to just report it's always shared. (interally
+there is a list of plugin types that are known to be shared, but I don't see any
+way to alter that list.)
+
+After editing `storage.cfg` (or updating the blockbridge plugin) I always
+restart the `pvedaemon` service. I don't know if it's strictly necessary, though:
+
+```
+# systemctl restart pvedaemon
+```
