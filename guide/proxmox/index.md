@@ -68,3 +68,19 @@ restart the `pvedaemon` service. I don't know if it's strictly necessary, though
 ```
 # systemctl restart pvedaemon
 ```
+
+## Notes
+
+### Space Reporting (status api call)
+
+The driver currently always reports 1000000000 bytes of storage total with 50%
+used. I am not sure what we want to do here... we punted on space reporting for
+openstack, but when I did the same thing for proxmox it just considers the
+storage to be offline... I keep forgetting about this. Needs some sort of
+investigation.
+
+### Logs
+
+The driver logs all incoming API calls with their parameters to syslog at
+LOG_INFO level. It also logs the arguments used when executing any `bb`
+commands. You can see the logs using `journalctl -f | grep blockbridge:`.
