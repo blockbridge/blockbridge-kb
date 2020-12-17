@@ -14,8 +14,8 @@ toc: false
 On each Proxmox node, install the cli package. This version is from a special branch with proxmox enhancements/fixes:
 
 ```
-# wget http://zion/shared/josh/blockbridge-cli_5.0.0-1416_amd64.deb
-# apt install ./blockbridge-cli_5.0.0-1416_amd64.deb
+wget http://zion/shared/josh/blockbridge-cli_5.0.0-1417_amd64.deb
+apt install ./blockbridge-cli_5.0.0-1417_amd64.deb
 ```
 
 ### Install blockbridge-proxmox
@@ -23,8 +23,8 @@ On each Proxmox node, install the cli package. This version is from a special br
 On each Proxmox node, install the Blockbridge storage plugin:
 
 ```
-# wget http://zion/shared/josh/blockbridge-proxmox_5.0.0-1_all.deb
-# apt install ./blockbridge-proxmox_5.0.0-1_all.deb
+wget http://zion/shared/josh/blockbridge-proxmox_5.0.0-2_all.deb
+apt install ./blockbridge-proxmox_5.0.0-2_all.deb
 ```
 
 ### Install optional bits
@@ -32,7 +32,7 @@ On each Proxmox node, install the Blockbridge storage plugin:
 If you want to use TLS, install stunnel
 
 ```
-# apt install stunnel
+apt install stunnel
 ```
 
 ### Create a persistent authorization for Proxmox use
@@ -68,7 +68,7 @@ required to get the GUI backend to use the new plugin code, while the command
 line tools load the plugin directly and need no restarting.
 
 ```
-# systemctl restart pvedaemon pveproxy
+systemctl restart pvedaemon pveproxy
 ```
 
 ## Notes
