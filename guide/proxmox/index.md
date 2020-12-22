@@ -14,8 +14,8 @@ toc: false
 On each Proxmox node, install the cli package. This version is from a special branch with proxmox enhancements/fixes:
 
 ```
-wget http://zion/shared/josh/blockbridge-cli_5.0.0-1417_amd64.deb
-apt install ./blockbridge-cli_5.0.0-1417_amd64.deb
+wget http://zion/shared/josh/blockbridge-cli_5.0.0-1422_amd64.deb
+apt install ./blockbridge-cli_5.0.0-1419_amd64.deb
 ```
 
 ### Install blockbridge-proxmox
@@ -23,8 +23,8 @@ apt install ./blockbridge-cli_5.0.0-1417_amd64.deb
 On each Proxmox node, install the Blockbridge storage plugin:
 
 ```
-wget http://zion/shared/josh/blockbridge-proxmox_5.0.0-2_all.deb
-apt install ./blockbridge-proxmox_5.0.0-2_all.deb
+wget http://zion/shared/josh/blockbridge-proxmox_5.0.0-3_all.deb
+apt install ./blockbridge-proxmox_5.0.0-3_all.deb
 ```
 
 ### Install optional bits
