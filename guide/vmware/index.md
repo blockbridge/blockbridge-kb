@@ -1027,7 +1027,7 @@ it's stuck at 32 (or 64) for multiple guests, it's a safe bet they're subject
 to this parameter. If you believe that your guest workloads are unfairly
 penalized by this setting, try increasing it to the device queue depth (192).
 
-    [root@esx:~] esxcli storage core device set -sched-num-req-outstanding 192 -d naa.60a010a0b139fa8b1962194c406263ad
+    [root@esx:~] esxcli storage core device set --sched-num-req-outstanding 192 -d naa.60a010a0b139fa8b1962194c406263ad
 
 Queue Depth Throttling
 ----------------------
@@ -1300,6 +1300,8 @@ else on the system is scheduled. But, it's very difficult to capture and
 maintain that kind of control on an ESXi server. We recommend that you accept
 the default balancing. ESXi appears to do a decent job of avoiding cores under
 heavy utilization by VMs.
+
+As this is a kernel setting, it requires a reboot to take effect.
 
 Mellanox Specific Optimizations
 -------------------------------
