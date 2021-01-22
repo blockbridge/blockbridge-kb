@@ -1,0 +1,213 @@
+# This is your sidebar TOC. The sidebar code loops through sections here and provides the appropriate formatting.
+
+entries:
+- title: sidebar
+  folders:
+  - title: ABOUT THIS GUIDE
+    output: web, pdf
+    url: '#blockbridge-vmware-storage-guide'
+
+  - title: FEATURE OVERVIEW
+    output: web, pdf
+    url: '#'
+    folderitems:
+    - title: Content Types & Formats
+      output: web, pdf
+      url: '#'
+    - title: High-Availability
+      output: web, pdf
+      url: '#'
+    - title: Multi-Tenant Isolation
+      output: web, pdf
+      url: '#'
+    - title: Multi-Proxmox Operation
+      output: web, pdf
+      url: '#'
+    - title: Performance
+      output: web, pdf
+      url: '#'
+    - title: Security
+      output: web, pdf
+      url: '#'
+    - title: Snapshots & Clones
+      output: web, pdf
+      url: '#'
+    - title: Thin Provisioning & Data Reduction
+      output: web, pdf
+      url: '#'
+
+  - title: DEPLOYMENT PLANNING
+    output: web, pdf
+    url: '#'
+    folderitems:
+    - title: Supported Versions
+      output: web, pdf
+      url: '#'
+    - title: Blockbridge Driver Packages
+      output: web, pdf
+      url: '#'
+    - title: Blockbridge Driver Options
+      output: web, pdf
+      url: '#'
+    - title: Blockbridge Driver Authentication
+      output: web, pdf
+      url: '#'
+    - title: Blockbridge Driver Debug
+      output: web, pdf
+      url: '#'
+    - title: Blockbridge Storage Templates
+      output: web, pdf
+      url: '#'
+    - title: Proxmox Storage Configuration
+      output: web, pdf
+      url: '#'
+    - title: Multipath Configuration
+      output: web, pdf
+      url: '#'
+    - title: LACP & Bonded Networking
+      output: web, pdf
+      url: '#'
+
+  - title: PROXMOX STORAGE PRIMITIVES
+    output: web, pdf
+    url: '#'
+    folderitems:
+    - title: Creating A Volume
+      output: web, pdf
+      url: '#'
+    - title: Removing A Volume
+      output: web, pdf
+      url: '#'
+    - title: Attaching A Volume
+      output: web, pdf
+      url: '#'
+    - title: Detaching A Volume
+      output: web, pdf
+      url: '#'
+    - title: Resizing A Volume
+      output: web, pdf
+      url: '#'
+    - title: Creating A Volume Snapshot
+      output: web, pdf
+      url: '#'
+    - title: Removing A Volume Snapshot
+      output: web, pdf
+      url: '#'
+    - title: Restoring From A Volume Snapshot
+      output: web, pdf
+      url: '#'
+
+  - title: PROXMOX STORAGE MANAGEMENT
+    output: web, pdf
+    url: '#'
+    folderitems:
+    - title: Full Clone From VM
+      output: web, pdf
+      url: '#'
+    - title: Linked Clone From VM
+      output: web, pdf
+      url: '#'
+    - title: Full Clone From Template
+      output: web, pdf
+      url: '#'
+    - title: Linked Clone From Template
+      output: web, pdf
+      url: '#'
+    - title: VM Creation From ISO
+      output: web, pdf
+      url: '#'
+    - title: VM Creation from Disk Image
+      output: web, pdf
+      url: '#'
+    - title: Adding Storage To Running VM
+      output: web, pdf
+      url: '#'
+    - title: Deleting Storage From Running VM
+      output: web, pdf
+      url: '#'
+    - title: Moving A Volume Between VMs
+      output: web, pdf
+      url: '#'
+    - title: Migrating A Volume Between Pools
+      output: web, pdf
+      url: '#'
+
+  - title: PROXMOX BACKUP & RECOVERY
+    output: web, pdf
+    url: '#'
+    folderitems:
+    - title: Full Backup
+      output: web, pdf
+      url: '#'
+    - title: Incremental Backup
+      output: web, pdf
+      url: '#'
+    - title: Restore From Backup
+      output: web, pdf
+      url: '#'
+    - title: Restore From Rollback
+      output: web, pdf
+      url: '#'
+
+  - title: GUEST TUNING
+    output: web, pdf
+    url: '#'
+    folderitems:
+    - title: QEMU SCSI Controllers
+      output: web, pdf
+      url: '#'
+    - title: QEMU IO Threads
+      output: web, pdf
+      url: '#'
+    - title: QEMU SSD Emulation
+      output: web, pdf
+      url: '#'
+    - title: QEMU Device Passthrough
+      output: web, pdf
+      url: '#'
+
+  - title: HOST TUNING
+    output: web, pdf
+    url: '#'
+    folderitems:
+    - title: Multipath IO Scheduling
+      output: web, pdf
+      url: '#'
+    - title: NIC Large Receive Offload
+      output: web, pdf
+      url: '#'
+    - title: NIC Interrupt Affinity
+      output: web, pdf
+      url: '#'
+    - title: NIC Interrupt Coalescing
+      output: web, pdf
+      url: '#'
+    - title: Linux iSCSI Affinity
+      output: web, pdf
+      url: '#'
+    - title: Jumbo Frames
+      output: web, pdf
+      url: '#'
+    - title: VLAN Considerations
+      output: web, pdf
+      url: '#'
+
+  - title: KNOWN ISSUES
+    output: web, pdf
+    url: '#'
+    folderitems:
+    - title: GUI Storage Types
+      output: web, pdf
+      url: '#'
+    - title: GUI Storage Usage
+      output: web, pdf
+      url: '#'
+    - title: GUI Storage Configuration
+      output: web, pdf
+      url: '#'
+    - title: Thin Clones of Snapshots
+      output: web, pdf
+      url: '#'
+    - title: Container Storage
+      output: web, pdf
+      url: '#'
