@@ -9,58 +9,55 @@ entries:
 
   - title: FEATURE OVERVIEW
     output: web, pdf
-    url: '#'
+    url: '#feature-overview'
     folderitems:
-    - title: Content Types & Formats
+    - title: Formats & Content Types
       output: web, pdf
-      url: '#'
+      url: '#formats--content-types'
     - title: High-Availability
       output: web, pdf
-      url: '#'
-    - title: Multi-Tenant Isolation
+      url: '#high-availability'
+    - title: Multi-Tenancy & Multi-Proxmox
       output: web, pdf
-      url: '#'
-    - title: Multi-Proxmox Operation
+      url: '#multi-tenancy--multi-proxmox'
+    - title: High Performance
       output: web, pdf
-      url: '#'
-    - title: Performance
+      url: '#high-performance'
+    - title: At-Rest & In-Flight Encryption
       output: web, pdf
-      url: '#'
-    - title: Security
-      output: web, pdf
-      url: '#'
+      url: '#at-rest--in-flight-encryption'
     - title: Snapshots & Clones
       output: web, pdf
-      url: '#'
+      url: '#snapshots--clones'
     - title: Thin Provisioning & Data Reduction
       output: web, pdf
-      url: '#'
+      url: '#thin-provisioning--data-reduction'
 
   - title: DEPLOYMENT PLANNING
     output: web, pdf
-    url: '#'
+    url: '#deployment-planning'
     folderitems:
     - title: Supported Versions
       output: web, pdf
-      url: '#'
-    - title: Blockbridge Driver Packages
+      url: '#supported-versions'
+    - title: Driver Packages
       output: web, pdf
-      url: '#'
-    - title: Blockbridge Driver Options
+      url: '#driver-packages'
+    - title: Driver Options
       output: web, pdf
-      url: '#'
-    - title: Blockbridge Driver Authentication
+      url: '#driver-options'
+    - title: Driver Authentication
       output: web, pdf
-      url: '#'
-    - title: Blockbridge Driver Debug
+      url: '#driver-authentication'
+    - title: Driver Debug
       output: web, pdf
-      url: '#'
+      url: '#driver-debug'
+    - title: Proxmox Storage Definition
+      output: web, pdf
+      url: '#proxmox-storage-definition'
     - title: Blockbridge Storage Templates
       output: web, pdf
-      url: '#'
-    - title: Proxmox Storage Configuration
-      output: web, pdf
-      url: '#'
+      url: '#blockbridge-storage-templates'
     - title: Multipath Configuration
       output: web, pdf
       url: '#'
@@ -70,11 +67,14 @@ entries:
 
   - title: PROXMOX STORAGE PRIMITIVES
     output: web, pdf
-    url: '#'
+    url: '#proxmox-storage-primitives'
     folderitems:
+    - title: Device Naming Specification
+      output: web, pdf
+      url: '#device-naming-specification'
     - title: Creating A Volume
       output: web, pdf
-      url: '#'
+      url: '#creating-a-volume'
     - title: Removing A Volume
       output: web, pdf
       url: '#'
@@ -99,7 +99,7 @@ entries:
 
   - title: PROXMOX STORAGE MANAGEMENT
     output: web, pdf
-    url: '#'
+    url: '#proxmox-storage-management'
     folderitems:
     - title: Full Clone From VM
       output: web, pdf
@@ -149,24 +149,24 @@ entries:
       output: web, pdf
       url: '#'
 
-  - title: GUEST TUNING
+  - title: QEMU GUEST TUNING
     output: web, pdf
-    url: '#'
+    url: '#qemu-guest-tuning'
     folderitems:
     - title: QEMU SCSI Controllers
       output: web, pdf
-      url: '#'
+      url: '#qemu-scsi-controllers'
     - title: QEMU IO Threads
       output: web, pdf
-      url: '#'
+      url: '#qemu-io-threads'
     - title: QEMU SSD Emulation
       output: web, pdf
-      url: '#'
+      url: '#qemu-ssd-emulation'
     - title: QEMU Device Passthrough
       output: web, pdf
-      url: '#'
+      url: '#qemu-device-passhthrough'
 
-  - title: HOST TUNING
+  - title: PROXMOX HOST TUNING
     output: web, pdf
     url: '#'
     folderitems:
@@ -194,7 +194,7 @@ entries:
 
   - title: KNOWN ISSUES
     output: web, pdf
-    url: '#'
+    url: '#known-issues'
     folderitems:
     - title: GUI Storage Types
       output: web, pdf
