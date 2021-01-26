@@ -72,27 +72,27 @@ entries:
     - title: Device Naming Specification
       output: web, pdf
       url: '#device-naming-specification'
-    - title: Creating A Volume
+    - title: Allocate A Volume
       output: web, pdf
-      url: '#creating-a-volume'
-    - title: Removing A Volume
+      url: '#allocate-a-volume'
+    - title: Free A Volume
       output: web, pdf
-      url: '#'
-    - title: Attaching A Volume
+      url: '#free-a-volume'
+    - title: Attach A Volume
       output: web, pdf
-      url: '#'
-    - title: Detaching A Volume
+      url: '#attach-a-volume'
+    - title: Detach A Volume
       output: web, pdf
-      url: '#'
-    - title: Resizing A Volume
+      url: '#detach-a-volume'
+    - title: Resize A Volume
       output: web, pdf
-      url: '#'
-    - title: Creating A Volume Snapshot
+      url: '#resize-a-volume'
+    - title: Create A Volume Snapshot
       output: web, pdf
-      url: '#'
+      url: '#create-a-volume-snapshot'
     - title: Removing A Volume Snapshot
       output: web, pdf
-      url: '#'
+      url: '#remove-a-volume-snapshot'
     - title: Restoring From A Volume Snapshot
       output: web, pdf
       url: '#'

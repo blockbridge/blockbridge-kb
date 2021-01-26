@@ -177,6 +177,12 @@ Blockbridge Storage Templates
 PROXMOX STORAGE PRIMITIVES
 ==========================
 
+Proxmox offers multiple interfaces for storage managament.
+
+ * The GUI offers storage management scoped to the context of virtual machine.
+ * The `pvesm` command provides granular storage management for specific node.
+ * The `pvesh` API tool provides granular storage management, and can operate any node in your Proxmox cluster.
+
 Device Naming Specification
 ---------------------------
 Is it essential to understand that **Proxmox does not maintain internal state about storage devices or connectivity**. Proxmox relies on device naming to know which devices are associated with virtual machines and how those device are connect to the virtual storage controller. The general device name format appear below:
@@ -195,59 +201,142 @@ A virtual bus relative address for the disk. It also serves to ensure unique nam
 NOTE: Interfaces that accept device filenames do not thouroughly validate naming. Our advice is to stick with the format described above. 
 
 
-Creating A Volume
+Allocate A Volume
 -----------------
-
-Proxmox offers multiple interfaces that can directly or indirectly provision storage. The GUI allows for virtual machine scoped storage management and does not provide direct control of storage devices. The shell tools providers a flexible alternative with improved control. 
-
 ### GUI
 
 ### PVESM
 
 ```
 pvesm alloc <storage> <vmid> <filename> <size>
-
-Allocate disk images.
-
-<storage>: <string>
-The storage pool identifier.
-
-<vmid>: <integer> (1 - N)
-Specify owner VM
-
-<filename>: <string>
-See: Disk Naming Specification.
-
-<size>: \d+[MG]?
-Size in kilobyte (1024 bytes). Optional suffixes M (megabyte, 1024K) and G (gigabyte, 1024M)
-
 ```
 
-Example
+| Parameter |  Format  | Description                                                                             |
+|-----------|:--------:|------------|
+| storage   |  string  | Storage pool identifier |
+| vmid      |  integer | Virtual machine owner ID |
+| filename  |  string  | See: [Device Naming Specification](#device-naming-specification) |
+| size      | \d+[MG]? | Default is KiB (1024). Optional suffixes M (MiB, 1024K) and G (GiB, 1024M) |
+
+**Example**
 
 ```
+!!! NEED EXAMPLE
+```
+
+NOTE: the `pvesm alloc` command creates a device that is logically associated with a virtual machine. However, it does not automatically add it. See the section on [Attaching A Volume](#attaching-a-volume) for more information.
+
+### PVESH
+```
+pvesh create <api_path> -vmid <vmid> -filename <fileame> -size <size>
+```
+
+| Parameter |  Format  | Description                                                                             |
+|-----------|:--------:|------------|
+| api_path  |  string  | `/nodes/{node}/storage/{storage}/content` |
+| node      |  string  | Any pve node listed in the output of `pvesh get /nodes` |
+| storage   |  string  | Storage pool identifier |
+| vmid      |  integer | Virtual machine owner ID |
+| filename  |  string  | See: [Device Naming Specification](#device-naming-specification) |
+| size      | \d+[MG]? | Default is KiB (1024). Optional suffixes M (MiB, 1024K) and G (GiB, 1024M) |
+
+**Example**
+
+```
+!!! NEED EXAMPLE
+```
+
+NOTE: the `pvesm create` command creates a device that is logically associated with a virtual machine. However, it does not automatically add it. See the section on [Attaching A Volume](#attaching-a-volume) for more information.
+
+Free A Volume
+-----------------
+
+### GUI
+
+### PVESM
+
+```
+pvesm free <volume> --storage <storage>
+```
+
+| Parameter |  Format  | Description                                                                             |
+|-----------|:--------:|------------|
+| volume    |  string  | Name of volume to destroy |
+| storage   |  string  | Storage pool identifier |
+
+**Example**
+
+```
+!!! NEED EXAMPLE
 ```
 
 ### PVESH
 ```
-pvesh create /nodes/[node-name]/storage/<storage>/content [OPTIONS] [FORMAT_OPTIONS]
-
-<storage>: <string>
-The storage pool identifier.
-
-<vmid>: <integer> (1 - N)
-Specify owner VM
-
-<filename>: <string>
-See: Disk Naming Specification.
-
-pvesh create /nodes/[node-name]/storage/<storageid>/content -vmid <vmid> -filename <filename> -size x[B,K,G,T]
+pvesh delete <api_path>
 ```
 
-Example
+| Parameter |  Format  | Description                                                                             |
+|-----------|:--------:|------------|
+| api_path  |  string  | `/nodes/{node}/storage/{storage}/content/{volume}` |
+| node      |  string  | Any pve node listed in the output of `pvesh get /nodes` |
+| storage   |  string  | Storage pool identifier |
+| volume    |  string  | Name of volume to destroy |
+
+**Example**
 
 ```
+!!! NEED EXAMPLE
 ```
+
+Attach A Volume
+-----------------
+
+### GUI
+
+This function is not available via the GUI.
+
+### PVESM
+
+### PVESH
+
+Detach A Volume
+-----------------
+
+### GUI
+
+This function is not available via the GUI.
+
+### PVESM
+
+### PVESH
+
+Resize A Volume
+-----------------
+
+### GUI
+
+### PVESM
+
+### PVESH
+
+Create A Volume Snapshot
+-----------------
+
+### GUI
+
+### PVESM
+
+### PVESH
+
+Remove A Volume Snapshot
+-----------------
+
+### GUI
+
+### PVESM
+
+### PVESH
+
 
 PROXMOX STORAGE MANAGEMENT
 ==========================
