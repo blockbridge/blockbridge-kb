@@ -1,16 +1,201 @@
 ---
 layout: page
-title: BLOCKBRIDGE PROXMOX VE STORAGE GUIDE
-description: Configure the Blockbridge Proxmox Plugin
+title: BLOCKBRIDGE OPENSTACK STORAGE GUIDE
+description: Configure the Blockbridge Cinder Volume Driver
 permalink: /guide/openstack/index.html
-keywords: openstack
+keywords: openstack cinder
 toc: false
 ---
 
-Introduction
-============
+This guide provides technical details for deploying OpenStack with Blockbridge
+iSCSI storage using the Blockbridge Cinder Volume driver.
 
-Blockbridge is software that transforms commodity infrastructure into secure multi-tenant storage that operates as a programmable service. It provides automatic encryption, secure deletion, quality of service, replication, and programmable security capabilities on your choice of hardware. Blockbridge uses micro-segmentation to provide isolation that allows you to concurrently operate OpenStack, Docker, and bare-metal workflows on shared resources. When used with OpenStack, isolated management domains are dynamically created on a per-project basis. All volumes and clones, within and between projects, are automatically cryptographically isolated and implement secure deletion.
+Most readers will want to start with the Quickstart section. The rest of the
+guide has detailed information about features, driver configuration options and
+troubleshooting.
+
+Supported Versions
+------------------
+
+This guide covers the
+[2.0.0](https://github.com/blockbridge/blockbridge-cinder/releases/tag/v2.0.0)
+release of the Blockbridge volume driver.
+
+The 2.0.0 release has been qualified with the following OpenStack releases:
+
+  * Victoria
+  * Ussuri
+
+Additionally, this release is supported with the following Blockbridge releases:
+
+  * 5.1.0
+  * 4.4.14
+
+Quickstart
+==========
+
+For simplicity, we'll be configuring the volume driver in _single tenant_ mode.
+In single tenant mode there is a one-to-one correspondance between a Cinder
+back-end and a Blockbridge account. To read more about the other ways of
+configuring Blockbridge, skip ahead to the [Deployment & Management] section.
+
+The quickstart also assumes there's only one OpenStack node running the Cinder
+Volume services. If you've got more than one, pick one so you can follow along.
+
+Installing the Driver
+---------------------
+
+The Blockbridge Cinder driver consists of a single python source file. We're
+currently in the process of including the driver in the upstream OpenStack
+cinder distribution; until then, RPM packages are available for CentOS 7 and 8.
+
+The driver must be installed on all OpenStack nodes running the cinder-volume
+service.
+
+For CentOS 7, install the el7 package:
+
+    yum install -y https://github.com/blockbridge/blockbridge-cinder/releases/download/v2.0.0/python3-blockbridge_cinder-2.0.0-14.el7.noarch.rpm
+
+For CentOS 8, install the el8 package:
+
+    yum install -y https://github.com/blockbridge/blockbridge-cinder/releases/download/v2.0.0/python3-blockbridge_cinder-2.0.0-14.el78.noarch.rpm
+
+For assistance with other Linux distributions, contact <support@blockbridge.com>.
+
+Blockbridge Configuration
+-------------------------
+
+First, we'll create a tenant account on the Blockbridge backend. Log in to the
+management node. Confirm you're running a supported release using `blockbridge
+version` command:
+
+    # blockbridge version
+    Blockbridge Shell
+    =================
+    version:   5.1.0
+    release:   6130.1
+    build:     3249
+    
+    Node Software
+    =============
+    version:   5.1.0
+    release:   6130.1
+    branch:    master
+    timestamp: Feb 04 2021 14:04:35
+
+Using the `bb` command line utility, create a `bbcinder1` tenant account. Start by
+authenticating as the `system` user:
+
+    $ bb -kH localhost auth login
+    Authenticating to https://localhost/api
+    
+    Enter user or access token: system
+    Password for system:
+    Authenticated; token expires in 3599 seconds.
+    
+    == Authenticated as user system.
+
+Next, create the `bbcinder1` account and authenticate as the new tenant:
+
+    $ bb -kH localhost account create --name bbcinder1
+    == Created account: bbcinder1 (ACT0762194C407FBCF4)
+    
+    == Account: bbcinder1 (ACT0762194C407FBCF4)
+    name                  bbcinder1
+    label                 bbcinder1
+    serial                ACT0762194C407FBCF4
+    created               2021-03-10 17:11:35 -0500
+    disabled              no
+    
+    $ bb -kH localhost auth login --su bbcinder1
+    Authenticating to https://localhost/api
+    
+    Enter user or access token: system
+    Password for system:
+    Acquiring access token for bbcinder1.
+    Authenticated; token expires in 3599 seconds.
+    
+    == Authenticated as user bbcinder1.
+
+Finally, create a persistent authorization to use for the cinder volume driver
+API access:
+
+    $ bb -kH localhost authorization create --notes 'cinder volume driver api access'
+    == Created authorization: ATH4762194C413F7FD0
+    
+    == Authorization: ATH4762194C413F7FD0
+    notes                 cinder volume driver api access
+    serial                ATH4762194C413F7FD0
+    account               bbcinder1 (ACT0762194C407FBCF4)
+    user                  bbcinder1 (USR1B62194C407FBEBD)
+    enabled               yes
+    created at            2021-03-10 17:12:28 -0500
+    access type           online
+    token suffix          lMlB2wLA
+    restrict              auth
+    enforce 2-factor      false
+    
+    == Access Token
+    access token          1/j2JUTZQdum2HnO76HbF9adhol0ucgXDataE6tXcV7U8PeQlMlB2wLA
+    
+    *** Remember to record your access token!
+
+Make note of the displayed access token; if you lose it, you'll have to create
+another persistent authorization.
+
+OpenStack Configuration
+-----------------------
+
+On your OpenStack Cinder node, configure a new backend by adding a named
+configuration group to the `/etc/cinder/cinder.conf` file. Set the
+`blockbridge_api_host` to the DNS name or IP address of the Blockbridge
+management node. If you've got a clustered management installation, be sure to
+use a cluster-managed VIP, otherwise cinder won't be able to communicate with
+the backend after service failover. For `blockbridge_auth_token`, use the access
+token generated in the previous step.
+
+    [bbcinder1]
+    volume_backend_name = bbcinder1
+    blockbridge_pools = pool:
+    blockbridge_api_host = blockbridge-storage
+    blockbridge_auth_token = 1/j2JUTZQdum2HnO76HbF9adhol0ucgXDataE6tXcV7U8PeQlMlB2wLA
+    blockbridge_tenant_mode = single
+    blockbridge_ssl_verify_peer = False
+
+While not recommended for production, to keep things simple we've disabled peer
+certificate verification.
+
+You'll also need to add `bbcinder1` to the `enabled_backends` list in the
+`[DEFAULT]` group:
+
+    [DEFAULT]
+    enabled_backends=lvm,bbcinder1
+
+IMPORTANT: If your `cinder.conf` doesn't currently have an `enabled_backends`
+setting _and_ you have existing cinder volumes hosted on this node, you'll need
+to update your existing volumes' `host` value. To see how this is done, read the
+OpenStack documentation for [configuring multiple storage back
+ends](https://docs.openstack.org/cinder/latest/admin/blockstorage-multi-backend.html).
+
+Note that even though we've used `bbcinder1` for our configuration group name
+and the `volume_backend_name`, they don't have to match. The `enabled_backends`
+is a list of group names, _not_ of `volume_backend_name` values. Be sure to
+restart the cinder-volume service after editing the `cinder.conf` configuration
+file.
+
+The `volume_backend_name` is Cinder's internal volume type identifier. To expose
+a volume type to users, so they may create volumes with a given backend, the
+internal backend name needs to be mapped to a public volume type.
+
+First, create the volume type:
+
+    openstack --os-username admin --os-tenant-name admin volume type create blockbridge
+   
+Next, map the volume type to its corresponding `volume_backend_name`:
+```
+    openstack --os-username admin --os-tenant-name admin volume type set blockbridge \
+      --property volume_backend_name=bbcinder1
+```
 
 Architecture reference
 ======================
