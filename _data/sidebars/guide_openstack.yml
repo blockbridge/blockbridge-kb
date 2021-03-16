@@ -5,59 +5,78 @@ entries:
   folders:
   - title: ABOUT THIS GUIDE
     output: web, pdf
-    url: '#blockbridge-vmware-storage-guide'
+    url: '#blockbridge-openstack-storage-guide'
 
-  - title: ARCHITECTURE REFERENCE
+  - title: QUICKSTART
     output: web, pdf
-    url: '#architecture-reference'
+    url: '#quickstart'
     folderitems:
-    - title: Control Paths
+    - title: Driver Installation
       output: web, pdf
-      url: '#control-paths'
-    - title: Block Storage API
+      url: '#driver-installation'
+    - title: Blockbridge Configuration
       output: web, pdf
-      url: '#block-storage-api'
-    - title: Extended Management
+      url: '#blockbridge-configuration'
+    - title: OpenStack Configuration
       output: web, pdf
-      url: '#extended-management'
-    - title: Attribute-based Provisioning
+      url: '#openstack-configuration'
+
+  - title: DEPLOYMENT & MANAGEMENT
+    output: web, pdf
+    url: '#deployment---management'
+    folderitems:
+    - title: Deployment Modes
       output: web, pdf
-      url: '#attribute-based-provisioning'
+      url: '#deployment-modes'
+    - title: Cinder Driver
+      output: web, pdf
+      url: '#cinder-driver'
+    - title: Authentication
+      output: web, pdf
+      url: '#authentication'
+    - title: Cinder Backend
+      output: web, pdf
+      url: '#cinder-backend'
+    - title: Volume Type
+      output: web, pdf
+      url: '#volume-type'
+    - title: Resource Queries
+      output: web, pdf
+      url: '#resource-queries'
+    - title: Configuration Options
+      output: web, pdf
+      url: '#configuration-options'
+    - title: Example cinder.conf
+      output: web, pdf
+      url: '#example-cinder-conf'
+
+  - title: ADVANCED FEATURES
+    output: web, pdf
+    url: '#advanced-features'
+    folderitems:
+    - title: Multiple Volume Types
+      output: web, pdf
+      url: '#multiple-volume-types'
+    - title: Instance Migration
+      output: web, pdf
+      url: '#instance-migration'
+    - title: Volume Migration
+      output: web, pdf
+      url: '#volume-migration'
+    - title: Volume Retyping
+      output: web, pdf
+      url: '#volume-retyping'
+
+  - title: REFERENCE
+    output: web, pdf
+    url: '#reference'
+    folderitems:
     - title: Supported Operations
       output: web, pdf
       url: '#supported-operations'
     - title: Supported Protocols
       output: web, pdf
       url: '#supported-protocols'
-
-  - title: CONFIGURATION
-    output: web, pdf
-    url: '#configuration'
-    folderitems:
-    - title: Create an authentication token
+    - title: Version History
       output: web, pdf
-      url: '#create-an-authentication-token'
-    - title: Create volume type
-      output: web, pdf
-      url: '#create-volume-type'
-    - title: Specify volume driver
-      output: web, pdf
-      url: '#specify-volume-driver'
-    - title: Specify API endpoint
-      output: web, pdf
-      url: '#specify-api-endpoint-and-authentication'
-    - title: Specify resource query
-      output: web, pdf
-      url: '#specify-resource-query'
-    - title: Configuration options
-      output: web, pdf
-      url: '#configuration-options'
-    - title: Configuration example
-      output: web, pdf
-      url: '#configuration-example'
-    - title: Multiple volume types
-      output: web, pdf
-      url: '#multiple-volume-types'
-    - title: Testing resources
-      output: web, pdf
-      url: '#testing-resources'
+      url: '#version-history'

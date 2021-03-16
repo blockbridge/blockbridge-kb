@@ -6,3 +6,25 @@ Workflow:
 - when changes look good, checkout the `production` branch, and commit the changes to production
 
 - when production is pushed, teamcity will pickup the checkin, and publish to https://kb.blockbridge.com automatically.
+
+
+Spin up a webserver locally
+---------------------------
+
+Jekyll can theoretically serve the content directly.  However, YMMV with this process:
+
+% bundle install
+...
+Installing nokogiri 1.8.5 with native extensions
+...
+
+% bundle exec jekyll serve
+Configuration file: /Users/rocko/blockbridge/blockbridge-kb/_config.yml
+            Source: /Users/rocko/blockbridge/blockbridge-kb
+       Destination: /Users/rocko/blockbridge/blockbridge-kb/_site
+ Incremental build: disabled. Enable with --incremental
+      Generating...
+                    done in 1.985 seconds.
+ Auto-regeneration: enabled for '/Users/rocko/blockbridge/blockbridge-kb'
+    Server address: http://127.0.0.1:4000
+  Server running... press ctrl-c to stop.
