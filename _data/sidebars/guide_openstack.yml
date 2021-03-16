@@ -23,7 +23,7 @@ entries:
 
   - title: DEPLOYMENT & MANAGEMENT
     output: web, pdf
-    url: '#deployment---management'
+    url: '#deployment--management'
     folderitems:
     - title: Deployment Modes
       output: web, pdf
@@ -48,7 +48,7 @@ entries:
       url: '#configuration-options'
     - title: Example cinder.conf
       output: web, pdf
-      url: '#example-cinder-conf'
+      url: '#example-cinderconf'
 
   - title: ADVANCED FEATURES
     output: web, pdf
