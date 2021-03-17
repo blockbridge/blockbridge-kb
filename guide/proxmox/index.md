@@ -84,26 +84,38 @@ Supported Versions
 Driver Packages
 ---------------
 
-### Blockbridge-cli
+### Add the Blockbridge Tools Repository
 
-
-On each Proxmox node, install the Blockbridge cli package:
+On each Proxmox node, import the Blockbridge release signing key:
 
 ```
-wget http://zion/shared/josh/blockbridge-cli_5.0.0-1422_amd64.deb
-apt install ./blockbridge-cli_5.0.0-1419_amd64.deb
+sudo apt update
+sudo apt install apt-transport-https ca-certificates curl \
+    gnupg-agent software-properties-common
+curl -fsSL https://get.blockbridge.com/tools/5.1/debian/gpg | sudo apt-key add -
 ```
 
-### blockbridge-proxmox
+Verify the key fingerprint:
+
+```
+sudo apt-key fingerprint 7ECF5373
+pub   rsa4096 2016-11-01 [SC]
+      9C1D E2AE 5970 CFD4 ADC5  E0BA DDDE 845D 7ECF 5373
+uid           [ unknown] Blockbridge (Official Signing Key) <security@blockbridge.com>
+sub   rsa4096 2016-11-01 [E]
+```
+
+### Install the Blockbridge Plugin
+
 On each Proxmox node, install the Blockbridge storage plugin:
 
 ```
-wget http://zion/shared/josh/blockbridge-proxmox_5.0.0-3_all.deb
-apt install ./blockbridge-proxmox_5.0.0-3_all.deb
+sudo apt install blockbridge-proxmox
 ```
 
-### optional packages
-If you want to use TLS, install stunnel
+### Optional Packages
+
+To use TLS transport encryption for iSCSI traffic, install the `stunnel` package:
 
 ```
 apt install stunnel
@@ -129,7 +141,7 @@ Driver Authentication
 
 ### Create a persistent authorization for Proxmox use:
 
-Login to Blockbridge controlplane as system user:
+Log in to Blockbridge controlplane as the `system` user:
 
 ```
 root@proxmox-1:~# bb auth login
@@ -142,11 +154,10 @@ Authenticated; token expires in 3599 seconds.
 == Authenticated as user system.
 ```
 
-Create new Proxmox dedicate account for storage and management isolation:
+Create a dedicated `proxmox` account for storage and management isolation:
 
 ```
-root@proxmox-1:~# bb account create --name proxmox --password
-Enter password:
+root@proxmox-1:~# bb account create --name proxmox
 == Created account: proxmox (ACT0762194C407BA625)
 
 == Account: proxmox (ACT0762194C407BA625)
@@ -157,20 +168,20 @@ created               2021-01-27 16:58:53 -0500
 disabled              no
 ```
 
-Login as newly created Proxmox account:
+Using the `system` username and password, su to the newly created `proxmox` account:
 
 ```
-root@proxmox-1:~# bb auth login
+root@proxmox-1:~# bb auth login --su proxmox
 Authenticating to https://dogfood.blockbridge.com/api
 
-Enter user or access token: proxmox
-Password for proxmox:
+Enter user or access token: system
+Password for proxmox: ......
 Authenticated; token expires in 3599 seconds.
 
-== Authenticated as user proxmox3.
+== Authenticated as user proxmox.
 ```
 
-Create an authentication token for Proxmox storage setup:
+Create a persistent authorization for use by the Blockbridge storage plugin:
 
 ```
 root@proxmox-1:~# bb authorization create --notes "Proxmox Cluster token"
@@ -201,27 +212,32 @@ The driver logs all incoming API calls with their parameters to syslog at
 LOG_INFO level. It also logs the arguments used when executing any `bb`
 commands. You can see the logs using `journalctl -f | grep blockbridge:`.
 
+{% include note.html content="I was rewording this section, but then I thought maybe it just goes away." %}
 
 Proxmox Storage Definition
 ------------------------------------
 
-Configure a blockbridge storage backend by additing a block to
+Configure a blockbridge storage backend by additing a new section to
 `/etc/pve/storage.cfg`. The `/etc/pve` directory is an automatically
-synchronized filesystem (proxmox cluster filesystem, or just pmxcfs), so you
-only need to edit the file on one node and it will be synchronized to all nodes.
+synchronized filesystem (proxmox cluster filesystem, or just `pmxcfs`), so you
+only need to edit the file on a single node; the changes are synchronized to all cluster members.
+
 For example:
 
 ```
-blockbridge: dogfood
+blockbridge: block-gp
         api_url https://dogfood.blockbridge.com/api
         auth_token 1/nalF+/S1pO............2qitqUX79LWtpw
 ```
 
-After editing `storage.cfg` (or updating the blockbridge plugin) we recommend restarting`pvedaemon`, `pveproxy` and `pvestatd` services.
+After editing `storage.cfg` (or updating the blockbridge plugin) we recommend
+restarting `pvedaemon`, `pveproxy` and `pvestatd` services:
 
 ```
 systemctl restart pvedaemon pveproxy pvestatd
 ```
+
+You'll have to do this on all cluster nodes.
 
 Blockbridge Storage Templates
 -----------------------------
@@ -231,7 +247,8 @@ Proxmox offers multiple interfaces for storage management.
  * The GUI offers storage management scoped to the context of virtual machine.
  * The `pvesm` command provides granular storage management for specific node.
  * The `qm` command allows for VM specific volume management.
- * The `pvesh` API tool provides granular storage and VM management, and can operate on any node in your Proxmox cluster.
+ * The `pvesh` API tool provides granular storage and VM management, and can
+   operate on any node in your Proxmox cluster.
 
 PROXMOX STORAGE PRIMITIVES
 ===================
@@ -239,7 +256,7 @@ PROXMOX STORAGE PRIMITIVES
 Device Naming Specification
 ---------------------------
 
-Is it essential to understand that **Proxmox does not maintain internal state about storage devices or connectivity**. Proxmox relies on device naming to know which devices are associated with virtual machines and how those device are connected to the virtual storage controller. The general device name format appear below:
+Is it essential to understand that **Proxmox does not maintain internal state about storage devices or connectivity**. Proxmox relies on device naming to know which devices are associated with virtual machines and how those device are connected to the virtual storage controller. The general device name format is as follows:
 
 ```
 Device Filename Specification:
@@ -252,15 +269,14 @@ Specify owner VM
 Unique naming of disk files
 ```
 
-NOTE: Interfaces that accept device filenames do not thoroughly validate naming. Our advice is to stick with the format described above.
-
+{% include note.html content="Interfaces that accept device filenames do not thoroughly validate naming. Our advice is to stick with the format described above." %}
 
 Show Storage Pools
 ------------------
 
 Proxmox supports operation of multiple pools of storage. This flexibility allows for otimization of storage resources based on requirements. For example, the default CephFS pool works well for shared file storage, for such resources as ISOs, Snippets, etc. The Blockbridge is apropriate for block storage, where high-performance and low-latency are preferred.
 
-Not all storage pools allow for shared access. As such, the interfaces used to view storage pools are scoped to a node. When using a shared storage type, such as Blockbridge of CephFS, each node will return consistent results.
+Not all storage pools allow for shared access. As such, the interfaces used to view storage pools are scoped to a node. When using a shared storage type, such as Blockbridge or CephFS, each node will return consistent results.
 
 
 ### PVESM
@@ -303,19 +319,18 @@ $ pvesh get /nodes/proxmox-1/storage/
 List Volumes
 ------------
 
-You can enumerate volumes stored in a storage pool are using the GUI, `pvesm`, and `pvesh` tools.
+You can enumerate volumes stored in a storage pool using the GUI, `pvesm`, and `pvesh` tools.
 
-TIP: Blockbridge is shared storage. The contents of a storage pool can be enumerated from any node in your Proxmox Cluster.
+{% include tip.html content="Blockbridge is shared storage. The contents of a storage pool can be enumerated from any node in your Proxmox Cluster." %}
 
 ### GUI
 
 To generate a list of all volumes in a storage pool, we recommend `Folder View`. To see devices connected to a specific virtual machine, select the VM from the primary navigation plane. Then, select `Hardware`.
 
-
-
-To see a list of all device in the storage pool, select a storage pool from the Storage folder in the primary navigation plane: add nodes have a consistent view of storage. Then, select VM Disks`.
+To see a list of all device in the storage pool, select a storage pool from the Storage folder in the primary navigation plane: all nodes have a consistent view of storage. Then, select VM Disks.
 
 ### PVESM
+
 ```
 pvesm list <storage> [--vmid <integer>]
 ```
@@ -434,8 +449,7 @@ $ pvesm alloc shared-block-gp 100 vm-100-disk-1 10G
 successfully created 'shared-block-gp:vm-100-disk-1'
 ```
 
-TIP: Proxmox allows you to allocate volumes for VMID that do not exist: you must specify a name that conforms to the name specification. Failure to do so may result in an error such as `illegal name 'vm-101-disk-2' - should be 'vm-10444-*'
-
+{% include tip.html content="Proxmox allows you to allocate volumes for VMID that do not exist: you must specify a name that conforms to the name specification. Failure to do so may result in an error such as `illegal name '101-vm-disk-2' - should be 'vm-10444-*'`." %}
 
 ### PVESH
 
@@ -468,13 +482,13 @@ shared-block-gp:vm-100-disk-1
 Delete A Volume
 -----------------
 
-You can use either `pvesm` or `pvesh` commands to delete a volume. It may appear as though the tools use inconsistent terminology. However, keep in mind that `pvesh` is submitting a `delete` HTTP request to the resource URL.
+You can use either `pvesm` or `pvesh` commands to delete a volume. It may appear as though the tools use inconsistent terminology. However, keep in mind that `pvesh` is submitting a `DELETE` HTTP request to the resource URL.
 
-NOTE: You can delete a volume that is attached to a VM. Failure to detach before release results in a stale attachment: a VM reference to storage that no longer exists. You can remove the stale attachment with the [Detach command](#detach a volume).
+{% include note.html content="You can delete a volume that is attached to a VM. Failure to detach before release results in a stale attachment: a VM reference to storage that no longer exists. You can remove the stale attachment with the [Detach command](#detach a volume)." %}
 
-TIP: The delete operation with Blockbridge automatically performs an instantaneous secure-erase.
+{% include tip.html content="The delete operation with Blockbridge automatically performs an instantaneous secure-erase." %}
 
-TIP: Blockbridge is shared storage. You can execute the delete operation against any node in your Proxmox cluster.
+{% include tip.html content="Blockbridge is shared storage. You can execute the delete operation against any node in your Proxmox cluster." %}
 
 ### PVESM
 
@@ -522,17 +536,17 @@ Attach A Volume
 -----------------
 An attachment is effectively a VM configuration reference to a storage device. An attachment describes how a storage device is connected to the VM and how the guest OS sees it. The attach operation is principally a VM operation.
 
-TIP: Proxmox considers storage devices that are allocated, but not attached, as `unused`.
+{% include tip.html content="Proxmox considers storage devices that are allocated, but not attached, as `unused`." %}
 
-TIP: The`attach` and `detach` commands are essential primitives required to move a disk between virtual machines.
+{% include tip.html content="The `attach` and `detach` commands are essential primitives required to move a disk between virtual machines." %}
 
-WARN: it is possible to accidentally attach the same device multiple times.
+{% include warning.html content="Use these low-level commands with extra caution; it's possible to accidentally attach the same device multiple times." %}
 
 ### GUI
 
 The GUI allows you to `attach` devices from the `Hardware` list that are identified as `Unused`. Select an `Unused` disk from the `Hardware` table and click the `Edit` button. Assign a `Bus` and `Device` number. Then, `Add` the device to the VM.
 
-TIP: You may need to execute `qm rescan --vmid <vmid>` on the Proxmox node that owns the VM, if you suspect that an unusued device is missing.
+{% include tip.html content="You may need to execute `qm rescan --vmid <vmid>` on the Proxmox node that owns the VM, if you suspect that an unusued device is missing." %}
 
 ### QM
 
@@ -557,7 +571,7 @@ $ qm set 100 --scsihw virtio-scsi-pci --scsi1 shared-block-gp:vm-100-disk-1
 update VM 100: -scsi1 shared-block-gp:vm-100-disk-1 -scsihw virtio-scsi-pci
 ```
 
-TIP: Although Blockbridge is a shared storage type, the Proxmox `qm` command must execute on the home node of the VM.
+{% include tip.html content="Although Blockbridge is a shared storage type, the Proxmox `qm` command must be executed on the home node of the VM." %}
 
 ### PVESH
 
@@ -584,14 +598,14 @@ $ pvesh create /nodes/proxmox-1/qemu/100/config -scsihw virtio-scsi-pci -scsi1 s
 update VM 100: -scsi1 shared-block-gp:vm-100-disk-1 -scsihw virtio-scsi-pci
 ```
 
-TIP: You can perform an attach operation using the `pvesh` command while operating on any node in your Proxmox cluster.
+{% include tip.html content="You can perform an attach operation using the `pvesh` command while operating on any node in your Proxmox cluster." %}
 
 Detach A Volume
 -----------------
 
 The detach operation updates the configuration of a VM to remove references to a storage device. If the VM is running, the device will disappear from the guest. Detach is a non-destructive operation and does not release storage.
 
-NOTE: The Proxmox interfaces use inconsistent terminology for this operation across management interfaces. The `detach` in the GUI is synonymous with `unlink` in `pvesh` and `qm`.
+{% include note.html content="The Proxmox interfaces use inconsistent terminology for this operation across management interfaces. The `detach` in the GUI is synonymous with `unlink` in `pvesh` and `qm`." %}
 
 ### GUI
 
@@ -617,7 +631,7 @@ $ qm unlink 100 --idlist scsi1
 update VM 100: -delete scsi1
 ```
 
-TIP: You can display a list of storage devices attached to a VM using the `qm config <VMID>` command.
+{% include tip.html content="You can display a list of storage devices attached to a VM using the `qm config <VMID>` command." %}
 
 ### PVESH
 
@@ -642,14 +656,14 @@ $ pvesh set /nodes/proxmox-1/qemu/100/unlink -idlist scsi1
 update VM 100: -delete scsi1
 ```
 
-TIP: You can display a list of storage devices attached to a VM using `pvesh get /nodes/<node>/qemu/<vmid>/config`.
+{% include tip.html content="You can display a list of storage devices attached to a VM using `pvesh get /nodes/<node>/qemu/<vmid>/config`." %}
 
 Resize A Volume
 -----------------
 
 The resize operation extends the logical address space of a storage device. Reducing the size of a device is not permitted by Proxmox. The resize operation can only execute against devices that are attached to a VM.
 
-TIP: If you need to extend a filesystem, resizing the underlying storage device is only one step of many. See the Proxox Wiki for [Resize disks](https://pve.proxmox.com/wiki/Resize_disks) for additional information on partition management, LVM, and guest specific considerations.
+{% include tip.html content="If you need to extend a filesystem, resizing the underlying storage device is only one step of many. See the Proxox Wiki for [Resize disks](https://pve.proxmox.com/wiki/Resize_disks) for additional information on partition management, LVM, and guest specific considerations." %}
 
 ### GUI
 
@@ -703,13 +717,13 @@ Create A Snapshot
 
 Snapshots provide a recovery point for a virtual machine's state, configuration, and data. Proxmox orchestrates snapshots via QEMU and backend storage providers. When you snapshot a Proxmox VM that uses virtual disks backed by Blockbridge, your disk snapshots are thin, complete instantly, and avoid copy-on-write (COW) performance penalties.
 
-WARN: If multiple devices are attached to a single VM, Promox will snapshot each active device. Devices that are detached (i.e., `unused`) are ignored by Proxmox.
+{% include note.html content="If multiple devices are attached to a single VM, Promox will snapshot each active device. Devices that are detached (i.e., `unused`) are ignored by Proxmox." %}
 
 ### GUI
 
 In the `Snapshots` panel for the VM, click `Take Snapshot`. The duration of the operation depends on whether VM state is preserved.
 
-TIP: Closing the dialog does not terminate the operation. It will continue to operate in the background.
+{% include tip.html content="Closing the dialog does not terminate the operation. It will continue to operate in the background." %}
 
 ### QM
 
@@ -1093,15 +1107,6 @@ Thin Clones of Snapshots
 
 Container Storage
 ------------------
-
-Space Reporting (status api call)
----------------------------------
-
-The driver currently always reports 1000000000 bytes of storage total with 50%
-used. I am not sure what we want to do here... we punted on space reporting for
-openstack, but when I did the same thing for proxmox it just considers the
-storage to be offline... I keep forgetting about this. Needs some sort of
-investigation.
 
 ADDITIONAL RESOURCES
 ====================
