@@ -5,38 +5,31 @@ entries:
   folders:
   - title: ABOUT THIS GUIDE
     output: web, pdf
-    url: '#summary'
-
-  - title: INTRODUCTION
-    output: web, pdf
-    url: '#quickstart'
+    url: '#kubernetes-storage-guide'
     folderitems:
     - title: Supported Versions
       output: web, pdf
-      url: '#driver-installation'
-    - title: Blockbridge Driver
+      url: '#supported-versions'
+    - title: Supported Features
       output: web, pdf
-      url: '#blockbridge-configuration'
+      url: '#supported-features'
     - title: Supported k8s Environments
       output: web, pdf
-      url: '#openstack-configuration'
+      url: '#supported-k8s-environments'
     - title: Requirements
       output: web, pdf
-      url: '#openstack-configuration'
+      url: '#requirements'
 
   - title: QUICKSTART
     output: web, pdf
     url: '#quickstart'
     folderitems:
-    - title: Driver Installation
-      output: web, pdf
-      url: '#driver-installation'
     - title: Blockbridge Configuration
       output: web, pdf
       url: '#blockbridge-configuration'
     - title: Kubernetes Configuration
       output: web, pdf
-      url: '#openstack-configuration'
+      url: '#kubernetes-configuration'
 
   - title: CONFIGURATION & DEPLOYMENT
     output: web, pdf
@@ -44,19 +37,19 @@ entries:
     folderitems:
     - title: Linked Blockbridge Account
       output: web, pdf
-      url: '#create-a-blockbridge-account-to-provision-volumes-for-kubernetes'
+      url: '#linked-blockbridge-account'
     - title: Authorization Token
       output: web, pdf
-      url: '#create-an-authorization-access-token-for-the-blockbridge-volume-driver'
+      url: '#authorization-token'
     - title: Driver Installation
       output: web, pdf
-      url: '#create-an-authorization-access-token-for-the-blockbridge-volume-driver'
+      url: '#driver-installation'
     - title: Storage Classes
       output: web, pdf
-      url: '#create-an-authorization-access-token-for-the-blockbridge-volume-driver'
+      url: '#storage-classes'
     - title: Testing
       output: web, pdf
-      url: '#create-an-authorization-access-token-for-the-blockbridge-volume-driver'
+      url: '#testing'
 
   - title: TROUBLESHOOTING
     output: web, pdf
@@ -64,13 +57,13 @@ entries:
     folderitems:
     - title: App Stuck in ContainerCreating
       output: web, pdf
-      url: '#create-a-blockbridge-account-to-provision-volumes-for-kubernetes'
+      url: '#app-stuck-in-containercreating'
     - title: Provisioning Unauthorized
       output: web, pdf
-      url: '#create-an-authorization-access-token-for-the-blockbridge-volume-driver'
+      url: '#provisioning unauthorized'
     - title: Provisioning Storage Class Invalid
       output: web, pdf
-      url: '#create-an-authorization-access-token-for-the-blockbridge-volume-driver'
+      url: '#provisioning-storage-class-invalid'
     - title: App Stuck in Pending
       output: web, pdf
-      url: '#create-an-authorization-access-token-for-the-blockbridge-volume-driver'
+      url: '#app-stuck-in-pending'
