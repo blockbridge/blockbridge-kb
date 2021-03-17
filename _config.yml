@@ -85,6 +85,7 @@ defaults:
       comments: false
       search: true
       sidebar: guide_vmware
+
   - scope:
       path: "release/5.0"
       type: "pages"
@@ -93,6 +94,7 @@ defaults:
       comments: false
       search: true
       sidebar: release_5_0
+
   - scope:
       path: "guide/custom-certs"
       type: "pages"
@@ -109,7 +111,7 @@ defaults:
       layout: "page"
       comments: false
       search: true
-      sidebar: kubernetes
+      sidebar: guide_kubernetes
 
   - scope:
       path: "howto/volumes"

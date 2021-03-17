@@ -1,24 +1,40 @@
 ---
 layout: page
-title: Using Blockbridge Storage with Kubernetes
-description: Follow this procedure to install and configure the Blockbridge CSI driver with Kubernetes
+title: Kubernetes Storage Guide
+description: A guide for installing and configuring Blockbridge storage for Kubernetes.
 permalink: /guide/kubernetes/index.html
-keywords: kubernetes,containers
+keywords: kubernetes containers k8s
 toc: false
 ---
-
-## Summary
 
 Blockbridge provides a Container Storage Interface
 ([CSI](https://github.com/container-storage-interface/spec)) driver to deliver
 persistent, secure, multi-tenant, cluster-accessible storage for
-[Kubernetes](https://kubernetes-csi.github.io/docs/). Deploy the Blockbridge CSI
-driver in your Kubernetes cluster using standard kubectl commands.
+[Kubernetes](https://kubernetes-csi.github.io/docs/).  This guide describes how
+to deploy Blockbridge as the storage backend for Kubernetes containers.
 
-As of Kubernetes version 1.14, Blockbridge supports CSI specification version
-1.0.0, with Blockbridge driver version 2.0.0, as Generally Available (GA).
+If you've configured other Kubernetes storage drivers before, you may want to
+start with the **[Quickstart](#quickstart)** section. The rest of the guide has
+detailed information about features, driver configuration options and
+troubleshooting.
 
-## Blockbridge Driver Capabilities
+REQUIREMENTS & VERSIONS
+=======================
+
+Supported Versions
+------------------
+
+Blockbridge supports Kubernetes version 1.14. 
+
+| Component                             | Version |
+| ------------------------------------  | ------- |
+| Blockbridge                           | 5.1     |
+| Blockbridge k8s Driver                | 2.0.0   | 
+| Kubernetes                            | 1.14    |
+| CSI (container storage) Specification | 1.0.0   |
+
+Blockbridge Driver
+------------------
 
 * Dynamic volume provisioning
 * Automatic volume failover and mobility across the cluster
@@ -28,12 +44,14 @@ As of Kubernetes version 1.14, Blockbridge supports CSI specification version
 * Encryption at rest
 * Multiple Storage Classes provide programmable, deterministic storage characteristics
 
-## Supported Kubernetes environments
+Supported k8s Environments
+--------------------------
 
 * Rancher 2.4+
 * Mirantis Kubernetes Engine 3.1+ (formerly Docker EE)
 
-## Requirements
+Requirements
+------------
 
 The following minimum requirements must be met to use the Blockbridge driver in Kubernetes:
 
@@ -48,7 +66,38 @@ The following minimum requirements must be met to use the Blockbridge driver in 
 See [CSI Deploying](https://kubernetes-csi.github.io/docs/deploying.html) for
 more information.
 
-## Blockbridge Driver Configuration
+
+
+
+
+
+
+QUICKSTART
+==========
+
+
+
+
+
+
+
+
+
+
+
+
+CONFIGURATION & DEPLOYMENT
+==========================
+
+This section discusses how to configure the Blockbridge Kubernetes driver in
+detail.
+
+
+Linked Blockbridge Account
+--------------------------
+
+The Blockbridge driver creates and maintains its storage under a tenant account
+on your Blockbridge installation.
 
 The driver is configured with two pieces of information:
 
@@ -57,70 +106,83 @@ The driver is configured with two pieces of information:
 | BLOCKBRIDGE_API_URL | Blockbridge controlplane API endpoint URL specified as `https://hostname.example/api` |
 | BLOCKBRIDGE_API_KEY | Blockbridge controlplane access token
 
-The API endpoint is specified as a URL, and points to the Blockbridge
-controlplane. The access token authenticates the driver with the Blockbridge
-controlplane.
+The API endpoint is specified as a URL pointing to the Blockbridge
+controlplane's API. The access token authenticates the driver with the
+Blockbridge controlplane, in the context of the specified account.
 
-### Create a Blockbridge account to provision volumes for Kubernetes
 
-*NOTE: This guide assumes that the Blockbridge controlplane is running and a
-system password has been set. For help setting up the Blockbridge controlplane,
-please contact [Blockbridge Support](mailto:support@blockbridge.com).*
+{% include note.html content="This guide assumes that the Blockbridge
+controlplane is running and a system password has been set. For help setting up
+the Blockbridge controlplane, please contact [Blockbridge
+Support](mailto:support@blockbridge.com)." %}
 
-Create an account to hold the volumes for Kubernetes.
 
-Use the Blockbridge CLI to create the account.
+### Account Creation
+
+Use the containerized Blockbridge CLI to create the account.
 
 ```
-$ export BLOCKBRIDGE_API_HOST=blockbridge.mycompany.example
-$ docker run --rm -it -e BLOCKBRIDGE_API_HOST docker.io/blockbridge/cli:latest-alpine bb --no-ssl-verify-peer account create --name kubernetes
+    $ export BLOCKBRIDGE_API_HOST=blockbridge.mycompany.example
+    $ docker run --rm -it -e BLOCKBRIDGE_API_HOST docker.io/blockbridge/cli:latest-alpine bb --no-ssl-verify-peer account create --name kubernetes
 ```
 
 When prompted, then authenticate to the Blockbridge controlplane as the `system` user:
 ```
-Authenticating to https://blockbridge.mycompany.example/api
+    Authenticating to https://blockbridge.mycompany.example/api
 
-Enter user or access token: system
-Password for system: ....
-Authenticated; token expires in 3599 seconds.
-```
-
-The account is created:
-```
-== Created account: kubernetes (ACT0762194C40656F03)
-
-== Account: kubernetes (ACT0762194C40656F03)
-name                  kubernetes
-label                 kubernetes
-serial                ACT0762194C40656F03
-created               2018-11-19 16:15:15 +0000
-disabled              no
-```
-
-### Create a persistent authorization for the Blockbridge CSI driver
-
-Create a persistent authorization in the freshly createdw `kubernetes` account
-for use as authentication for the volume driver. Authenticate as the `system`
-user and use the `BLOCKBRIDGE_API_SU` environment variable to create a
-persistent authorization in the `kubernetes` account.
+    Enter user or access token: system
+    Password for system: ....
+    Authenticated; token expires in 3599 seconds.
 
 ```
-$ export BLOCKBRIDGE_API_HOST=blockbridge.mycompany.example
-$ export BLOCKBRIDGE_API_SU=kubernetes
-$ docker run --rm -it -e BLOCKBRIDGE_API_HOST -e BLOCKBRIDGE_API_SU docker.io/blockbridge/cli:latest-alpine bb --no-ssl-verify-peer authorization create --notes 'csi-blockbridge driver access'
+
+Validate that this created the account:
+
+```
+    == Created account: kubernetes (ACT0762194C40656F03)
+
+    == Account: kubernetes (ACT0762194C40656F03)
+    name                  kubernetes
+    label                 kubernetes
+    serial                ACT0762194C40656F03
+    created               2018-11-19 16:15:15 +0000
+    disabled              no
+```
+
+
+Authorization Token
+-------------------
+
+Blockbridge supports revokable persistent authorization tokens.  This section
+demonstrates how to create a persistent authorization token in the freshly
+created `kubernetes` account suitable for use as authentication for the driver.
+
+{% include note.html content="Although Blockbridge supports password-based
+authentication, tokens are far simpler to use in this context.  It's easier to
+revoke a token than change a password." %}
+
+To create the token, first authenticate as the `system` user.  Then use the
+containerized Blockbridge CLI tool with the `BLOCKBRIDGE_API_SU` environment
+variable to create a persistent authorization in the `kubernetes` account.
+
+```
+    $ export BLOCKBRIDGE_API_HOST=blockbridge.mycompany.example
+    $ export BLOCKBRIDGE_API_SU=kubernetes
+    $ docker run --rm -it -e BLOCKBRIDGE_API_HOST -e BLOCKBRIDGE_API_SU docker.io/blockbridge/cli:latest-alpine bb --no-ssl-verify-peer authorization create --notes 'csi-blockbridge driver access'
 ```
 
 Once again, authenticate using the `system` username and password:
 
 ```
-Authenticating to https://blockbridge.mycompany.example/api
+    Authenticating to https://blockbridge.mycompany.example/api
 
-Enter user or access token: kubernetes
-Password for kubernetes: 
-Authenticated; token expires in 3599 seconds.
+    Enter user or access token: kubernetes
+    Password for kubernetes: 
+    Authenticated; token expires in 3599 seconds.
 ```
 
-The authorization is created, displaying the access token.
+This creates the authorization and displays the access token:
+
 ```
 == Created authorization: ATH4762194C4062668E
 
@@ -141,21 +203,24 @@ access token          1/Nr7qLedL/P0KXxbrB8+jpfrFPBrNi3X+8H9BBwyOYg/mvOot50v2vA
 *** Remember to record your access token!
 ```
 
-Make a note of the displayed access token. Use this as the BLOCKBRIDGE_API_KEY
-during the Blockbridge volume driver installation.
+Make a note of the displayed access token somewhere safe. Set the environment
+variable to `BLOCKBRIDGE_API_KEY` to use in the forthcoming steps to install
+the driver.
 
 ```
-$ export BLOCKBRIDGE_API_KEY="1/Nr7qLedL/P0KXxbrB8+jpfrFPBrNi3X+8H9BBwyOYg/mvOot50v2vA"
+    $ export BLOCKBRIDGE_API_KEY="1/Nr7qLedL/P0KXxbrB8+jpfrFPBrNi3X+8H9BBwyOYg/mvOot50v2vA"
 ```
 
-## Driver installation in Kubernetes
+Driver Installation
+-------------------
 
-### Authenticate to Kubernetes
+Here's how to install the Blockbridge driver in your Kubernetes cluster.
 
-**Authenticate with your Kubernetes cluster.**
+### Authenticate with Kubernetes
 
-Ensure you are authenticated to your Kubernetes cluster. A version will be
-printed for both the client and server successfully.
+First, ensure your session is authenticated to your Kubernetes cluster. Running
+`kubectl version` should show a version for both the client and server
+successfully.
 
 ```
 $ kubectl version
@@ -163,67 +228,70 @@ Client Version: version.Info{Major:"1", Minor:"19", GitVersion:"v1.19.7", GitCom
 Server Version: version.Info{Major:"1", Minor:"20", GitVersion:"v1.20.4", GitCommit:"e87da0bd6e03ec3fea7933c4b5263d151aafd07c", GitTreeState:"clean", BuildDate:"2021-02-18T16:03:00Z", GoVersion:"go1.15.8", Compiler:"gc", Platform:"linux/amd64"}
 ```
 
-NOTE: setting up `kubectl` authentication is beyond the scope of this guide.
-Please refer to your specific instructions for the Kubernetes service or
-installation you are using.
+{% include note.html content="Setting up `kubectl` authentication is beyond the
+scope of this guide.  Please refer to the specific instructions for the
+Kubernetes service or installation you are using." %}
 
-### Create a secret
+### Create a Secret
 
-Create a secret containing the Blockbridge API endpoint URL and access token.
+Next, create a secret containing both the Blockbridge API endpoint URL and access
+token.
 
-Use BLOCKBRIDGE_API_HOST and BLOCKBRIDGE_API_KEY with the correct values for the
-Blockbridge controlplane, using the access token created in the **kubernetes**
-account.
+{% include note.html content="While control traffic is always encrypted, we
+specify here to disable peer certificate verification using the
+`ssl-verify-peer` flag. This setting implicitly trusts the default controlplane
+self-signed certificate. Configuring certificate verification, including
+specifying custom-supplied CA certificates, is beyond the scope of this
+guide. Please contact [Blockbridge Support](mailto:support@blockbridge.com) for
+more information." %}
 
-*NOTE: While control traffic is always encrypted, we specify here to disable
-peer certificate verification using the `ssl-verify-peer` flag. This setting
-implicitly trusts the default controlplane self-signed certificate. Configuring
-certificate verification, including specifying custom-supplied CA certificates,
-is beyond the scope of this guide. Please contact [Blockbridge
-Support](mailto:support@blockbridge.com) for more information.*
-
-```
-$ cat > secret.yml <<- EOF
-apiVersion: v1
-kind: Secret
-metadata:
-  name: blockbridge
-  namespace: kube-system
-stringData:
-  api-url: "https://${BLOCKBRIDGE_API_HOST}/api"
-  access-token: "$BLOCKBRIDGE_API_KEY"
-  ssl-verify-peer: "false"
-EOF
-```
-
-Example:
+Use `BLOCKBRIDGE_API_HOST` and `BLOCKBRIDGE_API_KEY` with the correct values
+for the Blockbridge controlplane, and the access token you created earlier in
+the **kubernetes** account.  Here's how to do it with a "here" document that
+expands the variables:
 
 ```
-$ cat secret.yml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: blockbridge
-  namespace: kube-system
-stringData:
-  api-url: "https://blockbridge.mycompany.example/api"
-  access-token: "1/Nr7qLedL/P0KXxbrB8+jpfrFPBrNi3X+8H9BBwyOYg/mvOot50v2vA"
-  ssl-verify-peer: "false"
+    $ cat > secret.yml <<- EOF
+    apiVersion: v1
+    kind: Secret
+    metadata:
+      name: blockbridge
+      namespace: kube-system
+    stringData:
+      api-url: "https://${BLOCKBRIDGE_API_HOST}/api"
+      access-token: "$BLOCKBRIDGE_API_KEY"
+      ssl-verify-peer: "false"
+    EOF
 ```
 
-Create the secret in Kubernetes:
+Verify that the contents look OK:
 
 ```
-$ kubectl create -f ./secret.yml
-secret "blockbridge" created
+    $ cat secret.yml
+    apiVersion: v1
+    kind: Secret
+    metadata:
+      name: blockbridge
+      namespace: kube-system
+    stringData:
+      api-url: "https://blockbridge.mycompany.example/api"
+      access-token: "1/Nr7qLedL/P0KXxbrB8+jpfrFPBrNi3X+8H9BBwyOYg/mvOot50v2vA"
+      ssl-verify-peer: "false"
+```
+
+Next, use `secret.yml` to create the secret in Kubernetes:
+
+```
+    $ kubectl create -f ./secret.yml
+    secret "blockbridge" created
 ```
 
 Ensure the secret exists in the `kube-system` namespace:
 
 ```
-$ kubectl -n kube-system get secrets blockbridge
-NAME          TYPE      DATA      AGE
-blockbridge   Opaque    3         2m
+    $ kubectl -n kube-system get secrets blockbridge
+    NAME          TYPE      DATA      AGE
+    blockbridge   Opaque    3         2m
 ```
 
 ### Deploy the Blockbridge Driver
@@ -231,232 +299,250 @@ blockbridge   Opaque    3         2m
 Deploy the Blockbridge Driver as a DaemonSet / StatefulSet using `kubectl`.
 
 ```
-$ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/csi/v2.0.0/csi-blockbridge.yaml
+    $ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/csi/v2.0.0/csi-blockbridge.yaml
 ```
 
-Confirm everything was created:
+If everything was created successfully, the command output should look like
+this, with all lines ending in `created`:
 
 ```
-csidriver.storage.k8s.io/csi.blockbridge.com created
-storageclass.storage.k8s.io/blockbridge-gp created
-storageclass.storage.k8s.io/blockbridge-tls created
-statefulset.apps/csi-blockbridge-controller created
-serviceaccount/csi-blockbridge-controller-sa created
-clusterrole.rbac.authorization.k8s.io/csi-blockbridge-provisioner-role created
-clusterrolebinding.rbac.authorization.k8s.io/csi-blockbridge-provisioner-binding created
-clusterrole.rbac.authorization.k8s.io/csi-blockbridge-attacher-role created
-clusterrolebinding.rbac.authorization.k8s.io/csi-blockbridge-attacher-binding created
-daemonset.apps/csi-blockbridge-node created
-serviceaccount/csi-blockbridge-node-sa created
-clusterrole.rbac.authorization.k8s.io/csi-blockbridge-node-driver-registrar-role created
-clusterrolebinding.rbac.authorization.k8s.io/csi-blockbridge-node-driver-registrar-binding created
+    csidriver.storage.k8s.io/csi.blockbridge.com created
+    storageclass.storage.k8s.io/blockbridge-gp created
+    storageclass.storage.k8s.io/blockbridge-tls created
+    statefulset.apps/csi-blockbridge-controller created
+    serviceaccount/csi-blockbridge-controller-sa created
+    clusterrole.rbac.authorization.k8s.io/csi-blockbridge-provisioner-role created
+    clusterrolebinding.rbac.authorization.k8s.io/csi-blockbridge-provisioner-binding created
+    clusterrole.rbac.authorization.k8s.io/csi-blockbridge-attacher-role created
+    clusterrolebinding.rbac.authorization.k8s.io/csi-blockbridge-attacher-binding created
+    daemonset.apps/csi-blockbridge-node created
+    serviceaccount/csi-blockbridge-node-sa created
+    clusterrole.rbac.authorization.k8s.io/csi-blockbridge-node-driver-registrar-role created
+    clusterrolebinding.rbac.authorization.k8s.io/csi-blockbridge-node-driver-registrar-binding created
 ```
 
-The Blockbridge CSI Driver is deployed using the [recommended
-mechanism](https://github.com/kubernetes/community/blob/master/contributors/design-proposals/storage/container-storage-interface.md#recommended-mechanism-for-deploying-csi-drivers-on-kubernetes)
-of deploying CSI drivers on Kubernetes.
+For reference, the Blockbridge CSI Driver is deployed using the [recommended
+mechanism](https://github.com/kubernetes/community/blob/master/contributors/design-proposals/storage/container-storage-interface.md#recommended-mechanism-for-deploying-csi-drivers-on-kubernetes) of deploying CSI drivers on Kubernetes.
 
-### Ensure Driver is Operational
+### Ensure the Driver is Operational
+
+Finally, check that the driver is up and running:
 
 ```
-$ kubectl -n kube-system get pods -l role=csi-blockbridge
+    $ kubectl -n kube-system get pods -l role=csi-blockbridge
+    NAME                                    READY     STATUS    RESTARTS   AGE
+    csi-blockbridge-controller-0            3/3       Running   0          6s
+    csi-blockbridge-node-4679b              2/2       Running   0          5s
 ```
 
-Blockbridge CSI pods are all Running:
-```
-$ kubectl -n kube-system get pods -l role=csi-blockbridge
-NAME                                    READY     STATUS    RESTARTS   AGE
-csi-blockbridge-controller-0            3/3       Running   0          6s
-csi-blockbridge-node-4679b              2/2       Running   0          5s
-```
 
-### Storage Classes
+Storage Classes
+---------------
 
-A default "general purpose" StorageClass named `blockbridge-gp` is created.
-This is the **default** StorageClass for dynamic provisioning of storage
-volumes. The general purpose StorageClass provisions using the default
-Blockbridge storage template configured in the Blockbridge controlplane.
+The Blockbridge driver comes with a default "general purpose" StorageClass
+named `blockbridge-gp`.  This is the **default** StorageClass for dynamic
+provisioning of storage volumes. It provisions using the default Blockbridge
+storage template configured in the Blockbridge controlplane.
 
 There are a variety of additional storage class configuration options available,
 including:
 
-1. Using transport encryption (tls)
-2. Using a custom tag-based query
-3. Using a named service template
-4. Using explicitly specified provisioned IOPS
+1. Using transport encryption (tls).
+2. Using a custom tag-based query.
+3. Using a named service template.
+4. Using explicitly specified provisioned IOPS.
 
-Several example storage classes are shown in `csi-storageclass.yaml`. Download,
-edit, and apply additional storage classes as needed.
+There are several additional example storage classes in
+`csi-storageclass.yaml`. You can download, edit, and apply these storage
+classes as needed.
 
 ```
-$ curl -OsSL https://get.blockbridge.com/kubernetes/deploy/csi/v2.0.0/csi-storageclass.yaml
-$ cat csi-storageclass.yaml
-###########################################################
-# StorageClass General Purpose (default)
-#
-# set default storage class with no additional parameters
-###########################################################
----
-kind: StorageClass
-apiVersion: storage.k8s.io/v1
-metadata:
-  name: blockbridge-gp
-  namespace: kube-system
-  annotations:
-    storageclass.kubernetes.io/is-default-class: "true"
-provisioner: csi.blockbridge.com
-###########################################################
+    $ curl -OsSL https://get.blockbridge.com/kubernetes/deploy/csi/v2.0.0/csi-storageclass.yaml
+    $ cat csi-storageclass.yaml
+    ... [output trimmed] ...
+    ---
+    kind: StorageClass
+    apiVersion: storage.k8s.io/v1
+    metadata:
+      name: blockbridge-gp
+      namespace: kube-system
+      annotations:
+        storageclass.kubernetes.io/is-default-class: "true"
+    provisioner: csi.blockbridge.com
+    allowVolumeExpansion: true
 ```
 
 ```
-$ kubectl apply -f ./csi-storageclass.yaml
-```
-```
-storageclass.storage.k8s.io "blockbridge-gp" configured
+    $ kubectl apply -f ./csi-storageclass.yaml
+    storageclass.storage.k8s.io "blockbridge-gp" configured
 ```
 
-### Test and verify: PersistentVolumeClaim
 
-Blockbridge storage volumes are now available via Kubernetes persistent volume claims (PVC).
+Testing
+-------
 
-Create a PersistentVolumeClaim. This dynamically provisions a volume in
-Blockbridge and makes it accessible to applications.
+This section has a few basic tests you can use to validate that your
+Blockbridge driver is working properly.
 
-Create the PVC:
-```
-$ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/examples/csi-pvc.yaml
-```
-```
-persistentvolumeclaim "csi-pvc-blockbridge" created
-```
+### Create a Volume
 
-Alternatively, download the example volume yaml, modify as needed, and apply:
+This verifies that Blockbridge storage volumes are now available via Kubernetes
+persistent volume claims (PVC).
+
+To test this out, create a PersistentVolumeClaim. It will dynamically provision a
+volume in Blockbridge and make it accessible to applications.
+
 ```
-$ curl -OsSL https://get.blockbridge.com/kubernetes/deploy/examples/csi-pvc.yaml
-```
-```
-$ cat csi-pvc.yaml
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: csi-pvc-blockbridge-example
-spec:
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: 5Gi
-  storageClassName: blockbridge-gp
+    $ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/examples/csi-pvc.yaml
 ```
 ```
-$ kubectl apply -f ./csi-pvc.yaml
-```
-```
-persistentvolumeclaim "csi-pvc-blockbridge" created
+    persistentvolumeclaim "csi-pvc-blockbridge" created
 ```
 
-Ensure the PVC was created successfully:
+Alternatively, download the example volume yaml, modify it as needed, and apply:
+
 ```
-$ kubectl get pvc csi-pvc-blockbridge
+    $ curl -OsSL https://get.blockbridge.com/kubernetes/deploy/examples/csi-pvc.yaml
 ```
 ```
-NAME                  STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS     AGE
-csi-pvc-blockbridge   Bound    pvc-6cb93ab2-ec49-11e8-8b89-46facf8570bb   5Gi        RWO            blockbridge-gp   4s
+    $ cat csi-pvc.yaml
+    ---
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: csi-pvc-blockbridge-example
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 5Gi
+      storageClassName: blockbridge-gp
+```
+```
+    $ kubectl apply -f ./csi-pvc.yaml
+```
+```
+    persistentvolumeclaim "csi-pvc-blockbridge" created
 ```
 
-### Test and verify: Application
+Use `get pvc csi-pvc-blockbridge` to check that the PVC was created
+successfully:
 
-Create a Pod (application) that utilizes the example volume. When the Pod is
-created, the volume will be attached, formatted and mounted, making it available
-to the specified application.
+```
+    $ kubectl get pvc csi-pvc-blockbridge
+```
+```
+    NAME                  STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS     AGE
+    csi-pvc-blockbridge   Bound    pvc-6cb93ab2-ec49-11e8-8b89-46facf8570bb   5Gi        RWO            blockbridge-gp   4s
+```
+
+### Create a Pod
+
+This test creates a Pod (application) that uses the PVC just created.  When you
+create the Pod, it attaches the volume, then formats and mounts it, making it
+available to the specified application.
 
 Create the application:
+
 ```
-$ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/examples/csi-app.yaml
+    $ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/examples/csi-app.yaml
 ```
 ```
-pod "blockbridge-demo" created
+    pod "blockbridge-demo" created
 ```
 
 Alternatively, download the application yaml, modify as needed, and apply:
 ```
-$ curl -OsSL https://get.blockbridge.com/kubernetes/deploy/examples/csi-app.yaml
+    $ curl -OsSL https://get.blockbridge.com/kubernetes/deploy/examples/csi-app.yaml
 ```
 ```
-$ cat csi-app.yaml
----
-kind: Pod
-apiVersion: v1
-metadata:
-  name: blockbridge-demo
-spec:
-  containers:
-    - name: my-frontend
-      image: busybox
-      volumeMounts:
-      - mountPath: "/data"
-        name: my-bb-volume
-      command: [ "sleep", "1000000" ]
-    - name: my-backend
-      image: busybox
-      volumeMounts:
-      - mountPath: "/data"
-        name: my-bb-volume
-      command: [ "sleep", "1000000" ]
-  volumes:
-    - name: my-bb-volume
-      persistentVolumeClaim:
-        claimName: csi-pvc-blockbridge
-```
-
-```
-$ kubectl apply -f ./csi-app.yaml
-```
-```
-pod "blockbridge-demo" created
+    $ cat csi-app.yaml
+    ---
+    kind: Pod
+    apiVersion: v1
+    metadata:
+      name: blockbridge-demo
+    spec:
+      containers:
+        - name: my-frontend
+          image: busybox
+          volumeMounts:
+          - mountPath: "/data"
+            name: my-bb-volume
+          command: [ "sleep", "1000000" ]
+        - name: my-backend
+          image: busybox
+          volumeMounts:
+          - mountPath: "/data"
+            name: my-bb-volume
+          command: [ "sleep", "1000000" ]
+      volumes:
+        - name: my-bb-volume
+          persistentVolumeClaim:
+            claimName: csi-pvc-blockbridge
 ```
 
-Check if the pod is running successfully:
-
 ```
-$ kubectl get pod blockbridge-demo
+    $ kubectl apply -f ./csi-app.yaml
 ```
 ```
-NAME               READY     STATUS    RESTARTS   AGE
-blockbridge-demo   2/2       Running   0          13s
+    pod "blockbridge-demo" created
 ```
 
-### Test and Verify: Write Data
-
-Write inside the app container:
+Verify that the pod is running successfully:
 
 ```
-$ kubectl exec -ti blockbridge-demo -c my-frontend /bin/sh
+    $ kubectl get pod blockbridge-demo
 ```
 ```
-/ # df /data
-Filesystem           1K-blocks      Used Available Use% Mounted on
-/dev/blockbridge/2f93beb2-61eb-456b-809e-22e27e4f73cf
-                       5232608     33184   5199424   1% /data
-
-/ # touch /data/hello-world
-/ # exit
-```
-```
-$ kubectl exec -ti blockbridge-demo -c my-backend /bin/sh
-```
-```
-/ # ls /data
-hello-world
+    NAME               READY     STATUS    RESTARTS   AGE
+    blockbridge-demo   2/2       Running   0          13s
 ```
 
-## Troubleshooting
+### Write Data From the Pod
 
-### App stuck in ContainerCreating due to failed Mount
+Inside the app container, write data to the mounted volume:
 
-#### Symptom
-Check the app status
+```
+    $ kubectl exec -ti blockbridge-demo -c my-frontend /bin/sh
+```
+```
+    / # df /data
+    Filesystem           1K-blocks      Used Available Use% Mounted on
+    /dev/blockbridge/2f93beb2-61eb-456b-809e-22e27e4f73cf
+                           5232608     33184   5199424   1% /data
+
+    / # touch /data/hello-world
+    / # exit
+```
+```
+    $ kubectl exec -ti blockbridge-demo -c my-backend /bin/sh
+```
+```
+    / # ls /data
+    hello-world
+```
+
+
+
+
+
+
+
+TROUBLESHOOTING
+===============
+
+App Stuck in ContainerCreating
+------------------------------
+
+When the application is stuck in ContainerCreating, check to see if the mount
+has failed.
+
+### Symptom
+
+Check the app status:
+
 ```
 $ kubectl get pod/blockbridge-demo
 NAME               READY   STATUS              RESTARTS   AGE
@@ -471,30 +557,44 @@ Events:
   Warning  FailedMount             1s    kubelet, kubelet.localnet       MountVolume.MountDevice failed for volume "pvc-71c37e84-b302-11e9-a93f-0242ac110003" : rpc error: code = Unknown desc = runtime_error: /etc/iscsi/initiatorname.iscsi not found; ensure 'iscsi-initiator-utils' is installed.
 ```
 
-#### Resolution
+### Resolution
 
-* Ensure the host running the kubelet has iSCSI client support installed on the host/node
-* For CentOS/RHEL, install: `iscsi-initiator-utils` package on the host/node running the kubelet.
-    * `yum install iscsi-initiator-utils`
-* For Ubuntu, install: `open-iscsi-utils` package on the host/node running the kubelet.
-    * `apt install open-iscsi-utils`
-* Delete/re-create the application pod to retry
+* Ensure the host running the kubelet has iSCSI client support installed on the host/node.
+* For CentOS/RHEL, install the `iscsi-initiator-utils` package on the host running the kubelet.
 
-### PVC unauthorized
-
-#### Symptom
-Check the PVC describe output:
 ```
-$ kubectl describe pvc csi-pvc-blockbridge
+    yum install iscsi-initiator-utils
+```
+
+* For Ubuntu, install the `open-iscsi-utils` package on the host running the kubelet.
+
+```
+    apt install open-iscsi-utils
+```
+    
+* Delete/re-create the application pod to retry.
+
+
+Provisioning Unauthorized
+-------------------------
+
+In this failure mode, provisioning fails with an "unauthorized" message.
+
+### Symptom
+
+Check the PVC describe output:
+
+```
+    $ kubectl describe pvc csi-pvc-blockbridge
 ```
 
 Provisioning failed due to "unauthorized" because the authorization access token is not valid. Ensure the correct access token is entered in the secret.
 
 ```
-  Warning  ProvisioningFailed    6s (x2 over 19s)  csi.blockbridge.com csi-provisioner-blockbridge-0 2caddb79-ec46-11e8-845d-465903922841  Failed to provision volume with StorageClass "blockbridge-gp": rpc error: code = Internal desc = unauthorized_error: unauthorized: unauthorized
+      Warning  ProvisioningFailed    6s (x2 over 19s)  csi.blockbridge.com csi-provisioner-blockbridge-0 2caddb79-ec46-11e8-845d-465903922841  Failed to provision volume with StorageClass "blockbridge-gp": rpc error: code = Internal desc = unauthorized_error: unauthorized: unauthorized
 ```
  
-#### Resolution
+### Resolution
 
 * Edit `secret.yml` and ensure correct access token and API URL are set.
 * delete secret: `kubectl delete -f secret.yml`
@@ -505,85 +605,106 @@ Provisioning failed due to "unauthorized" because the authorization access token
 * re-apply configuration:
    * `kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/csi/v2.0.0/csi-blockbridge.yaml`
    * `kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/examples/csi-pvc.yaml`
-   
-### PVC StorageClass not found
-#### Symptom
+
+
+Provisioning Storage Class Invalid
+----------------------------------
+
+Provisioning fails with an "invalid storage class" error.
+
+### Symptom
 Check the PVC describe output:
 ```
-$ kubectl describe pvc csi-pvc-blockbridge
+    $ kubectl describe pvc csi-pvc-blockbridge
 ```
 
 Provisioning failed because the storage class specified was invalid.
 ```
-  Warning  ProvisioningFailed  7s (x3 over 10s)  persistentvolume-controller  storageclass.storage.k8s.io "blockbridge-gp" not found
+      Warning  ProvisioningFailed  7s (x3 over 10s)  persistentvolume-controller  storageclass.storage.k8s.io "blockbridge-gp" not found
 ```
 
-#### Resolution
+### Resolution
+
 Ensure the StorageClass exists with the same name.
+
 ```
-$ kubectl get storageclass blockbridge-gp
-Error from server (NotFound): storageclasses.storage.k8s.io "blockbridge-gp" not found
+    $ kubectl get storageclass blockbridge-gp
+    Error from server (NotFound): storageclasses.storage.k8s.io "blockbridge-gp" not found
 ```
 
-* Create the storageclass: 
+* If it doesn't exist, then create the storageclass: 
 ```
-$ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/csi/v1.0.0/csi-storageclass.yaml
+    $ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/csi/v1.0.0/csi-storageclass.yaml
 ```
 
 * Alternatively, download and edit the desired storageclass:
+
 ```
-$ curl -OsSL https://get.blockbridge.com/kubernetes/deploy/csi/v1.0.0/csi-storageclass.yaml
-$ edit csi-storageclass.yaml
-$ kubectl -f apply ./csi-storageclass.yaml
+    $ curl -OsSL https://get.blockbridge.com/kubernetes/deploy/csi/v1.0.0/csi-storageclass.yaml
+    $ edit csi-storageclass.yaml
+    $ kubectl -f apply ./csi-storageclass.yaml
 ```
 
-The PVC continues to retry and picks up the storage class change:
+In the background, the PVC continually retries.  Once the above changes are
+complete, it will pick up the storage class change:
+
 ```
-$ kubectl get pvc
-NAME                    STATUS    VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS      AGE
-csi-pvc-blockbridge     Bound     pvc-6cb93ab2-ec49-11e8-8b89-46facf8570bb   5Gi        RWO            blockbridge-gp     4s
+    $ kubectl get pvc
+    NAME                    STATUS    VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS      AGE
+    csi-pvc-blockbridge     Bound     pvc-6cb93ab2-ec49-11e8-8b89-46facf8570bb   5Gi        RWO            blockbridge-gp     4s
 ```
 
-### APP stuck Pending cannot find Persistent Volume Claim (PVC)
-#### Symptom
+App Stuck in Pending
+--------------------
+
+One of the causes for an application stuck in pending is a missing Persistent
+Volume Claim (PVC).
+
+### Symptom
+
 The app is stuck in pending:
+
 ```
-$ kubectl get pod blockbridge-demo
-NAME               READY     STATUS    RESTARTS   AGE
-blockbridge-demo   0/2       Pending   0          14s
+    $ kubectl get pod blockbridge-demo
+    NAME               READY     STATUS    RESTARTS   AGE
+    blockbridge-demo   0/2       Pending   0          14s
 ```
 
-The PVC cannot be found:
-```
-$ kubectl describe pod blockbridge-demo
+Use `describe pod` to reveal more information.  In this case, the PVC is not
+found.
 
-Events:
-  Type     Reason            Age                From               Message
-  ----     ------            ----               ----               -------
-  Warning  FailedScheduling  12s (x6 over 28s)  default-scheduler  persistentvolumeclaim "csi-pvc-blockbridge" not found
 ```
+    $ kubectl describe pod blockbridge-demo
 
-#### Resolution
-Ensure the PVC is created and valid.
-```
-$ kubectl get pvc csi-pvc-blockbridge
-Error from server (NotFound): persistentvolumeclaims "csi-pvc-blockbridge" not found
+    Events:
+      Type     Reason            Age                From               Message
+      ----     ------            ----               ----               -------
+      Warning  FailedScheduling  12s (x6 over 28s)  default-scheduler  persistentvolumeclaim "csi-pvc-blockbridge" not found
 ```
 
-Create the PVC:
+### Resolution
+
+Create the PVC if necessary and ensure that it's valid.  First, validate that
+it's missing:
+
 ```
-$ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/examples/csi-pvc.yaml
+    $ kubectl get pvc csi-pvc-blockbridge
+    Error from server (NotFound): persistentvolumeclaims "csi-pvc-blockbridge" not found
+```
+
+If it's missng, create it:
+
+```
+    $ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/examples/csi-pvc.yaml
 persistentvolumeclaim "csi-pvc-blockbridge" created
 ```
 
-App retries automatically and succeeds in starting:
-```
-$ kubectl describe pod blockbridge-demo
-  Normal   Scheduled               8s                 default-scheduler                  Successfully assigned blockbridge-demo to aks-nodepool1-56242131-0
-  Normal   SuccessfulAttachVolume  8s                 attachdetach-controller            AttachVolume.Attach succeeded for volume "pvc-5332e169-ec4f-11e8-8b89-46facf8570bb"
-  Normal   SuccessfulMountVolume   8s                 kubelet, aks-nodepool1-56242131-0  MountVolume.SetUp succeeded for volume "default-token-bx8b9"
-```
+In the background, the application retries automatically and succeeds in
+starting:
 
-## Where to go from here
-
-Contact [Blockbridge Support](mailto:support@blockbridge.com) for any additional information or troubleshooting help.
+```
+    $ kubectl describe pod blockbridge-demo
+      Normal   Scheduled               8s                 default-scheduler                  Successfully assigned blockbridge-demo to aks-nodepool1-56242131-0
+      Normal   SuccessfulAttachVolume  8s                 attachdetach-controller            AttachVolume.Attach succeeded for volume "pvc-5332e169-ec4f-11e8-8b89-46facf8570bb"
+      Normal   SuccessfulMountVolume   8s                 kubelet, aks-nodepool1-56242131-0  MountVolume.SetUp succeeded for volume "default-token-bx8b9"
+```
