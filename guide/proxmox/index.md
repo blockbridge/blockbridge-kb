@@ -208,24 +208,19 @@ access token          1/LtVVws54+bGvb/l...njz8A
 Driver Debug
 ------------
 
-The driver logs all incoming API calls with their parameters to syslog at
-LOG_INFO level. It also logs the arguments used when executing any `bb`
-commands. You can see the logs using `journalctl -f | grep blockbridge:`.
+The driver logs all incoming API calls with their parameters to syslog at LOG_INFO level. It also logs the arguments used when executing any `bb` commands. You can see the logs using `journalctl -f | grep blockbridge:`.
 
 {% include note.html content="I was rewording this section, but then I thought maybe it just goes away." %}
 
 Proxmox Storage Definition
 ------------------------------------
 
-Configure a blockbridge storage backend by additing a new section to
-`/etc/pve/storage.cfg`. The `/etc/pve` directory is an automatically
-synchronized filesystem (proxmox cluster filesystem, or just `pmxcfs`), so you
-only need to edit the file on a single node; the changes are synchronized to all cluster members.
+Configure a blockbridge storage backend by additing a new section to `/etc/pve/storage.cfg`. The `/etc/pve` directory is an automatically synchronized filesystem (proxmox cluster filesystem, or just `pmxcfs`), so you only need to edit the file on a single node; the changes are synchronized to all cluster members.
 
 For example:
 
 ```
-blockbridge: block-gp
+blockbridge: shared-block-gp
         api_url https://dogfood.blockbridge.com/api
         auth_token 1/nalF+/S1pO............2qitqUX79LWtpw
 ```
@@ -237,10 +232,10 @@ restarting `pvedaemon`, `pveproxy` and `pvestatd` services:
 systemctl restart pvedaemon pveproxy pvestatd
 ```
 
-You'll have to do this on all cluster nodes.
+{% include note.html content="Even though the configuration is automatically synchronized to all Proxmox nodes, you'll still have to restart services on all cluster members." %}
 
-Blockbridge Storage Templates
------------------------------
+PROXMOX STORAGE PRIMITIVES
+===================
 
 Proxmox offers multiple interfaces for storage management.
 
@@ -249,9 +244,6 @@ Proxmox offers multiple interfaces for storage management.
  * The `qm` command allows for VM specific volume management.
  * The `pvesh` API tool provides granular storage and VM management, and can
    operate on any node in your Proxmox cluster.
-
-PROXMOX STORAGE PRIMITIVES
-===================
 
 Device Naming Specification
 ---------------------------
@@ -820,301 +812,3 @@ pvesh delete <api_path> -force <force>
 
 pvesh delete /nodes/proxmox-1/qemu/100/snapshot/snap1
 ```
-
-Restoring From A Volume Snapshot
---------------------------------
-
-<!---
-
-PROXMOX STORAGE MANAGEMENT
-==========================
-
-Full Clone From VM
------------------
-
-A clone of a Virtual Machine is always a complete copy and is fully independent of the original VM. It requires the same amount of disk space as the original.
-
-### GUI
-
-Right click on the VM in the "Folder View" and select "Clone". Enter required information for the new cloned VM
-
-
-
-### QM
-
-```qm clone 2000 3001 --full true --name bb-full-clone-2000-1```
-
-### PVESH
-
-```pvesh create /nodes/proxmox-1/qemu/2000/clone -newid 3001 -full 1 -name bb-full-clone-2000-1```
-
-Linked Clone From VM
------------------
-
-A Linked Clone can only be created from a VM Template.
-
-Full Clone From Template
------------------
-
-A full clone of a Template is a complete copy and is fully independent of the Template. It requires the same amount of disk space as the template.
-
-### GUI
-
-Right click on the VM Template in the "Folder View" and select "Clone". Choose "Linked" in the "Mode" drop-down menu.
-
-### QM
-
-```qm clone 2000 3001 --full true --name bb-full-clone-2000-1```
-
-### PVESH
-
-```pvesh create /nodes/proxmox-1/qemu/2000/clone -newid 3001 -full 1 -name bb-full-clone-2000-1```
-
-Linked Clone From Template
------------------
-
-A linked clone VM requires less disk space but cannot run without access to the base VM Template. When using Blockbridge as a backend storage, Proxmox will take advantage of Blockbridge Snapshot/Clone functionality.
-
-### GUI
-
-Right click on the VM Template in the "Folder View" and select "Clone". Choose "Full" in the "Mode" drop-down menu.
-
-### QM
-
-```qm clone 2000 3002 --full false --name bb-link-clone-2000-1```
-
-### PVESH
-
-```pvesh create /nodes/proxmox-1/qemu/2000/clone -newid 3002 -full 0 -name bb-link-clone-2000-1```
-
-VM Creation From ISO
------------------
-
-ISO can be attached to a VM for Boot and OS installation. The ISO must be placed on file-based storage that is available to the VM. Ideally this location is available to all members of the Proxmox cluster. If it is not, the VM cannot be automatically migrated between Proxmox nodes.
-
-VM Creation from Disk Image
------------------
-
-A disk image, such as Cloud Image, can be imported directly onto Blockbridge backed Volume for further boot from it.
-
-Note: You must already have created a Virtual Machine for "import" to work.
-
-### GUI
-
-You can only import disk using CLI tools.
-
-### QM
-
-Note: the image file must be locally accessible to the "qm" command.
-
-qm importdisk 2000 cirros-0.5.1-x86_64-disk.img dogfood
-
-qm set 2000 --scsi0 dogfood:vm-2000-disk-0
-
-### PVESH
-
-Note: "importdisk" functionality is only available via "qm" interface.
-
-pvesh create /nodes/proxmox-1/qemu/2000/config -scsi0 dogfood:vm-2000-disk-0
-
-Adding Storage To Running VM
------------------
-
-### GUI
-
-### QM/PVESM
-
-Note: `pvesm` interface only operates on storage, to insert the volume into VM configuration you must use `qm.`
-
-pvesm alloc dogfood 3003 vm-3003-disk-1 4G
-
-Note: `qm` only operates on Virtual Machine configuration, to create the volume you must use `pvesm`.
-
-qm set 3003 --scsihw virtio-scsi-pci --scsi1 dogfood:vm-3003-disk-1
-
-### PVESH
-
-Note: using Proxmox API/pvesh interface you can execute both creation and assignment operations.
-
-pvesh create /nodes/proxmox-1/storage/dogfood/content -size 4G -vmid 3003 -filename vm-3003-disk-1
-
-pvesh create /nodes/proxmox-3/qemu/3003/config -scsi1 dogfood:vm-3003-disk-1
-
-
-
-Deleting Storage From Running VM
------------------
-
-Before deleting storage from a VM make sure that the disk is not in use or mounted on boot, otherwise the OS can experience hung IO or can fail to boot.
-
-### GUI
-
-### QM/PVESM
-
-qm unlink 3003 --idlist scsi1
-
-qm set 3003 --delete unused0
-
-pvesm free dogfood:vm-3000-disk-1
-
-### PVESH
-
-pvesh set /nodes/proxmox-3/qemu/3003/unlink -idlist scsi1
-
-pvesh set /nodes/proxmox-3/qemu/3003/config --delete unused0
-
-pvesh delete .... ?
-
-Moving A Volume Between VMs
------------------
-
-Proxmox does not provide a packaged procedure on moving a volume between Virtual Machines. However Blockbridge backed volume can be moved easily not only between Proxmox VMs but also between Proxmox and other Hypervisors or even Baremetal servers.
-
-### GUI
-
-N/A
-
-### QM
-
-qm unlink 3003 --idlist scsi1
-
-pvesh set /nodes/proxmox-3/qemu/3003/unlink -idlist scsi1
-
-bb vss update --vss vm-3003-disk-1 --label vm-3004-disk-1
-
-qm set 3003 --delete unused0
-
-pvesh set /nodes/proxmox-3/qemu/3003/config --delete unused0
-
-qm rescan (no equivalent?)
-
-qm set 3004 --scsi1 dogfood:vm-3004-disk-1,ssd=1
-
-pvesh create /nodes/proxmox-3/qemu/3004/config -scsi1 dogfood:vm-3004-disk-1
-
-### PVESH
-
-Migrating A Volume Between Pools
------------------
-
-When moving Volume between the pools a full copy of the volume will be created by Proxmox using host-side tools. You will need the same available capacity to your volume size in the target pool.
-Note that the source disk is not deleted automatically after the volume was moved. It will appear as "unusedX" entry in "Hardware" tab and you will need to delete it manually to release the used space.
-
-### GUI
-
-### QM
-
-​       qm move_disk <vmid> <disk> <storage> [OPTIONS]
-
-### PVESH
-
-pvesh create /nodes/{node}/qemu/{vmid}/move_disk
-
-PROXMOX BACKUP & RECOVERY
-==========================
-
-Full Backup
------------------
-
-### GUI
-
-### QM
-
-### PVESH
-
-Incremental Backup
------------------
-
-### GUI
-
-### QM
-
-### PVESH
-
-Restore From Backup
------------------
-
-### GUI
-
-### QM
-
-### PVESH
-
-Restore From Rollback
------------------
-
-### GUI
-
-### QM
-
-### PVESH
-
-QEMU GUEST TUNING
-============
-
-QEMU SCSI Controllers
----------------------
-
-QEMU IO Threads
----------------
-
-QEMU SSD Emulation
-------------------
-
-QEMU Device Passthrough
------------------------
-
-PROXMOX HOST TUNING
-============
-
-Multipath IO Scheduling
-------------------
-
-NIC Large Receive Offload
-------------------
-
-NIC Interrupt Affinity
-------------------
-
-NIC Interrupt Coalescing
-------------------
-
-Linux iSCSI Affinity
-------------------
-
-Jumbo Frames
-------------------
-
-VLAN Considerations
-------------------
-
--->
-
-KNOWN ISSUES
-============
-
-GUI Storage Types
-------------------
-
-GUI Storage Usage
-------------------
-
-GUI Storage Configuration
-------------------
-
-Thin Clones of Snapshots
-------------------
-
-Container Storage
-------------------
-
-ADDITIONAL RESOURCES
-====================
-
-[https://pve.proxmox.com/wiki/Main_Page](https://pve.proxmox.com/wiki/Main_Page)
-
-[https://pve.proxmox.com/pve-docs/api-viewer](https://pve.proxmox.com/wiki/Main_Page)
-
-[https://pve.proxmox.com/pve-docs/qm.1.html](https://pve.proxmox.com/wiki/Main_Page)
-
-[https://pve.proxmox.com/pve-docs](https://pve.proxmox.com/wiki/Main_Page)
