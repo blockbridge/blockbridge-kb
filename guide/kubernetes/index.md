@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Kubernetes Storage Guide
+title: KUBERNETES CSI STORAGE GUIDE
 description: A guide for installing and configuring Blockbridge storage for Kubernetes.
 permalink: /guide/kubernetes/index.html
 keywords: kubernetes containers K8s
