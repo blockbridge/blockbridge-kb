@@ -1,0 +1,65 @@
+# This is your sidebar TOC. The sidebar code loops through sections here and provides the appropriate formatting.
+
+entries:
+- title: sidebar
+  folders:
+  - title: ABOUT THIS GUIDE
+    output: web, pdf
+    url: '#blockbridge-openstack-storage-guide'
+
+  - title: QUICKSTART
+    output: web, pdf
+    url: '#quickstart'
+    folderitems:
+    - title: Driver Installation
+      output: web, pdf
+      url: '#driver-installation'
+    - title: Blockbridge Configuration
+      output: web, pdf
+      url: '#blockbridge-configuration'
+    - title: OpenStack Configuration
+      output: web, pdf
+      url: '#openstack-configuration'
+
+  - title: DEPLOYMENT & MANAGEMENT
+    output: web, pdf
+    url: '#deployment--management'
+    folderitems:
+    - title: Deployment Modes
+      output: web, pdf
+      url: '#deployment-modes'
+    - title: Cinder Driver
+      output: web, pdf
+      url: '#cinder-driver'
+    - title: Authentication
+      output: web, pdf
+      url: '#authentication'
+    - title: Cinder Backend
+      output: web, pdf
+      url: '#cinder-backend'
+    - title: Volume Type
+      output: web, pdf
+      url: '#volume-type'
+    - title: Resource Queries
+      output: web, pdf
+      url: '#resource-queries'
+    - title: Configuration Options
+      output: web, pdf
+      url: '#configuration-options'
+    - title: Example cinder.conf
+      output: web, pdf
+      url: '#example-cinderconf'
+
+  - title: REFERENCE
+    output: web, pdf
+    url: '#reference'
+    folderitems:
+    - title: Supported Operations
+      output: web, pdf
+      url: '#supported-operations'
+    - title: Supported Protocols
+      output: web, pdf
+      url: '#supported-protocols'
+    - title: Version History
+      output: web, pdf
+      url: '#version-history'

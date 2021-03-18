@@ -126,3 +126,8 @@ hr {
 .alert-success {
     background-color: #2c465a;
  }
+
+code {
+    color: #ff5400;
+    background-color: #303030;
+}
