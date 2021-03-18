@@ -5,7 +5,7 @@ entries:
   folders:
   - title: ABOUT THIS GUIDE
     output: web, pdf
-    url: '#proxmox-ve-shared-storage-guide'
+    url: '#proxmox-ve-storage-guide'
 
   - title: FEATURE OVERVIEW
     output: web, pdf
@@ -14,7 +14,7 @@ entries:
     - title: Formats & Content Types
       output: web, pdf
       url: '#formats--content-types'
-    - title: High-Availability
+    - title: High Availability
       output: web, pdf
       url: '#high-availability'
     - title: Multi-Tenancy & Multi-Proxmox
@@ -33,9 +33,23 @@ entries:
       output: web, pdf
       url: '#thin-provisioning--data-reduction'
 
-  - title: DEPLOYMENT PLANNING
+  - title: QUICKSTART
     output: web, pdf
-    url: '#deployment-planning'
+    url: '#quickstart'
+    folderitems:
+    - title: Driver Installation
+      output: web, pdf
+      url: '#driver-installation'
+    - title: Authentication Token
+      output: web, pdf
+      url: '#authentication-token'
+    - title: Proxmox Configuration
+      output: web, pdf
+      url: '#proxmox-configuration'
+
+  - title: DEPLOYMENT & MANAGEMENT
+    output: web, pdf
+    url: '#deployment--management'
     folderitems:
     - title: Supported Versions
       output: web, pdf
@@ -49,12 +63,12 @@ entries:
     - title: Driver Authentication
       output: web, pdf
       url: '#driver-authentication'
-    - title: Driver Debug
-      output: web, pdf
-      url: '#driver-debug'
     - title: Proxmox Storage Definition
       output: web, pdf
       url: '#proxmox-storage-definition'
+    - title: Troubleshooting
+      output: web, pdf
+      url: '#troubleshooting'
 
   - title: PROXMOX STORAGE PRIMITIVES
     output: web, pdf
