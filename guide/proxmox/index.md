@@ -240,10 +240,17 @@ PROXMOX STORAGE PRIMITIVES
 Proxmox offers multiple interfaces for storage management.
 
  * The GUI offers storage management scoped to the context of virtual machine.
- * The `pvesm` command provides granular storage management for specific node.
- * The `qm` command allows for VM specific volume management.
- * The `pvesh` API tool provides granular storage and VM management, and can
-   operate on any node in your Proxmox cluster.
+ * The [pvesm](https://pve.proxmox.com/pve-docs/pvesm.1.html) command provides
+   granular storage management for specific node.
+ * The [qm](https://pve.proxmox.com/pve-docs/qm.1.html) command allows for VM
+   specific volume management.
+ * The [pvesh](https://pve.proxmox.com/pve-docs/pvesh.1.html) API tool provides
+   granular storage and VM management, and can operate on any node in your
+   Proxmox cluster. To see the available resources, check out the [browsable api
+   viewer](https://pve.proxmox.com/pve-docs/api-viewer/)
+
+For additional detail and for topics not covered in this guide, head over to the
+[Proxmox VE Documentation Index](https://pve.proxmox.com/pve-docs/).
 
 Device Naming Specification
 ---------------------------
