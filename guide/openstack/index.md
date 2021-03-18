@@ -68,27 +68,27 @@ The following steps use the `bb` command-line utility.
 
 1. **Authenticate as the `system` user:**
 
-```
+    ```
     $ bb -kH localhost auth login
-```
+    ```
 
 2. **Create the `bbcinder` tenant account:**
 
-```
+    ```
     $ bb -kH localhost account create --name bbcinder
-```
+    ```
 
 3. **Log in as the new `bbcinder` tenant, using the "substitute user" switch:**
 
-```
+    ```
     $ bb -kH localhost auth login --su bbcinder
-```
+    ```
 
 4. **Create a persistent authorization token for the cinder volume driver API access:**
 
-```
+    ```
     $ bb -kH localhost authorization create --notes 'cinder volume driver api access'
-```
+    ```
 
 *Remember to record the access token!*
 
@@ -99,7 +99,7 @@ OpenStack Configuration
 1. **On your OpenStack Cinder node, configure a new backend by adding a named
 configuration group to the `/etc/cinder/cinder.conf` file.**
 
-```
+    ```
     [bbcinder]
     volume_backend_name = bbcinder
     blockbridge_pools = pool:
@@ -107,33 +107,33 @@ configuration group to the `/etc/cinder/cinder.conf` file.**
     blockbridge_auth_token = 1/j2JUTZQdum2HnO76HbF9adhol0ucgXDataE6tXcV7U8PeQlMlB2wLA
     blockbridge_tenant_mode = single
     blockbridge_ssl_verify_peer = False
-```
+    ```
 
 2. **Add `bbcinder` to the `enabled_backends` list in the `[DEFAULT]` group:**
 
-```
+    ```
     [DEFAULT]
     enabled_backends=lvm,bbcinder
-```
+    ```
 
 3. **Restart the cinder-volume service.**
 
-```
+    ```
     systemctl restart openstack-cinder-volume
-```
+    ```
 
 4. **Create the blockbridge volume type:**
 
-```
+    ```
     openstack --os-username admin --os-tenant-name admin volume type create blockbridge
-```
+    ```
 
 5. **Map the volume type to its corresponding `volume_backend_name`:**
 
-```
+    ```
     openstack --os-username admin --os-tenant-name admin volume type set blockbridge \
       --property volume_backend_name=bbcinder
-```
+  ```
 
 
 DEPLOYMENT & MANAGEMENT
@@ -245,7 +245,7 @@ Create a dedicated tenant account (e.g. `bbcinder`) as follows:
 
 ### Single-Cloud Administrative Token
 
-For single-cloud deployments, create an urestricted token for the system user
+For single-cloud deployments, create an unrestricted token for the system user
 like this: 
 
 ```

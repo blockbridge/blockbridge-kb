@@ -139,6 +139,15 @@ defaults:
       search: true
       sidebar: guide_proxmox
 
+  - scope:
+      path: "guide/openstack"
+      type: "pages"
+    values:
+      layout: "page"
+      comments: false
+      search: true
+      sidebar: guide_openstack
+
 plugins:
   - jekyll-redirect-from
 
