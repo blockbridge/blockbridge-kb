@@ -100,28 +100,26 @@ Repeat this section's instructions on each Proxmox node.
 
 1. **Import the Blockbridge release signing key.**
 
-    ```
-    sudo apt update
-    sudo apt install apt-transport-https ca-certificates curl \
-        gnupg-agent software-properties-common
-    curl -fsSL https://get.blockbridge.com/tools/5.1/debian/gpg | sudo apt-key add -
-    ```
+        sudo apt update
+        sudo apt install apt-transport-https ca-certificates curl \
+          gnupg-agent software-properties-common
+        curl -fsSL https://get.blockbridge.com/tools/5.1/debian/gpg | sudo apt-key add -
 
 1. **Verify the key fingerprint.**
 
-    ```
-    sudo apt-key fingerprint 7ECF5373
-    pub   rsa4096 2016-11-01 [SC]
-          9C1D E2AE 5970 CFD4 ADC5  E0BA DDDE 845D 7ECF 5373
-    uid           [ unknown] Blockbridge (Official Signing Key) <security@blockbridge.com>
-    sub   rsa4096 2016-11-01 [E]
-    ```
+        sudo apt-key fingerprint 7ECF5373
 
-1. **Install the Blockbridge Plugin.**
+        pub   rsa4096 2016-11-01 [SC]
+              9C1D E2AE 5970 CFD4 ADC5  E0BA DDDE 845D 7ECF 5373
+        uid           [ unknown] Blockbridge (Official Signing Key) <security@blockbridge.com>
+        sub   rsa4096 2016-11-01 [E]
 
-    ```
-    sudo apt install blockbridge-proxmox
-    ```
+1. **Add the Blockbridge Tools repository and install the plugin.**
+
+        sudo apt-add-repository \
+          "deb https://get.blockbridge.com/tools/5.1/debian $(lsb_release -cs) main"
+        sudo apt update
+        sudo apt install blockbridge-proxmox
 
 Authentication Token
 --------------------
@@ -132,48 +130,40 @@ steps only need to happen once.
 
 1. **Log in to your Blockbridge controlplane as the `system` user.**
 
-    ```
-    root@proxmox-1:~# bb auth login
-    Enter a default management host: blockbridge.yourcompany.com
-    Authenticating to https://blockbridge.yourcompany.com/api
-
-    Enter user or access token: system
-    Password for system:
-    Authenticated; token expires in 3599 seconds.
-    == Authenticated as user system.
-    ```
+        root@proxmox-1:~# bb auth login
+        Enter a default management host: blockbridge.yourcompany.com
+        Authenticating to https://blockbridge.yourcompany.com/api
+        
+        Enter user or access token: system
+        Password for system:
+        Authenticated; token expires in 3599 seconds.
+        == Authenticated as user system.
 
 1. **Create a dedicated `proxmox` account.**
 
-    ```
-    root@proxmox-1:~# bb account create --name proxmox
-    ```
+        root@proxmox-1:~# bb account create --name proxmox
 
 1. **Use the 'substitute user' option to switch your session to the newly created `proxmox` account.**
 
-    *Note that you will have to re-authenticate as the _system_ user.*
+    *Note that you will have to re-authenticate as the **system** user.*
 
-    ```
-    root@proxmox-1:~# bb auth login --su proxmox
-    Authenticating to https://blockbridge.yourcompany.com/api
-
-    Enter user or access token: system
-    Password for proxmox: ......
-    Authenticated; token expires in 3599 seconds.
-
-    == Authenticated as user proxmox.
-    ```
+        root@proxmox-1:~# bb auth login --su proxmox
+        Authenticating to https://blockbridge.yourcompany.com/api
+        
+        Enter user or access token: system
+        Password for system: ......
+        Authenticated; token expires in 3599 seconds.
+        
+        == Authenticated as user proxmox.
 
 1. **Create a persistent authorization token.**
 
-    ```
-    root@proxmox-1:~# bb authorization create --notes "Proxmox Cluster token"
-    == Created authorization: ATH4762194C412D97FE
-    ... [output trimmed] ...
-
-    == Access Token
-    access token          1/LtVVws54+bGvb/l...njz8A
-    ```
+        root@proxmox-1:~# bb authorization create --notes "Proxmox Cluster token"
+        == Created authorization: ATH4762194C412D97FE
+        ... [output trimmed] ...
+        
+        == Access Token
+        access token          1/LtVVws54+bGvb/l...njz8A
 
     *Remember to record your access token!*
 
@@ -184,17 +174,16 @@ Proxmox Configuration
 1. **Edit `/etc/pve/storage.cfg` on any node to add a Blockbridge storage pool.
    The changes will be propagated to the other nodes.**
    
-    ```
-    blockbridge: shared-block-gp
-            api_url https://blockbridge.yourcompany.com/api
-            auth_token 1/nalF+/S1pO............2qitqUX79LWtpw
-    ```
+        blockbridge: shared-block-gp
+                api_url https://blockbridge.yourcompany.com/api
+                auth_token 1/nalF+/S1pO............2qitqUX79LWtpw
 
 1. **Restart the `pvedaemon`, `pveproxy` and `pvestatd` services.**
 
-    ```
-    systemctl restart pvedaemon pveproxy pvestatd
-    ```
+    Though the configuration is automatically synchronized to all Proxmox nodes,
+    you must restart services on all Proxmox nodes.
+
+        systemctl restart pvedaemon pveproxy pvestatd
 
 
 DEPLOYMENT & MANAGEMENT
@@ -217,7 +206,7 @@ Driver Packages
 ---------------
 
 
-### Add the Blockbridge Tools Repository
+### Import the Blockbridge Release Signing Key
 
 On each Proxmox node, import the Blockbridge release signing key.
 
@@ -238,11 +227,14 @@ uid           [ unknown] Blockbridge (Official Signing Key) <security@blockbridg
 sub   rsa4096 2016-11-01 [E]
 ```
 
-### Install the Blockbridge Plugin
+### Add the Blockbridge Tools Repository and Install the Plugin
 
 On each Proxmox node, install the Blockbridge storage plugin.
 
 ```
+sudo apt-add-repository \
+  "deb https://get.blockbridge.com/tools/5.1/debian $(lsb_release -cs) main"
+sudo apt update
 sudo apt install blockbridge-proxmox
 ```
 
@@ -314,7 +306,7 @@ root@proxmox-1:~# bb auth login --su proxmox
 Authenticating to https://blockbridge.yourcompany.com/api
 
 Enter user or access token: system
-Password for proxmox: ......
+Password for system: ......
 Authenticated; token expires in 3599 seconds.
 
 == Authenticated as user proxmox.
