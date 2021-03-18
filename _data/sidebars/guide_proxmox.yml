@@ -5,7 +5,7 @@ entries:
   folders:
   - title: ABOUT THIS GUIDE
     output: web, pdf
-    url: '#blockbridge-vmware-storage-guide'
+    url: '#proxmox-ve-storage-guide'
 
   - title: FEATURE OVERVIEW
     output: web, pdf
@@ -14,7 +14,7 @@ entries:
     - title: Formats & Content Types
       output: web, pdf
       url: '#formats--content-types'
-    - title: High-Availability
+    - title: High Availability
       output: web, pdf
       url: '#high-availability'
     - title: Multi-Tenancy & Multi-Proxmox
@@ -33,9 +33,23 @@ entries:
       output: web, pdf
       url: '#thin-provisioning--data-reduction'
 
-  - title: DEPLOYMENT PLANNING
+  - title: QUICKSTART
     output: web, pdf
-    url: '#deployment-planning'
+    url: '#quickstart'
+    folderitems:
+    - title: Driver Installation
+      output: web, pdf
+      url: '#driver-installation'
+    - title: Authentication Token
+      output: web, pdf
+      url: '#authentication-token'
+    - title: Proxmox Configuration
+      output: web, pdf
+      url: '#proxmox-configuration'
+
+  - title: DEPLOYMENT & MANAGEMENT
+    output: web, pdf
+    url: '#deployment--management'
     folderitems:
     - title: Supported Versions
       output: web, pdf
@@ -49,35 +63,32 @@ entries:
     - title: Driver Authentication
       output: web, pdf
       url: '#driver-authentication'
-    - title: Driver Debug
-      output: web, pdf
-      url: '#driver-debug'
     - title: Proxmox Storage Definition
       output: web, pdf
       url: '#proxmox-storage-definition'
-    - title: Blockbridge Storage Templates
+    - title: Troubleshooting
       output: web, pdf
-      url: '#blockbridge-storage-templates'
-    - title: Multipath Configuration
-      output: web, pdf
-      url: '#'
-    - title: LACP & Bonded Networking
-      output: web, pdf
-      url: '#'
+      url: '#troubleshooting'
 
   - title: PROXMOX STORAGE PRIMITIVES
     output: web, pdf
     url: '#proxmox-storage-primitives'
     folderitems:
-    - title: Device Naming Specification
+    - title: Volume Name
       output: web, pdf
       url: '#device-naming-specification'
+    - title: Show Storage Pools
+      output: web, pdf
+      url: '#show-storage-pools'
+    - title: List Volumes
+      output: web, pdf
+      url: '#list-volumes'
     - title: Allocate A Volume
       output: web, pdf
       url: '#allocate-a-volume'
-    - title: Free A Volume
+    - title: Delete A Volume
       output: web, pdf
-      url: '#free-a-volume'
+      url: '#delete-a-volume'
     - title: Attach A Volume
       output: web, pdf
       url: '#attach-a-volume'
@@ -87,127 +98,9 @@ entries:
     - title: Resize A Volume
       output: web, pdf
       url: '#resize-a-volume'
-    - title: Create A Volume Snapshot
+    - title: Create A Snapshot
       output: web, pdf
-      url: '#create-a-volume-snapshot'
-    - title: Removing A Volume Snapshot
+      url: '#create-a-snapshot'
+    - title: Remove A Snapshot
       output: web, pdf
-      url: '#remove-a-volume-snapshot'
-    - title: Restoring From A Volume Snapshot
-      output: web, pdf
-      url: '#'
-
-  - title: PROXMOX STORAGE MANAGEMENT
-    output: web, pdf
-    url: '#proxmox-storage-management'
-    folderitems:
-    - title: Full Clone From VM
-      output: web, pdf
-      url: '#'
-    - title: Linked Clone From VM
-      output: web, pdf
-      url: '#'
-    - title: Full Clone From Template
-      output: web, pdf
-      url: '#'
-    - title: Linked Clone From Template
-      output: web, pdf
-      url: '#'
-    - title: VM Creation From ISO
-      output: web, pdf
-      url: '#'
-    - title: VM Creation from Disk Image
-      output: web, pdf
-      url: '#'
-    - title: Adding Storage To Running VM
-      output: web, pdf
-      url: '#'
-    - title: Deleting Storage From Running VM
-      output: web, pdf
-      url: '#'
-    - title: Moving A Volume Between VMs
-      output: web, pdf
-      url: '#'
-    - title: Migrating A Volume Between Pools
-      output: web, pdf
-      url: '#'
-
-  - title: PROXMOX BACKUP & RECOVERY
-    output: web, pdf
-    url: '#'
-    folderitems:
-    - title: Full Backup
-      output: web, pdf
-      url: '#'
-    - title: Incremental Backup
-      output: web, pdf
-      url: '#'
-    - title: Restore From Backup
-      output: web, pdf
-      url: '#'
-    - title: Restore From Rollback
-      output: web, pdf
-      url: '#'
-
-  - title: QEMU GUEST TUNING
-    output: web, pdf
-    url: '#qemu-guest-tuning'
-    folderitems:
-    - title: QEMU SCSI Controllers
-      output: web, pdf
-      url: '#qemu-scsi-controllers'
-    - title: QEMU IO Threads
-      output: web, pdf
-      url: '#qemu-io-threads'
-    - title: QEMU SSD Emulation
-      output: web, pdf
-      url: '#qemu-ssd-emulation'
-    - title: QEMU Device Passthrough
-      output: web, pdf
-      url: '#qemu-device-passhthrough'
-
-  - title: PROXMOX HOST TUNING
-    output: web, pdf
-    url: '#'
-    folderitems:
-    - title: Multipath IO Scheduling
-      output: web, pdf
-      url: '#'
-    - title: NIC Large Receive Offload
-      output: web, pdf
-      url: '#'
-    - title: NIC Interrupt Affinity
-      output: web, pdf
-      url: '#'
-    - title: NIC Interrupt Coalescing
-      output: web, pdf
-      url: '#'
-    - title: Linux iSCSI Affinity
-      output: web, pdf
-      url: '#'
-    - title: Jumbo Frames
-      output: web, pdf
-      url: '#'
-    - title: VLAN Considerations
-      output: web, pdf
-      url: '#'
-
-  - title: KNOWN ISSUES
-    output: web, pdf
-    url: '#known-issues'
-    folderitems:
-    - title: GUI Storage Types
-      output: web, pdf
-      url: '#'
-    - title: GUI Storage Usage
-      output: web, pdf
-      url: '#'
-    - title: GUI Storage Configuration
-      output: web, pdf
-      url: '#'
-    - title: Thin Clones of Snapshots
-      output: web, pdf
-      url: '#'
-    - title: Container Storage
-      output: web, pdf
-      url: '#'
+      url: '#remove-a-snapshot'

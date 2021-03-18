@@ -42,6 +42,8 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - node_modules/
+  - vendor/
+  - bundle/
 
 # these are the files and directories that jekyll will exclude from the build
 
@@ -136,14 +138,6 @@ defaults:
       comments: false
       search: true
       sidebar: guide_proxmox
-  - scope:
-      path: "guide/openstack"
-      type: "pages"
-    values:
-      layout: "page"
-      comments: false
-      search: true
-      sidebar: guide_openstack
 
 plugins:
   - jekyll-redirect-from
