@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Blockbridge OpenStack Storage Guide
+title: OPENSTACK CINDER STORAGE GUIDE
 description: A guide to installing and configuring Blockbridge iSCSI storage for OpenStack.
 permalink: /guide/openstack/index.html
 keywords: openstack cinder
@@ -34,10 +34,6 @@ Additionally, this release is supported with the following Blockbridge releases:
 QUICKSTART
 ==========
 
-{% include xxx.html content="'single-tenant mode' - need some help with the
-positioning here...  Multi-cloud/single-cloud are good.  But, to do
-multi-cloud, you need to use single-tenant, which sounds weird to my ears?" %}
-
 This is a quick reference for installing and configuring the Blockbridge Cinder
 driver in single-tenant mode.  We recommend working through the installation in
 this order:
@@ -46,7 +42,7 @@ this order:
 2. Configure and your Blockbridge installation to permit the driver to connect.
 3. Configure the Blockbridge volume type in OpenStack.
 
-Many of these topics have more information available by selecting the
+Some of these topics have more information available by selecting the
 information **&#9432;** links next to items where they appear.
 
 
@@ -393,8 +389,6 @@ Configuration options
 ----------------------
 Description of Blockbridge EPS volume driver configuration options
 
-{% include xxx.html content="review new config options" %}
-
 | Configuration option = Default value              | Description                                                                        |
 |---------------------------------------------------|------------------------------------------------------------------------------------|
 | `[DEFAULT]`                                       |                                                                                    |
@@ -432,48 +426,6 @@ blockbridge_tenant_mode = single
 blockbridge_pools = Development: +development
 ```
 
-{% include xxx.html content="Check `volume_driver` in these.  This is a
-  discrepancy with what's in the quickstart section.  Which is correct?" %}
-
-
-
-
-
-
-ADVANCED FEATURES
-=================
-
-Multiple Volume Types
----------------------
-
-{% include xxx.html content="requires editing" %}
-
-Volume types are exposed to tenants, pools are not. To offer multiple classes
-of storage to OpenStack tenants, you should define multiple volume
-types. Simply repeat the process above for each desired type. Be sure to
-specify a unique volume_backend_name and pool configuration for each type. The
-cinder.conf example included with this documentation illustrates configuration
-of multiple types.
-
-Instance Migration
-------------------
-
-{% include xxx.html content="Need Josh here." %}
-
-Volume Migration
-----------------
-
-{% include xxx.html content="Need Josh here." %}
-
-Volume Retyping
----------------
-
-{% include xxx.html content="Need Josh here." %}
-
-
-
-
-
 
 
 REFERENCE
@@ -499,9 +451,6 @@ The Blockbridge cinder driver supports the following operations:
 | Thin Provisioning                 | Liberty |
 | Volume Migration (host assisted)  | Ussuri  |
 
-{% include xxx.html content="Additional features:  extend an attached volume,
-snapshot attachment, storage assisted migration, multi-attach support" %}
-
 Supported protocols
 -------------------
 
@@ -511,8 +460,6 @@ demand.
 
 Version History
 ---------------
-
-{% include xxx.html content="I made up these version numbers." %}
 
 * June, 2015: version 1.0.0 driver, Kilo release.
 * October, 2015: version 1.1.0 driver, Liberty release.

@@ -50,23 +50,6 @@ entries:
       output: web, pdf
       url: '#example-cinderconf'
 
-  - title: ADVANCED FEATURES
-    output: web, pdf
-    url: '#advanced-features'
-    folderitems:
-    - title: Multiple Volume Types
-      output: web, pdf
-      url: '#multiple-volume-types'
-    - title: Instance Migration
-      output: web, pdf
-      url: '#instance-migration'
-    - title: Volume Migration
-      output: web, pdf
-      url: '#volume-migration'
-    - title: Volume Retyping
-      output: web, pdf
-      url: '#volume-retyping'
-
   - title: REFERENCE
     output: web, pdf
     url: '#reference'
