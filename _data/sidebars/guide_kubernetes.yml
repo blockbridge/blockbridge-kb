@@ -5,7 +5,7 @@ entries:
   folders:
   - title: ABOUT THIS GUIDE
     output: web, pdf
-    url: '#kubernetes-storage-guide'
+    url: '#kubernetes-csi-storage-guide'
     folderitems:
     - title: Supported Versions
       output: web, pdf
@@ -33,7 +33,7 @@ entries:
 
   - title: CONFIGURATION & DEPLOYMENT
     output: web, pdf
-    url: '#blockbridge-driver-configuration'
+    url: '#configuration--deployment'
     folderitems:
     - title: Linked Blockbridge Account
       output: web, pdf
@@ -60,7 +60,7 @@ entries:
       url: '#app-stuck-in-containercreating'
     - title: Provisioning Unauthorized
       output: web, pdf
-      url: '#provisioning unauthorized'
+      url: '#provisioning-unauthorized'
     - title: Provisioning Storage Class Invalid
       output: web, pdf
       url: '#provisioning-storage-class-invalid'

@@ -802,7 +802,7 @@ it's missing.
     Error from server (NotFound): persistentvolumeclaims "csi-pvc-blockbridge" not found
 ```
 
-If it's missng, create it.
+If it's missing, create it.
 
 ```
     $ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/examples/csi-pvc.yaml
