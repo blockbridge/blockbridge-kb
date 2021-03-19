@@ -4,23 +4,22 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Follow this procedure to install and configure the Blockbridge CSI driver with Kubernetes">
-<meta name="keywords" content=" kubernetes,containers">
-<title>Using Blockbridge Storage with Kubernetes | Blockbridge Knowledgebase</title>
+<meta name="description" content="A guide for installing and configuring Blockbridge storage for Kubernetes.">
+<meta name="keywords" content=" kubernetes containers K8s">
+<title>KUBERNETES CSI STORAGE GUIDE | Blockbridge Knowledgebase</title>
 <!-- Google Fonts -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto&display=swap">
 
 <link rel="stylesheet" href="/css/syntax.css">
-
 <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-<!--<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">-->
-<link rel="stylesheet" href="/css/modern-business.css">
+
 <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<link rel="stylesheet" href="/css/bootstrap.min.css">
 <link rel="stylesheet" href="/css/customstyles.css">
+<link rel="stylesheet" href="/css/navbar.css">
 <link rel="stylesheet" href="/css/sidebar.css">
-<link rel="stylesheet" href="/css/boxshadowproperties.css">
 <!-- most color styles are extracted out to here -->
 <link rel="stylesheet" href="/css/theme-blockbridge.css">
 
@@ -147,19 +146,26 @@
   
   
   <li>
-      <a href="#summary">ABOUT THIS GUIDE</a>
+      <a href="#kubernetes-csi-storage-guide">ABOUT THIS GUIDE</a>
       <ul>
           
           
           
-          <li><a href="#blockbridge-driver-capabilities">Blockbridge Driver Capabilities</a></li>
+          <li><a href="#supported-versions">Supported Versions</a></li>
           
           
           
           
           
           
-          <li><a href="#supported-kubernetes-environments">Supported Kubernetes Environments</a></li>
+          <li><a href="#supported-features">Supported Features</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#supported-k8s-environments">Supported k8s Environments</a></li>
           
           
           
@@ -177,19 +183,19 @@
       
   
   <li>
-      <a href="#blockbridge-driver-configuration">Blockbridge Backend Configuration</a>
+      <a href="#quickstart">QUICKSTART</a>
       <ul>
           
           
           
-          <li><a href="#create-a-blockbridge-account-to-provision-volumes-for-kubernetes">Create a Kubernetes tenant account</a></li>
+          <li><a href="#blockbridge-configuration">Blockbridge Configuration</a></li>
           
           
           
           
           
           
-          <li><a href="#create-an-authorization-access-token-for-the-blockbridge-volume-driver">Create a persistent authorization</a></li>
+          <li><a href="#kubernetes-configuration">Kubernetes Configuration</a></li>
           
           
           
@@ -200,61 +206,40 @@
       
   
   <li>
-      <a href="#driver-installation-in-kubernetes">Kubernetes Driver Installation</a>
+      <a href="#configuration--deployment">CONFIGURATION & DEPLOYMENT</a>
       <ul>
           
           
           
-          <li><a href="#authenticate-to-kubernetes">Authenticate to Kubernetes</a></li>
+          <li><a href="#linked-blockbridge-account">Linked Blockbridge Account</a></li>
           
           
           
           
           
           
-          <li><a href="#create-a-secret">Create a secret</a></li>
+          <li><a href="#authorization-token">Authorization Token</a></li>
           
           
           
           
           
           
-          <li><a href="#deploy-the-blockbridge-driver">Deploy the Blockbridge driver</a></li>
+          <li><a href="#driver-installation">Driver Installation</a></li>
           
           
           
           
           
           
-          <li><a href="#ensure-driver-is-operational">Verify the driver installation</a></li>
+          <li><a href="#storage-classes">Storage Classes</a></li>
           
           
           
           
           
           
-          <li><a href="#storage-classes">Configure storage classes</a></li>
-          
-          
-          
-          
-          
-          
-          <li><a href="#test-and-verify-persistentvolumeclaim">Test: Create a Persistent Volume Claim</a></li>
-          
-          
-          
-          
-          
-          
-          <li><a href="#test-and-verify-application">Test: Deploy an application</a></li>
-          
-          
-          
-          
-          
-          
-          <li><a href="#test-and-verify-write-data">Test: Write persistent data</a></li>
+          <li><a href="#testing">Testing</a></li>
           
           
           
@@ -265,8 +250,36 @@
       
   
   <li>
-      <a href="#troubleshooting">Troubleshooting</a>
+      <a href="#troubleshooting">TROUBLESHOOTING</a>
       <ul>
+          
+          
+          
+          <li><a href="#app-stuck-in-containercreating">App Stuck in ContainerCreating</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#provisioning-unauthorized">Provisioning Unauthorized</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#provisioning-storage-class-invalid">Provisioning Storage Class Invalid</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#app-stuck-in-pending">App Stuck in Pending</a></li>
+          
+          
+          
           
       </ul>
    </li>
@@ -289,7 +302,7 @@
           <!-- Content Column -->
           <main class="col-content">
             <div class="post-header">
-   <h1 class="post-title-main">Using Blockbridge Storage with Kubernetes</h1>
+   <h1 class="post-title-main">KUBERNETES CSI STORAGE GUIDE</h1>
 </div>
 
 
@@ -303,62 +316,53 @@
 
     
 
-   <h2 id="summary">Summary</h2>
+   <p>Blockbridge provides a Container Storage Interface
+(<a href="https://github.com/container-storage-interface/spec">CSI</a>) driver to deliver
+persistent, secure, multi-tenant, cluster-accessible storage for
+<a href="https://kubernetes-csi.github.io/docs/">Kubernetes</a>.  This guide describes how
+to deploy Blockbridge as the storage backend for Kubernetes containers.</p>
 
-<p>Blockbridge provides a Container Storage Interface (<a href="https://github.com/container-storage-interface/spec">CSI</a>) driver to deliver persistent, secure, multi-tenant, cluster-accessible storage for <a href="https://kubernetes-csi.github.io/docs/">Kubernetes</a>. Deploy the Blockbridge CSI driver in your Kubernetes cluster using standard kubectl commands.</p>
+<p>If you’ve configured other Kubernetes storage drivers before, you may want to
+start with the <strong><a href="#quickstart">Quickstart</a></strong> section. The rest of the guide has
+detailed information about features, driver configuration options and
+troubleshooting.</p>
 
-<table>
-  <thead>
-    <tr>
-      <th style="text-align: left">Blockbridge Driver</th>
-      <th style="text-align: left">CSI Version</th>
-      <th style="text-align: left">stability</th>
-      <th style="text-align: left">kubernetes version</th>
-      <th style="text-align: left">Deploy URL</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td style="text-align: left">0.2.0</td>
-      <td style="text-align: left">0.2.0</td>
-      <td style="text-align: left">beta</td>
-      <td style="text-align: left">v1.10, v1.11</td>
-      <td style="text-align: left">https://get.blockbridge.com/kubernetes/deploy/csi/v0.2.0/csi-blockbridge.yaml</td>
-    </tr>
-    <tr>
-      <td style="text-align: left">1.0.0</td>
-      <td style="text-align: left">1.0.0</td>
-      <td style="text-align: left">GA</td>
-      <td style="text-align: left">v1.14+</td>
-      <td style="text-align: left">https://get.blockbridge.com/kubernetes/deploy/csi/v1.0.0/csi-blockbridge.yaml</td>
-    </tr>
-  </tbody>
-</table>
+<hr />
 
-<p>As of Kubernetes version 1.14, Blockbridge supports CSI specification version 1.0.0, with Blockbridge driver version 1.0.0, as Generally Available (GA).</p>
+<h1 id="requirements--versions">REQUIREMENTS &amp; VERSIONS</h1>
 
-<p>NOTE: If using an older version of the Blockbridge driver, please see the appropriate matching README file for version specific instructions.</p>
+<h2 id="supported-versions">Supported Versions</h2>
+
+<p>Blockbridge supports Kubernetes version 1.14.</p>
 
 <table>
   <thead>
     <tr>
-      <th style="text-align: left">Blockbridge Driver</th>
-      <th style="text-align: left">README version</th>
+      <th>Component</th>
+      <th>Version</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td style="text-align: left">0.2.0</td>
-      <td style="text-align: left"><a href="README.v0.2.0.md">README.v0.2.0.md</a></td>
+      <td>Blockbridge</td>
+      <td>5.1</td>
     </tr>
     <tr>
-      <td style="text-align: left">1.0.0</td>
-      <td style="text-align: left"><a href="README.md">README.md (this version)</a></td>
+      <td>Blockbridge K8s Driver</td>
+      <td>2.0.0</td>
+    </tr>
+    <tr>
+      <td>Kubernetes</td>
+      <td>1.14</td>
+    </tr>
+    <tr>
+      <td>CSI (container storage) Specification</td>
+      <td>1.0.0</td>
     </tr>
   </tbody>
 </table>
 
-<h2 id="blockbridge-driver-capabilities">Blockbridge Driver Capabilities</h2>
+<h2 id="supported-features">Supported Features</h2>
 
 <ul>
   <li>Dynamic volume provisioning</li>
@@ -370,11 +374,11 @@
   <li>Multiple Storage Classes provide programmable, deterministic storage characteristics</li>
 </ul>
 
-<h2 id="supported-kubernetes-environments">Supported Kubernetes environments</h2>
+<h2 id="supported-k8s-environments">Supported K8s Environments</h2>
 
 <ul>
-  <li>Docker Enterprise Edition 3 (Docker EE 3.0)</li>
-  <li>Rancher 2.X (Rancher kubernetes engine)</li>
+  <li>Rancher 2.4+</li>
+  <li>Mirantis Kubernetes Engine 3.1+ (formerly Docker EE)</li>
 </ul>
 
 <h2 id="requirements">Requirements</h2>
@@ -382,19 +386,157 @@
 <p>The following minimum requirements must be met to use the Blockbridge driver in Kubernetes:</p>
 
 <ul>
-  <li>Kubernetes version 1.14 minimum</li>
-  <li><code class="highlighter-rouge">--allow-privileged</code> flag must be set to true for both the API server and the
-kubelet</li>
-  <li>MountPropagation must be enabled (default to true since version 1.10)</li>
-  <li>(if you use Docker) the Docker daemon of the cluster nodes must allow shared
-mounts</li>
+  <li>Kubernetes 1.14+.</li>
+  <li><code class="highlighter-rouge">--allow-privileged</code> flag must be set to true for the Kubernetes API server.</li>
+  <li><a href="https://kubernetes.io/docs/concepts/storage/volumes/#mount-propagation">MountPropagation must be
+enabled</a>
+(default to true since version 1.10).</li>
+  <li>If you use Docker, the Docker daemon of the cluster nodes <a href="https://kubernetes.io/docs/concepts/storage/volumes/#configuration">must allow shared
+mounts</a>.</li>
 </ul>
 
-<p>See <a href="https://kubernetes-csi.github.io/docs/deploying.html">CSI Deploying</a> for more information.</p>
+<p>See <a href="https://kubernetes-csi.github.io/docs/deploying.html">CSI Deploying</a> for
+more information.</p>
 
-<h2 id="blockbridge-driver-configuration">Blockbridge Driver Configuration</h2>
+<hr />
 
-<p>The driver is configured with two pieces of information:</p>
+<h1 id="quickstart">QUICKSTART</h1>
+
+<p>This is a brief guide on how to install and configure the Blockbridge
+Kubernetes driver.  In this section, you will:</p>
+
+<ol>
+  <li>Create a Blockbridge account for your Kubernetes storage.</li>
+  <li>Create an authentication token for the Kubernetes driver.</li>
+  <li>Define a secret in Kubernetes with the token and the Blockbridge API host.</li>
+  <li>Deploy the Kubernetes driver.</li>
+</ol>
+
+<p>Many of these topics have more information available by selecting the
+information <strong>ⓘ</strong> links next to items where they appear.</p>
+
+<h2 id="blockbridge-configuration">Blockbridge Configuration</h2>
+
+<p>These steps use the containerized Blockbridge CLI utility to create an account
+and an authorization token.</p>
+
+<ol>
+  <li>
+    <p><strong>Set <code class="highlighter-rouge">BLOCKBRIDGE_API_HOST</code> to point to your Blockbridge API endpoint.</strong></p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ export BLOCKBRIDGE_API_HOST=blockbridge.mycompany.example
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>Use the containerized CLI to create the account.</strong></p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ docker run --rm -it -e BLOCKBRIDGE_API_HOST docker.io/blockbridge/cli:latest-alpine bb --no-ssl-verify-peer account create --name kubernetes
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>When prompted, authenticate as the <code class="highlighter-rouge">system</code> user.</strong></p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> Authenticating to https://blockbridge.mycompany.example/api
+
+ Enter user or access token: system
+ Password for system: ....
+ Authenticated; token expires in 3599 seconds.
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>Use the containerized CLI to create the auth token.</strong></p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ export BLOCKBRIDGE_API_HOST=blockbridge.mycompany.example
+ $ export BLOCKBRIDGE_API_SU=kubernetes
+ $ docker run --rm -it -e BLOCKBRIDGE_API_HOST -e BLOCKBRIDGE_API_SU docker.io/blockbridge/cli:latest-alpine bb --no-ssl-verify-peer authorization create --notes 'csi-blockbridge driver access'
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>Again, authenticate as the <code class="highlighter-rouge">system</code> user.</strong></p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> Authenticating to https://blockbridge.mycompany.example/api
+
+ Enter user or access token: system
+ Password for system:
+ Authenticated; token expires in 3599 seconds.
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>Set the <code class="highlighter-rouge">BLOCKBRIDGE_API_KEY</code> environment variable to the new token.</strong></p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ export BLOCKBRIDGE_API_KEY="1/Nr7qLedL/P0KXxbrB8+jpfrFPBrNi3X+8H9BBwyOYg/mvOot50v2vA"
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h2 id="kubernetes-configuration">Kubernetes Configuration</h2>
+
+<p>The following steps install and configure the Blockbridge Kubernetes driver on
+your cluster.  Your session must already be authenticated with your Kubernetes
+cluster to proceed.</p>
+
+<ol>
+  <li>
+    <p><strong>Create a file with the definition of a <em>secret</em> for the Blockbridge API.</strong></p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ cat &gt; secret.yml &lt;&lt;- EOF
+ apiVersion: v1
+ kind: Secret
+ metadata:
+   name: blockbridge
+   namespace: kube-system
+ stringData:
+   api-url: "https://${BLOCKBRIDGE_API_HOST}/api"
+   access-token: "$BLOCKBRIDGE_API_KEY"
+   ssl-verify-peer: "false"
+ EOF
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>Create the secret in Kubernetes.</strong></p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ kubectl create -f ./secret.yml
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>Check that the secret exists.</strong></p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ kubectl -n kube-system get secrets blockbridge
+ NAME          TYPE      DATA      AGE
+ blockbridge   Opaque    3         2m
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>Deploy the Blockbridge driver.</strong></p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/csi/v2.0.0/csi-blockbridge.yaml
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>Check that the driver is running.</strong></p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ kubectl -n kube-system get pods -l role=csi-blockbridge
+ NAME                                    READY     STATUS    RESTARTS   AGE
+ csi-blockbridge-controller-0            3/3       Running   0          6s
+ csi-blockbridge-node-4679b              2/2       Running   0          5s
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<hr />
+
+<h1 id="configuration--deployment">CONFIGURATION &amp; DEPLOYMENT</h1>
+
+<p>This section discusses how to configure the Blockbridge Kubernetes driver in
+detail.</p>
+
+<h2 id="linked-blockbridge-account">Linked Blockbridge Account</h2>
+
+<p>The Blockbridge driver creates and maintains its storage under a tenant account
+on your Blockbridge installation.</p>
+
+<p>The driver is configured with two pieces of information: the API endpoint and
+the authentication token.</p>
 
 <table>
   <thead>
@@ -415,376 +557,395 @@ mounts</li>
   </tbody>
 </table>
 
-<p>The API endpoint is specified as a URL, and points to the Blockbridge
-controlplane. The access token authenticates the driver with the Blockbridge
-controlplane.</p>
+<p>The API endpoint is specified as a URL pointing to the Blockbridge
+controlplane’s API. The access token authenticates the driver with the
+Blockbridge controlplane, in the context of the specified account.</p>
 
-<h3 id="create-a-blockbridge-account-to-provision-volumes-for-kubernetes">Create a Blockbridge account to provision volumes for Kubernetes</h3>
+<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> This guide assumes that the Blockbridge
+controlplane is running and a system password has been set. For help setting up
+the Blockbridge controlplane, please contact <a href="mailto:support@blockbridge.com">Blockbridge
+Support</a>.</div>
 
-<p><em>NOTE: This guide assumes that the Blockbridge controlplane is running and a system password has been set. For help setting up the Blockbridge controlplane, please contact <a href="mailto:support@blockbridge.com">Blockbridge Support</a>.</em></p>
+<h3 id="account-creation">Account Creation</h3>
 
-<p>Create an account to hold the volumes for Kubernetes.</p>
+<p>Use the containerized Blockbridge CLI to create the account.</p>
 
-<p>Use the Blockbridge CLI to create the account.</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ export BLOCKBRIDGE_API_HOST=blockbridge.mycompany.example
-$ docker run --rm -it -e BLOCKBRIDGE_API_HOST docker.io/blockbridge/cli:latest-alpine bb --no-ssl-verify-peer account create --name kubernetes --password
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ export BLOCKBRIDGE_API_HOST=blockbridge.mycompany.example
+    $ docker run --rm -it -e BLOCKBRIDGE_API_HOST docker.io/blockbridge/cli:latest-alpine bb --no-ssl-verify-peer account create --name kubernetes
 </code></pre></div></div>
 
-<p>When prompted, first enter the password for the new <strong>kubernetes</strong> account:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Enter password: 
+<p>When prompted, authenticate to the Blockbridge controlplane as the <code class="highlighter-rouge">system</code> user.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    Authenticating to https://blockbridge.mycompany.example/api
+
+    Enter user or access token: system
+    Password for system: ....
+    Authenticated; token expires in 3599 seconds.
+
 </code></pre></div></div>
 
-<p>When prompted, then authenticate to the Blockbridge controlplane as the system user:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Authenticating to https://blockbridge.mycompany.example/api
+<p>Validate that the account has been created.</p>
 
-Enter user or access token: system
-Password for system: 
-Authenticated; token expires in 3599 seconds.
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    == Created account: kubernetes (ACT0762194C40656F03)
+
+    == Account: kubernetes (ACT0762194C40656F03)
+    name                  kubernetes
+    label                 kubernetes
+    serial                ACT0762194C40656F03
+    created               2018-11-19 16:15:15 +0000
+    disabled              no
 </code></pre></div></div>
 
-<p>The account is created:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>== Created account: kubernetes (ACT0762194C40656F03)
+<h2 id="authorization-token">Authorization Token</h2>
 
-== Account: kubernetes (ACT0762194C40656F03)
-name                  kubernetes
-label                 kubernetes        
-serial                ACT0762194C40656F03      
-created               2018-11-19 16:15:15 +0000
-disabled              no                       
+<p>Blockbridge supports revokable persistent authorization tokens.  This section
+demonstrates how to create a persistent authorization token in the freshly
+created <code class="highlighter-rouge">kubernetes</code> account suitable for use as authentication for the driver.</p>
+
+<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> Although Blockbridge supports password-based
+authentication, tokens are far simpler to use in this context.  It’s easier to
+revoke a token than change a password.</div>
+
+<p>To create the token, first authenticate as the <code class="highlighter-rouge">system</code> user.  Then use the
+containerized Blockbridge CLI tool with the <code class="highlighter-rouge">BLOCKBRIDGE_API_SU</code> environment
+variable to create a persistent authorization in the <code class="highlighter-rouge">kubernetes</code> account.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ export BLOCKBRIDGE_API_HOST=blockbridge.mycompany.example
+    $ export BLOCKBRIDGE_API_SU=kubernetes
+    $ docker run --rm -it -e BLOCKBRIDGE_API_HOST -e BLOCKBRIDGE_API_SU docker.io/blockbridge/cli:latest-alpine bb --no-ssl-verify-peer authorization create --notes 'csi-blockbridge driver access'
 </code></pre></div></div>
 
-<h3 id="create-an-authorization-access-token-for-the-blockbridge-volume-driver">Create an authorization (access token) for the Blockbridge volume driver</h3>
+<p>Once again, authenticate using the <code class="highlighter-rouge">system</code> username and password.</p>
 
-<p>Create an access token in the new <strong>kubernetes</strong> account for use as authentication for the volume driver.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ export BLOCKBRIDGE_API_HOST=blockbridge.mycompany.example
-$ docker run --rm -it -e BLOCKBRIDGE_API_HOST docker.io/blockbridge/cli:latest-alpine bb --no-ssl-verify-peer authorization create
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    Authenticating to https://blockbridge.mycompany.example/api
+
+    Enter user or access token: system
+    Password for system: 
+    Authenticated; token expires in 3599 seconds.
 </code></pre></div></div>
 
-<p>Authenticate using the new <strong>kubernetes</strong> account username and password.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Authenticating to https://blockbridge.mycompany.example/api
+<p>This creates the authorization and displays the access token.</p>
 
-Enter user or access token: kubernetes
-Password for kubernetes: 
-Authenticated; token expires in 3599 seconds.
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    == Created authorization: ATH4762194C4062668E
+
+    == Authorization: ATH4762194C4062668E
+    serial                ATH4762194C4062668E
+    account               kubernetes (ACT0762194C40656F03)
+    user                  kubernetes (USR1B62194C40656FBD)
+    enabled               yes
+    created at            2018-11-19 11:15:47 -0500
+    access type           online
+    token suffix          ot50v2vA
+    restrict              auth
+    enforce 2-factor      false
+
+    == Access Token
+    access token          1/Nr7qLedL/P0KXxbrB8+jpfrFPBrNi3X+8H9BBwyOYg/mvOot50v2vA
+
+    *** Remember to record your access token!
 </code></pre></div></div>
 
-<p>The authorization (access token) is created.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>== Created authorization: ATH4762194C4062668E
+<p>Make a note of the displayed access token somewhere safe. Set the environment
+variable <code class="highlighter-rouge">BLOCKBRIDGE_API_KEY</code> to use in the forthcoming steps to install
+the driver.</p>
 
-== Authorization: ATH4762194C4062668E
-serial                ATH4762194C4062668E                    
-account               kubernetes (ACT0762194C40656F03)
-user                  kubernetes (USR1B62194C40656FBD)
-enabled               yes                                    
-created at            2018-11-19 11:15:47 -0500              
-access type           online                                 
-token suffix          ot50v2vA                               
-restrict              auth                                   
-enforce 2-factor      false                                  
-
-== Access Token
-access token          1/Nr7qLedL/P0KXxbrB8+jpfrFPBrNi3X+8H9BBwyOYg/mvOot50v2vA
-
-*** Remember to record your access token!
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ export BLOCKBRIDGE_API_KEY="1/Nr7qLedL/P0KXxbrB8+jpfrFPBrNi3X+8H9BBwyOYg/mvOot50v2vA"
 </code></pre></div></div>
 
-<p>Make a note of the access token. Use this as the BLOCKBRIDGE_API_KEY during the Blockbridge volume driver installation.</p>
+<h2 id="driver-installation">Driver Installation</h2>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ export BLOCKBRIDGE_API_KEY="1/Nr7qLedL/P0KXxbrB8+jpfrFPBrNi3X+8H9BBwyOYg/mvOot50v2vA"
-</code></pre></div></div>
+<p>Here’s how to install the Blockbridge driver in your Kubernetes cluster.</p>
 
-<h2 id="driver-installation-in-kubernetes">Driver installation in Kubernetes</h2>
+<h3 id="authenticate-with-kubernetes">Authenticate with Kubernetes</h3>
 
-<h3 id="authenticate-to-kubernetes">Authenticate to Kubernetes</h3>
-
-<p><strong>Authenticate with your Kubernetes cluster.</strong></p>
-
-<p>Ensure you are authenticated to your Kubernetes cluster. A version will be printed for both the client and server successfully.</p>
+<p>First, ensure your session is authenticated to your Kubernetes cluster. Running
+<code class="highlighter-rouge">kubectl version</code> should show a version for both the client and server
+successfully.</p>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ kubectl version
-Client Version: version.Info{Major:"1", Minor:"14", GitVersion:"v1.14.2", GitCommit:"66049e3b21efe110454d67df4fa62b08ea79a19b", GitTreeState:"clean", BuildDate:"2019-05-16T16:23:09Z", GoVersion:"go1.12.5", Compiler:"gc", Platform:"linux/amd64"}
-Server Version: version.Info{Major:"1", Minor:"14+", GitVersion:"v1.14.3-docker-2", GitCommit:"7cfcb52617bf94c36953159ee9a2bf14c7fcc7ba", GitTreeState:"clean", BuildDate:"2019-06-06T16:18:13Z", GoVersion:"go1.12.5", Compiler:"gc", Platform:"linux/amd64"}
+Client Version: version.Info{Major:"1", Minor:"19", GitVersion:"v1.19.7", GitCommit:"1dd5338295409edcfff11505e7bb246f0d325d15", GitTreeState:"clean", BuildDate:"2021-01-13T13:23:52Z", GoVersion:"go1.15.5", Compiler:"gc", Platform:"darwin/amd64"}
+Server Version: version.Info{Major:"1", Minor:"20", GitVersion:"v1.20.4", GitCommit:"e87da0bd6e03ec3fea7933c4b5263d151aafd07c", GitTreeState:"clean", BuildDate:"2021-02-18T16:03:00Z", GoVersion:"go1.15.8", Compiler:"gc", Platform:"linux/amd64"}
 </code></pre></div></div>
 
-<p>NOTE: setting up <code class="highlighter-rouge">kubectl</code> authentication is beyond the scope of this guide. Please refer to your specific instructions for the Kubernetes service or installation you are using.</p>
+<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> Setting up <code class="highlighter-rouge">kubectl</code> authentication is beyond the
+scope of this guide.  Please refer to the specific instructions for the
+Kubernetes service or installation you are using.</div>
 
-<h3 id="create-a-secret">Create a secret</h3>
+<h3 id="create-a-secret">Create a Secret</h3>
 
-<p>Create a secret containing the Blockbridge API endpoint URL and access token.</p>
+<p>Next, create a secret containing both the Blockbridge API endpoint URL and access
+token.</p>
 
-<p>Use BLOCKBRIDGE_API_HOST and BLOCKBRIDGE_API_KEY with the correct values for the Blockbridge controlplane, using the access token created in the <strong>kubernetes</strong> account.</p>
+<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> While control traffic is always encrypted, we
+specify here to disable peer certificate verification using the
+<code class="highlighter-rouge">ssl-verify-peer</code> flag. This setting implicitly trusts the default controlplane
+self-signed certificate. Configuring certificate verification, including
+specifying custom-supplied CA certificates, is beyond the scope of this
+guide. Please contact <a href="mailto:support@blockbridge.com">Blockbridge Support</a> for
+more information.</div>
 
-<p><em>NOTE: While control traffic is always encrypted, we specify here to disable peer certificate verification using the <code class="highlighter-rouge">ssl-verify-peer</code> flag. This setting implicitly trusts the default controlplane self-signed certificate. Configuring certificate verification, including specifying custom-supplied CA certificates, is beyond the scope of this guide. Please contact <a href="mailto:support@blockbridge.com">Blockbridge Support</a> for more information.</em></p>
+<p>Use <code class="highlighter-rouge">BLOCKBRIDGE_API_HOST</code> and <code class="highlighter-rouge">BLOCKBRIDGE_API_KEY</code> with the correct values
+for the Blockbridge controlplane, and the access token you created earlier in
+the <strong>kubernetes</strong> account.  Here’s how to do it with a “here” document that
+expands the variables:</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cat &gt; secret.yml &lt;&lt;- EOF
-apiVersion: v1
-kind: Secret
-metadata:
-  name: blockbridge
-  namespace: kube-system
-stringData:
-  api-url: "https://${BLOCKBRIDGE_API_HOST}/api"
-  access-token: "$BLOCKBRIDGE_API_KEY"
-  ssl-verify-peer: "false"
-EOF
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ cat &gt; secret.yml &lt;&lt;- EOF
+    apiVersion: v1
+    kind: Secret
+    metadata:
+      name: blockbridge
+      namespace: kube-system
+    stringData:
+      api-url: "https://${BLOCKBRIDGE_API_HOST}/api"
+      access-token: "$BLOCKBRIDGE_API_KEY"
+      ssl-verify-peer: "false"
+    EOF
 </code></pre></div></div>
 
-<p>Example:</p>
+<p>Verify that its contents are correct.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cat secret.yml
-apiVersion: v1
-kind: Secret
-metadata:
-  name: blockbridge
-  namespace: kube-system
-stringData:
-  api-url: "https://blockbridge.mycompany.example/api"
-  access-token: "1/Nr7qLedL/P0KXxbrB8+jpfrFPBrNi3X+8H9BBwyOYg/mvOot50v2vA"
-  ssl-verify-peer: "false"
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ cat secret.yml
+    apiVersion: v1
+    kind: Secret
+    metadata:
+      name: blockbridge
+      namespace: kube-system
+    stringData:
+      api-url: "https://blockbridge.mycompany.example/api"
+      access-token: "1/Nr7qLedL/P0KXxbrB8+jpfrFPBrNi3X+8H9BBwyOYg/mvOot50v2vA"
+      ssl-verify-peer: "false"
 </code></pre></div></div>
 
-<p>Create the secret in Kubernetes:</p>
+<p>Next, use <code class="highlighter-rouge">secret.yml</code> to create the secret in Kubernetes.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ kubectl create -f ./secret.yml
-secret "blockbridge" created
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl create -f ./secret.yml
+    secret "blockbridge" created
 </code></pre></div></div>
 
-<p>Ensure the secret exists in the <code class="highlighter-rouge">kube-system</code> namespace:</p>
+<p>Finally, ensure the secret exists in the <code class="highlighter-rouge">kube-system</code> namespace.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ kubectl -n kube-system get secrets blockbridge
-NAME          TYPE      DATA      AGE
-blockbridge   Opaque    3         2m
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl -n kube-system get secrets blockbridge
+    NAME          TYPE      DATA      AGE
+    blockbridge   Opaque    3         2m
 </code></pre></div></div>
 
 <h3 id="deploy-the-blockbridge-driver">Deploy the Blockbridge Driver</h3>
 
 <p>Deploy the Blockbridge Driver as a DaemonSet / StatefulSet using <code class="highlighter-rouge">kubectl</code>.</p>
 
-<p>NOTE: Choose a specific version as needed for your environment.</p>
-
-<table>
-  <thead>
-    <tr>
-      <th style="text-align: left">Blockbridge Driver</th>
-      <th style="text-align: left">CSI Version</th>
-      <th style="text-align: left">stability</th>
-      <th style="text-align: left">kubernetes version</th>
-      <th style="text-align: left">Deploy URL</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td style="text-align: left">0.2.0</td>
-      <td style="text-align: left">0.2.0</td>
-      <td style="text-align: left">beta</td>
-      <td style="text-align: left">v1.10, v1.11</td>
-      <td style="text-align: left">https://get.blockbridge.com/kubernetes/deploy/csi/v0.2.0/csi-blockbridge.yaml</td>
-    </tr>
-    <tr>
-      <td style="text-align: left">1.0.0</td>
-      <td style="text-align: left">1.0.0</td>
-      <td style="text-align: left">GA</td>
-      <td style="text-align: left">v1.14+</td>
-      <td style="text-align: left">https://get.blockbridge.com/kubernetes/deploy/csi/v1.0.0/csi-blockbridge.yaml</td>
-    </tr>
-  </tbody>
-</table>
-
-<p>Apply the appropriate version of the driver:</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/csi/v1.0.0/csi-blockbridge.yaml
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/csi/v2.0.0/csi-blockbridge.yaml
 </code></pre></div></div>
 
-<p>Confirm everything was created:</p>
+<p>If everything was created successfully, the command output should look like
+this, with all lines ending in <code class="highlighter-rouge">created</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>csidriver.storage.k8s.io/eps.csi.blockbridge.com created
-storageclass.storage.k8s.io/blockbridge-gp created
-storageclass.storage.k8s.io/blockbridge-tls created
-statefulset.apps/csi-blockbridge-controller created
-serviceaccount/csi-blockbridge-controller-sa created
-clusterrole.rbac.authorization.k8s.io/csi-blockbridge-provisioner-role created
-clusterrolebinding.rbac.authorization.k8s.io/csi-blockbridge-provisioner-binding created
-clusterrole.rbac.authorization.k8s.io/csi-blockbridge-attacher-role created
-clusterrolebinding.rbac.authorization.k8s.io/csi-blockbridge-attacher-binding created
-daemonset.apps/csi-blockbridge-node created
-serviceaccount/csi-blockbridge-node-sa created
-clusterrole.rbac.authorization.k8s.io/csi-blockbridge-node-driver-registrar-role created
-clusterrolebinding.rbac.authorization.k8s.io/csi-blockbridge-node-driver-registrar-binding created
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    csidriver.storage.k8s.io/csi.blockbridge.com created
+    storageclass.storage.k8s.io/blockbridge-gp created
+    storageclass.storage.k8s.io/blockbridge-tls created
+    statefulset.apps/csi-blockbridge-controller created
+    serviceaccount/csi-blockbridge-controller-sa created
+    clusterrole.rbac.authorization.k8s.io/csi-blockbridge-provisioner-role created
+    clusterrolebinding.rbac.authorization.k8s.io/csi-blockbridge-provisioner-binding created
+    clusterrole.rbac.authorization.k8s.io/csi-blockbridge-attacher-role created
+    clusterrolebinding.rbac.authorization.k8s.io/csi-blockbridge-attacher-binding created
+    daemonset.apps/csi-blockbridge-node created
+    serviceaccount/csi-blockbridge-node-sa created
+    clusterrole.rbac.authorization.k8s.io/csi-blockbridge-node-driver-registrar-role created
+    clusterrolebinding.rbac.authorization.k8s.io/csi-blockbridge-node-driver-registrar-binding created
 </code></pre></div></div>
 
-<p>The Blockbridge CSI Driver is deployed using the <a href="https://github.com/kubernetes/community/blob/master/contributors/design-proposals/storage/container-storage-interface.md#recommended-mechanism-for-deploying-csi-drivers-on-kubernetes">recommended mechanism</a> of deploying CSI drivers on Kubernetes.</p>
+<p>For reference, the Blockbridge CSI Driver is deployed using the <a href="https://github.com/kubernetes/community/blob/master/contributors/design-proposals/storage/container-storage-interface.md#recommended-mechanism-for-deploying-csi-drivers-on-kubernetes">recommended
+mechanism</a> of deploying CSI drivers on Kubernetes.</p>
 
-<h3 id="ensure-driver-is-operational">Ensure Driver is Operational</h3>
+<h3 id="ensure-the-driver-is-operational">Ensure the Driver is Operational</h3>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ kubectl -n kube-system get pods -l role=csi-blockbridge
+<p>Finally, check that the driver is up and running.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl -n kube-system get pods -l role=csi-blockbridge
+    NAME                                    READY     STATUS    RESTARTS   AGE
+    csi-blockbridge-controller-0            3/3       Running   0          6s
+    csi-blockbridge-node-4679b              2/2       Running   0          5s
 </code></pre></div></div>
 
-<p>Blockbridge CSI pods are all Running:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ kubectl -n kube-system get pods -l role=csi-blockbridge
-NAME                                    READY     STATUS    RESTARTS   AGE
-csi-blockbridge-controller-0            3/3       Running   0          6s
-csi-blockbridge-node-4679b              2/2       Running   0          5s
-</code></pre></div></div>
+<h2 id="storage-classes">Storage Classes</h2>
 
-<h3 id="storage-classes">Storage Classes</h3>
+<p>The Blockbridge driver comes with a default “general purpose” StorageClass
+named <code class="highlighter-rouge">blockbridge-gp</code>.  This is the <strong>default</strong> StorageClass for dynamic
+provisioning of storage volumes. It provisions using the default Blockbridge
+storage template configured in the Blockbridge controlplane.</p>
 
-<p>A default “general purpose” StorageClass called <code class="highlighter-rouge">blockbridge-gp</code> is created. This is the <strong>default</strong> StorageClass for dynamic provisioning of storage volumes. The general purpose StorageClass provisions using the default Blockbridge storage template configured in the Blockbridge controlplane.</p>
-
-<p>There are a variety of additional storage class configuration options available, including:</p>
+<p>There are a variety of additional storage class configuration options available,
+including:</p>
 
 <ol>
-  <li>Using transport encryption (tls)</li>
-  <li>Using a custom tag-based query</li>
-  <li>Using a named service template</li>
-  <li>Using explicitly specified provisioned IOPS</li>
+  <li>Using transport encryption (tls).</li>
+  <li>Using a custom tag-based query.</li>
+  <li>Using a named service template.</li>
+  <li>Using explicitly specified provisioned IOPS.</li>
 </ol>
 
-<p>Several example storage classes are shown in <code class="highlighter-rouge">csi-storageclass.yaml</code>. Download, edit, and apply additional storage classes as needed.</p>
+<p>There are several additional example storage classes in
+<code class="highlighter-rouge">csi-storageclass.yaml</code>. You can download, edit, and apply these storage
+classes as needed.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl -OsSL https://get.blockbridge.com/kubernetes/deploy/csi/v1.0.0/csi-storageclass.yaml
-$ cat csi-storageclass.yaml
-###########################################################
-# StorageClass General Purpose (default)
-#
-# set default storage class with no additional parameters
-###########################################################
----
-kind: StorageClass
-apiVersion: storage.k8s.io/v1
-metadata:
-  name: blockbridge-gp
-  namespace: kube-system
-  annotations:
-    storageclass.kubernetes.io/is-default-class: "true"
-provisioner: com.blockbridge.csi.eps
-###########################################################
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ curl -OsSL https://get.blockbridge.com/kubernetes/deploy/csi/v2.0.0/csi-storageclass.yaml
+    $ cat csi-storageclass.yaml
+    ... [output trimmed] ...
+    ---
+    kind: StorageClass
+    apiVersion: storage.k8s.io/v1
+    metadata:
+      name: blockbridge-gp
+      namespace: kube-system
+      annotations:
+        storageclass.kubernetes.io/is-default-class: "true"
+    provisioner: csi.blockbridge.com
+    allowVolumeExpansion: true
 </code></pre></div></div>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ kubectl apply -f ./csi-storageclass.yaml
-</code></pre></div></div>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>storageclass.storage.k8s.io "blockbridge-gp" configured
-</code></pre></div></div>
-
-<h3 id="test-and-verify-persistentvolumeclaim">Test and verify: PersistentVolumeClaim</h3>
-
-<p>Blockbridge storage volumes are now available via Kubernetes persistent volume claims (PVC).</p>
-
-<p>Create a PersistentVolumeClaim. This dynamically provisions a volume in Blockbridge and makes it accessible to applications.</p>
-
-<p>Create the PVC:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/examples/csi-pvc.yaml
-</code></pre></div></div>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>persistentvolumeclaim "csi-pvc-blockbridge" created
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl apply -f ./csi-storageclass.yaml
+    storageclass.storage.k8s.io "blockbridge-gp" configured
 </code></pre></div></div>
 
-<p>Alternatively, download the example volume yaml, modify as needed, and apply:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl -OsSL https://get.blockbridge.com/kubernetes/deploy/examples/csi-pvc.yaml
+<h2 id="testing">Testing</h2>
+
+<p>This section has a few basic tests you can use to validate that your
+Blockbridge driver is working properly.</p>
+
+<h3 id="create-a-volume">Create a Volume</h3>
+
+<p>This verifies that Blockbridge storage volumes are now available via Kubernetes
+persistent volume claims (PVC).</p>
+
+<p>To test this out, create a PersistentVolumeClaim. It will dynamically provision a
+volume in Blockbridge and make it accessible to applications.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/examples/csi-pvc.yaml
 </code></pre></div></div>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cat csi-pvc.yaml
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: csi-pvc-blockbridge-example
-spec:
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: 5Gi
-  storageClassName: blockbridge-gp
-</code></pre></div></div>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ kubectl apply -f ./csi-pvc.yaml
-</code></pre></div></div>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>persistentvolumeclaim "csi-pvc-blockbridge" created
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    persistentvolumeclaim "csi-pvc-blockbridge" created
 </code></pre></div></div>
 
-<p>Ensure the PVC was created successfully:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ kubectl get pvc csi-pvc-blockbridge
-</code></pre></div></div>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME                  STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS     AGE
-csi-pvc-blockbridge   Bound    pvc-6cb93ab2-ec49-11e8-8b89-46facf8570bb   5Gi        RWO            blockbridge-gp   4s
-</code></pre></div></div>
+<p>Alternatively, download the example volume yaml, modify it as needed, and apply.</p>
 
-<h3 id="test-and-verify-application">Test and verify: Application</h3>
-
-<p>Create a Pod (application) that utilizes the example volume. When the Pod is created, the volume will be attached, formatted and mounted, making it available to the specified application.</p>
-
-<p>Create the application:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/examples/csi-app.yaml
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ curl -OsSL https://get.blockbridge.com/kubernetes/deploy/examples/csi-pvc.yaml
 </code></pre></div></div>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pod "blockbridge-demo" created
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ cat csi-pvc.yaml
+    ---
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    metadata:
+      name: csi-pvc-blockbridge-example
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 5Gi
+      storageClassName: blockbridge-gp
 </code></pre></div></div>
-
-<p>Alternatively, download the application yaml, modify as needed, and apply:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl -OsSL https://get.blockbridge.com/kubernetes/deploy/examples/csi-app.yaml
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl apply -f ./csi-pvc.yaml
 </code></pre></div></div>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cat csi-app.yaml
----
-kind: Pod
-apiVersion: v1
-metadata:
-  name: blockbridge-demo
-spec:
-  containers:
-    - name: my-frontend
-      image: busybox
-      volumeMounts:
-      - mountPath: "/data"
-        name: my-bb-volume
-      command: [ "sleep", "1000000" ]
-    - name: my-backend
-      image: busybox
-      volumeMounts:
-      - mountPath: "/data"
-        name: my-bb-volume
-      command: [ "sleep", "1000000" ]
-  volumes:
-    - name: my-bb-volume
-      persistentVolumeClaim:
-        claimName: csi-pvc-blockbridge
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    persistentvolumeclaim "csi-pvc-blockbridge" created
 </code></pre></div></div>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ kubectl apply -f ./csi-app.yaml
-</code></pre></div></div>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pod "blockbridge-demo" created
-</code></pre></div></div>
+<p>Use <code class="highlighter-rouge">get pvc csi-pvc-blockbridge</code> to check that the PVC was created
+successfully.</p>
 
-<p>Check if the pod is running successfully:</p>
-
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ kubectl get pod blockbridge-demo
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl get pvc csi-pvc-blockbridge
 </code></pre></div></div>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>NAME               READY     STATUS    RESTARTS   AGE
-blockbridge-demo   2/2       Running   0          13s
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    NAME                  STATUS   VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS     AGE
+    csi-pvc-blockbridge   Bound    pvc-6cb93ab2-ec49-11e8-8b89-46facf8570bb   5Gi        RWO            blockbridge-gp   4s
 </code></pre></div></div>
 
-<h3 id="test-and-verify-write-data">Test and Verify: Write Data</h3>
+<h3 id="create-a-pod">Create a Pod</h3>
 
-<p>Write inside the app container:</p>
+<p>This test creates a Pod (application) that uses the PVC just created.  When you
+create the Pod, it attaches the volume, then formats and mounts it, making it
+available to the specified application.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ kubectl exec -ti blockbridge-demo -c my-frontend /bin/sh
-</code></pre></div></div>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/ # df /data
-Filesystem           1K-blocks      Used Available Use% Mounted on
-/dev/blockbridge/2f93beb2-61eb-456b-809e-22e27e4f73cf
-                       5232608     33184   5199424   1% /data
+<p>Create the application.</p>
 
-/ # touch /data/hello-world
-/ # exit
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/examples/csi-app.yaml
 </code></pre></div></div>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ kubectl exec -ti blockbridge-demo -c my-backend /bin/sh
-</code></pre></div></div>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/ # ls /data
-hello-world
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    pod "blockbridge-demo" created
 </code></pre></div></div>
 
-<h2 id="troubleshooting">Troubleshooting</h2>
+<p>Alternatively, download the application yaml, modify as needed, and apply.</p>
 
-<h3 id="app-stuck-in-containercreating-due-to-failed-mount">App stuck in ContainerCreating due to failed Mount</h3>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ curl -OsSL https://get.blockbridge.com/kubernetes/deploy/examples/csi-app.yaml
+</code></pre></div></div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ cat csi-app.yaml
+    ---
+    kind: Pod
+    apiVersion: v1
+    metadata:
+      name: blockbridge-demo
+    spec:
+      containers:
+        - name: my-frontend
+          image: busybox
+          volumeMounts:
+          - mountPath: "/data"
+            name: my-bb-volume
+          command: [ "sleep", "1000000" ]
+        - name: my-backend
+          image: busybox
+          volumeMounts:
+          - mountPath: "/data"
+            name: my-bb-volume
+          command: [ "sleep", "1000000" ]
+      volumes:
+        - name: my-bb-volume
+          persistentVolumeClaim:
+            claimName: csi-pvc-blockbridge
+</code></pre></div></div>
 
-<h4 id="symptom">Symptom</h4>
-<p>Check the app status</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl apply -f ./csi-app.yaml
+</code></pre></div></div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    pod "blockbridge-demo" created
+</code></pre></div></div>
+
+<p>Verify that the pod is running successfully.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl get pod blockbridge-demo
+</code></pre></div></div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    NAME               READY     STATUS    RESTARTS   AGE
+    blockbridge-demo   2/2       Running   0          13s
+</code></pre></div></div>
+
+<h3 id="write-data-from-the-pod">Write Data From the Pod</h3>
+
+<p>Inside the app container, write data to the mounted volume.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl exec -ti blockbridge-demo -c my-frontend /bin/sh
+</code></pre></div></div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    / # df /data
+    Filesystem           1K-blocks      Used Available Use% Mounted on
+    /dev/blockbridge/2f93beb2-61eb-456b-809e-22e27e4f73cf
+                           5232608     33184   5199424   1% /data
+
+    / # touch /data/hello-world
+    / # exit
+</code></pre></div></div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl exec -ti blockbridge-demo -c my-backend /bin/sh
+</code></pre></div></div>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    / # ls /data
+    hello-world
+</code></pre></div></div>
+
+<hr />
+
+<h1 id="troubleshooting">TROUBLESHOOTING</h1>
+
+<h2 id="app-stuck-in-containercreating">App Stuck in ContainerCreating</h2>
+
+<p>When the application is stuck in ContainerCreating, check to see if the mount
+has failed.</p>
+
+<h3 id="symptom">Symptom</h3>
+
+<p>Check the app status.</p>
+
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ kubectl get pod/blockbridge-demo
 NAME               READY   STATUS              RESTARTS   AGE
 blockbridge-demo   0/2     ContainerCreating   0          20s
@@ -798,36 +959,44 @@ Events:
   Warning  FailedMount             1s    kubelet, kubelet.localnet       MountVolume.MountDevice failed for volume "pvc-71c37e84-b302-11e9-a93f-0242ac110003" : rpc error: code = Unknown desc = runtime_error: /etc/iscsi/initiatorname.iscsi not found; ensure 'iscsi-initiator-utils' is installed.
 </code></pre></div></div>
 
-<h4 id="resolution">Resolution</h4>
+<h3 id="resolution">Resolution</h3>
 
 <ul>
-  <li>Ensure the host running the kubelet has iSCSI client support installed on the host/node</li>
-  <li>For CentOS/RHEL, install: <code class="highlighter-rouge">iscsi-initiator-utils</code> package on the host/node running the kubelet.
-    <ul>
-      <li><code class="highlighter-rouge">yum install iscsi-initiator-utils</code></li>
-    </ul>
-  </li>
-  <li>For Ubuntu, install: <code class="highlighter-rouge">open-iscsi-utils</code> package on the host/node running the kubelet.
-    <ul>
-      <li><code class="highlighter-rouge">apt install open-iscsi-utils</code></li>
-    </ul>
-  </li>
-  <li>Delete/re-create the application pod to retry</li>
+  <li>Ensure the host running the kubelet has iSCSI client support installed on the host/node.</li>
+  <li>For CentOS/RHEL, install the <code class="highlighter-rouge">iscsi-initiator-utils</code> package on the host running the kubelet.</li>
 </ul>
 
-<h3 id="pvc-unauthorized">PVC unauthorized</h3>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    yum install iscsi-initiator-utils
+</code></pre></div></div>
 
-<h4 id="symptom-1">Symptom</h4>
-<p>Check the PVC describe output:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ kubectl describe pvc csi-pvc-blockbridge
+<ul>
+  <li>For Ubuntu, install the <code class="highlighter-rouge">open-iscsi-utils</code> package on the host running the kubelet.</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    apt install open-iscsi-utils
+</code></pre></div></div>
+
+<ul>
+  <li>Delete/re-create the application pod to retry.</li>
+</ul>
+
+<h2 id="provisioning-unauthorized">Provisioning Unauthorized</h2>
+
+<p>In this failure mode, provisioning fails with an “unauthorized” message.</p>
+
+<h3 id="symptom-1">Symptom</h3>
+
+<p>Check the PVC describe output.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl describe pvc csi-pvc-blockbridge
 </code></pre></div></div>
 
 <p>Provisioning failed due to “unauthorized” because the authorization access token is not valid. Ensure the correct access token is entered in the secret.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  Warning  ProvisioningFailed    6s (x2 over 19s)  com.blockbridge.csi.eps csi-provisioner-blockbridge-0 2caddb79-ec46-11e8-845d-465903922841  Failed to provision volume with StorageClass "blockbridge-gp": rpc error: code = Internal desc = unauthorized_error: unauthorized: unauthorized
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      Warning  ProvisioningFailed    6s (x2 over 19s)  csi.blockbridge.com csi-provisioner-blockbridge-0 2caddb79-ec46-11e8-845d-465903922841  Failed to provision volume with StorageClass "blockbridge-gp": rpc error: code = Internal desc = unauthorized_error: unauthorized: unauthorized
 </code></pre></div></div>
 
-<h4 id="resolution-1">Resolution</h4>
+<h3 id="resolution-1">Resolution</h3>
 
 <ul>
   <li>Edit <code class="highlighter-rouge">secret.yml</code> and ensure correct access token and API URL are set.</li>
@@ -836,90 +1005,110 @@ Events:
   <li>remove old configuration:
     <ul>
       <li><code class="highlighter-rouge">kubectl delete -f https://get.blockbridge.com/kubernetes/deploy/examples/csi-pvc.yaml</code></li>
-      <li><code class="highlighter-rouge">kubectl delete -f https://get.blockbridge.com/kubernetes/deploy/csi/v1.0.0/csi-blockbridge.yaml</code></li>
+      <li><code class="highlighter-rouge">kubectl delete -f https://get.blockbridge.com/kubernetes/deploy/csi/v2.0.0/csi-blockbridge.yaml</code></li>
     </ul>
   </li>
   <li>re-apply configuration:
     <ul>
-      <li><code class="highlighter-rouge">kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/csi/v1.0.0/csi-blockbridge.yaml</code></li>
+      <li><code class="highlighter-rouge">kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/csi/v2.0.0/csi-blockbridge.yaml</code></li>
       <li><code class="highlighter-rouge">kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/examples/csi-pvc.yaml</code></li>
     </ul>
   </li>
 </ul>
 
-<h3 id="pvc-storageclass-not-found">PVC StorageClass not found</h3>
-<h4 id="symptom-2">Symptom</h4>
+<h2 id="provisioning-storage-class-invalid">Provisioning Storage Class Invalid</h2>
+
+<p>Provisioning fails with an “invalid storage class” error.</p>
+
+<h3 id="symptom-2">Symptom</h3>
 <p>Check the PVC describe output:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ kubectl describe pvc csi-pvc-blockbridge
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl describe pvc csi-pvc-blockbridge
 </code></pre></div></div>
 
 <p>Provisioning failed because the storage class specified was invalid.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  Warning  ProvisioningFailed  7s (x3 over 10s)  persistentvolume-controller  storageclass.storage.k8s.io "blockbridge-gp" not found
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      Warning  ProvisioningFailed  7s (x3 over 10s)  persistentvolume-controller  storageclass.storage.k8s.io "blockbridge-gp" not found
 </code></pre></div></div>
 
-<h4 id="resolution-2">Resolution</h4>
+<h3 id="resolution-2">Resolution</h3>
+
 <p>Ensure the StorageClass exists with the same name.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ kubectl get storageclass blockbridge-gp
-Error from server (NotFound): storageclasses.storage.k8s.io "blockbridge-gp" not found
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl get storageclass blockbridge-gp
+    Error from server (NotFound): storageclasses.storage.k8s.io "blockbridge-gp" not found
 </code></pre></div></div>
 
 <ul>
-  <li>Create the storageclass:
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/csi/v1.0.0/csi-storageclass.yaml
-</code></pre></div>    </div>
-  </li>
-  <li>Alternatively, download and edit the desired storageclass:
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ curl -OsSL https://get.blockbridge.com/kubernetes/deploy/csi/v1.0.0/csi-storageclass.yaml
-$ edit csi-storageclass.yaml
-$ kubectl -f apply ./csi-storageclass.yaml
-</code></pre></div>    </div>
-  </li>
+  <li>If it doesn’t exist, then create the storageclass.</li>
 </ul>
 
-<p>The PVC continues to retry and picks up the storage class change:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ kubectl get pvc
-NAME                    STATUS    VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS      AGE
-csi-pvc-blockbridge     Bound     pvc-6cb93ab2-ec49-11e8-8b89-46facf8570bb   5Gi        RWO            blockbridge-gp     4s
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/csi/v1.0.0/csi-storageclass.yaml
 </code></pre></div></div>
 
-<h3 id="app-stuck-pending-cannot-find-persistent-volume-claim-pvc">APP stuck Pending cannot find Persistent Volume Claim (PVC)</h3>
-<h4 id="symptom-3">Symptom</h4>
-<p>The app is stuck in pending:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ kubectl get pod blockbridge-demo
-NAME               READY     STATUS    RESTARTS   AGE
-blockbridge-demo   0/2       Pending   0          14s
+<ul>
+  <li>Alternatively, download and edit the desired storageclass.</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ curl -OsSL https://get.blockbridge.com/kubernetes/deploy/csi/v1.0.0/csi-storageclass.yaml
+    $ edit csi-storageclass.yaml
+    $ kubectl -f apply ./csi-storageclass.yaml
 </code></pre></div></div>
 
-<p>The PVC cannot be found:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ kubectl describe pod blockbridge-demo
+<p>In the background, the PVC continually retries.  Once the above changes are
+complete, it will pick up the storage class change.</p>
 
-Events:
-  Type     Reason            Age                From               Message
-  ----     ------            ----               ----               -------
-  Warning  FailedScheduling  12s (x6 over 28s)  default-scheduler  persistentvolumeclaim "csi-pvc-blockbridge" not found
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl get pvc
+    NAME                    STATUS    VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS      AGE
+    csi-pvc-blockbridge     Bound     pvc-6cb93ab2-ec49-11e8-8b89-46facf8570bb   5Gi        RWO            blockbridge-gp     4s
 </code></pre></div></div>
 
-<h4 id="resolution-3">Resolution</h4>
-<p>Ensure the PVC is created and valid.</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ kubectl get pvc csi-pvc-blockbridge
-Error from server (NotFound): persistentvolumeclaims "csi-pvc-blockbridge" not found
+<h2 id="app-stuck-in-pending">App Stuck in Pending</h2>
+
+<p>One of the causes for an application stuck in pending is a missing Persistent
+Volume Claim (PVC).</p>
+
+<h3 id="symptom-3">Symptom</h3>
+
+<p>The output of <code class="highlighter-rouge">get pod</code> show that the app is stuck in pending.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl get pod blockbridge-demo
+    NAME               READY     STATUS    RESTARTS   AGE
+    blockbridge-demo   0/2       Pending   0          14s
 </code></pre></div></div>
 
-<p>Create the PVC:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/examples/csi-pvc.yaml
+<p>Use <code class="highlighter-rouge">describe pod</code> to reveal more information.  In this case, the PVC is not
+found.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl describe pod blockbridge-demo
+
+    Events:
+      Type     Reason            Age                From               Message
+      ----     ------            ----               ----               -------
+      Warning  FailedScheduling  12s (x6 over 28s)  default-scheduler  persistentvolumeclaim "csi-pvc-blockbridge" not found
+</code></pre></div></div>
+
+<h3 id="resolution-3">Resolution</h3>
+
+<p>Create the PVC if necessary and ensure that it’s valid.  First, validate that
+it’s missing.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl get pvc csi-pvc-blockbridge
+    Error from server (NotFound): persistentvolumeclaims "csi-pvc-blockbridge" not found
+</code></pre></div></div>
+
+<p>If it’s missing, create it.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/examples/csi-pvc.yaml
 persistentvolumeclaim "csi-pvc-blockbridge" created
 </code></pre></div></div>
 
-<p>App retries automatically and succeeds in starting:</p>
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ kubectl describe pod blockbridge-demo
-  Normal   Scheduled               8s                 default-scheduler                  Successfully assigned blockbridge-demo to aks-nodepool1-56242131-0
-  Normal   SuccessfulAttachVolume  8s                 attachdetach-controller            AttachVolume.Attach succeeded for volume "pvc-5332e169-ec4f-11e8-8b89-46facf8570bb"
-  Normal   SuccessfulMountVolume   8s                 kubelet, aks-nodepool1-56242131-0  MountVolume.SetUp succeeded for volume "default-token-bx8b9"
+<p>In the background, the application retries automatically and succeeds in
+starting.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl describe pod blockbridge-demo
+      Normal   Scheduled               8s  default-scheduler                  Successfully assigned blockbridge-demo to aks-nodepool1-56242131-0
+      Normal   SuccessfulAttachVolume  8s  attachdetach-controller            AttachVolume.Attach succeeded for volume "pvc-5332e169-ec4f-11e8-8b89-46facf8570bb"
+      Normal   SuccessfulMountVolume   8s  kubelet, aks-nodepool1-56242131-0  MountVolume.SetUp succeeded for volume "default-token-bx8b9"
 </code></pre></div></div>
-
-<h2 id="where-to-go-from-here">Where to go from here</h2>
-
-<p>Contact <a href="mailto:support@blockbridge.com">Blockbridge Support</a> for any additional information or troubleshooting help.</p>
 
 
     <div class="tags">
@@ -933,8 +1122,8 @@ persistentvolumeclaim "csi-pvc-blockbridge" created
 <footer>
             <div class="row">
                 <div class="col-lg-12 footer">
-               &copy;2020 Blockbridge Networks LLC. All rights reserved. <br />
- Site last generated: Dec 8, 2020
+               &copy;2021 Blockbridge Networks LLC. All rights reserved. <br />
+ Site last generated: Mar 19, 2021
                 </div>
             </div>
 </footer>

@@ -1,0 +1,1907 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Guide to Proxmox VE Shared Storage with Blockbridge">
+<meta name="keywords" content=" proxmox iSCSI shared">
+<title>PROXMOX VE STORAGE GUIDE | Blockbridge Knowledgebase</title>
+<!-- Google Fonts -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto&display=swap">
+
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<!-- Latest compiled and minified CSS -->
+
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/customstyles.css">
+<link rel="stylesheet" href="/css/navbar.css">
+<link rel="stylesheet" href="/css/sidebar.css">
+<!-- most color styles are extracted out to here -->
+<link rel="stylesheet" href="/css/theme-blockbridge.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script src="/js/jquery.navgoco.min.js"></script>
+
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Anchor.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/2.0.0/anchor.min.js"></script>
+<script src="/js/toc.js"></script>
+<script src="/js/customscripts.js"></script>
+
+<link rel="shortcut icon" href="/images/bb-favicon.ico" type="image/png">
+
+<script>var clicky_site_ids = clicky_site_ids || []; clicky_site_ids.push(101238799);</script>
+<script async src="//static.getclicky.com/js"></script>
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+
+    <script>
+        $(document).ready(function() {
+          // Initialize navgoco with default options
+          $("#mysidebar").navgoco({
+            caretHtml: '',
+            accordion: false,
+            openClass: 'active', // open
+            save: false, // leave false or nav highlighting doesn't work right
+            cookie: {
+              name: 'navgoco',
+              expires: false,
+              path: '/'
+            },
+            slide: {
+              duration: 400,
+              easing: 'swing'
+            }
+          });
+
+          $("#collapseAll").click(function(e) {
+                e.preventDefault();
+                $("#mysidebar").navgoco('toggle', false);
+            });
+
+            $("#expandAll").click(function(e) {
+                e.preventDefault();
+                $("#mysidebar").navgoco('toggle', true);
+            });
+
+        });
+
+    </script>
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
+    <script>
+        $(document).ready(function() {
+            $("#tg-sb-link").click(function() {
+                $("#tg-sb-sidebar").toggle();
+                $("#tg-sb-content").toggleClass('col-md-9');
+                $("#tg-sb-content").toggleClass('col-md-12');
+                $("#tg-sb-icon").toggleClass('fa-toggle-on');
+                $("#tg-sb-icon").toggleClass('fa-toggle-off');
+            });
+        });
+    </script>
+    
+
+</head>
+<body>
+  <!-- Navigation -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid topnavlinks">
+        <div class="navbar-header">
+            <div class="navbar-brand"><svg class="bb-logo" width="100%" xmlns="http://www.w3.org/2000/svg" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 346 40" enable-background="new 0 0 346 40" space="preserve">
+  <path fill="#FFFFFF" d="M85.328613,31.876953L90.526855,0.72998h12.858887c2.340332,0,4.255859,0.209961,5.745117,0.62793 c1.489746,0.418457,2.739746,1.274414,3.750977,2.566895c1.010742,1.293457,1.515625,2.806641,1.515625,4.541016 c0,1.902344-0.600098,3.518066-1.800781,4.848633c-1.201172,1.331543-2.8125,2.225098-4.833496,2.681152 c3.419922,1.20166,5.129883,3.461426,5.129883,6.777832c0,2.416992-0.817383,4.540039-2.451172,6.365234 s-4.350586,2.738281-8.150391,2.738281H85.328613z M95.493652,24.986328h4.652832c1.444336,0,2.440918-0.304688,2.987793-0.913086 c0.547363-0.608398,0.821777-1.269531,0.821777-1.985352c0-0.881836-0.300781-1.59375-0.902344-2.132812 c-0.601074-0.540039-1.495117-0.810547-2.681641-0.810547h-3.90332L95.493652,24.986328z M97.557129,12.618652h3.563477 c2.847656,0,4.271484-0.943359,4.271484-2.82959c0-1.657715-1.127441-2.487305-3.382324-2.487305h-3.564941L97.557129,12.618652z"/>
+  <path fill="#FFFFFF" d="M129.130859,0.72998l-5.196777,31.146973h-8.76123l5.19873-31.146973H129.130859z"/>
+  <path fill="#FFFFFF" d="M140.753906,32.561523c-3.20752,0-5.901367-0.954102-8.08252-2.864258 c-2.181152-1.908203-3.271484-4.513672-3.271484-7.814453c0-3.970703,1.265137-7.23291,3.79541-9.788574 c2.530762-2.555664,5.726562-3.833496,9.587402-3.833496c3.526367,0,6.32666,1,8.401367,3 c2.075195,2.000977,3.112305,4.469238,3.112305,7.405273c0,4.365234-1.333984,7.772461-4.000977,10.22168 C147.627441,31.336914,144.447266,32.561523,140.753906,32.561523z M141.118652,26.948242 c1.595703,0,2.678711-1.186523,3.248535-3.55957c0.570312-2.373047,0.855469-4.357422,0.855469-5.956055 c0-2.433105-0.882324-3.650879-2.64502-3.650879c-1.56543,0-2.648438,1.213867-3.249023,3.640137 c-0.600586,2.426758-0.900879,4.408203-0.900879,5.943359C138.427734,25.754883,139.324707,26.948242,141.118652,26.948242z"/>
+  <path fill="#FFFFFF" d="M171.578125,22.932617l6.953125,1.710938c-1.246094,2.981445-2.880859,5.046875-4.900879,6.195312 c-2.021973,1.147461-4.111816,1.722656-6.27002,1.722656c-3.176758,0-5.771973-1.008789-7.786133-3.026367 c-2.013672-2.017578-3.020508-4.610352-3.020508-7.776367c0-3.608398,1.188965-6.79834,3.567871-9.570312 c2.378906-2.77002,5.528809-4.156738,9.450195-4.156738c2.842285,0,5.251465,0.855957,7.227051,2.567871 c1.975586,1.710938,2.963867,3.912598,2.963867,6.605469l-7.819824,0.913086c0-2.494629-0.843262-3.742188-2.530273-3.742188 c-1.444336,0-2.470215,1.021484-3.078125,3.063477s-0.912109,3.825195-0.912109,5.349609 c0,2.255859,0.851074,3.383789,2.553711,3.383789C169.647949,26.172852,170.848633,25.092773,171.578125,22.932617z"/>
+  <path fill="#FFFFFF" d="M208.717773,8.836426l-4.012695,3.602051c-2.220703,1.990234-3.77832,3.441895-4.675781,4.353516 l5.541992,15.084961h-8.745117l-3.182617-9.854492l-3.962891,3.580078l-1.051758,6.274414h-8.113281l5.198242-31.146973h8.134766 l-2.888672,17.239746l1.666016-1.666016c0.500977-0.533203,0.926758-0.958984,1.275391-1.279297l6.775391-6.187988H208.717773z"/>
+  <path fill="#FFFFFF" d="M221.697266,0.72998l-1.841797,10.977539c1.200195-1.430664,2.269531-2.374023,3.210938-2.830078 c0.941406-0.456543,1.998047-0.685547,3.167969-0.685547c2.216797,0,3.993164,0.787109,5.330078,2.361816 c1.335938,1.574219,2.004883,3.898438,2.004883,6.970703c0,3.773438-1.056641,7.195312-3.168945,10.268555 c-2.112305,3.072266-5.043945,4.608398-8.796875,4.608398c-3.555664,0-6.032227-1.459961-7.429688-4.380859l-2.579102,3.856445 h-3.994141l5.199219-31.146973H221.697266z M217.824219,23.800781c0,0.851562,0.060547,1.4375,0.182617,1.756836 c0.12207,0.318359,0.387695,0.623047,0.796875,0.912109s0.917969,0.432617,1.524414,0.432617 c0.774414,0,1.438477-0.253906,1.992188-0.764648c0.554688-0.508789,1.085938-1.638672,1.59375-3.387695 c0.508789-1.75,0.763672-3.613281,0.763672-5.59082c0-2.296387-0.802734-3.445312-2.40918-3.445312 c-1.545898,0-2.65918,1.172852-3.34082,3.517578L217.824219,23.800781z"/>
+  <path fill="#FFFFFF" d="M238.8125,8.831055h7.674805l-0.919922,5.55957c1.598633-4.163574,4.042969-6.244141,7.333008-6.244141 c0.258789,0,0.616211,0.037598,1.073242,0.114258l-1.025391,8.214844c-0.791016-0.046875-1.31543-0.069336-1.574219-0.069336 c-1.900391,0-3.294922,0.445312-4.18457,1.333984s-1.523438,2.463867-1.901367,4.726562l-1.567383,9.410156h-8.761719 L238.8125,8.831055z"/>
+  <path fill="#FFFFFF" d="M266.025391,8.831055l-3.857422,23.045898h-8.945312l3.857422-23.045898H266.025391z M267.503906,0 l-1.134766,6.777344h-8.946289L258.556641,0H267.503906z"/>
+  <path fill="#FFFFFF" d="M294.807617,0.72998l-5.198242,31.146973h-8.181641l0.564453-3.485352 c-1.884766,2.780273-4.164062,4.169922-6.838867,4.169922c-2.082031,0-3.875-0.821289-5.379883-2.464844 c-1.503906-1.642578-2.256836-3.993164-2.256836-7.049805c0-3.789062,1.041992-7.210449,3.125977-10.269043 c2.083008-3.056641,4.751953-4.585938,8.006836-4.585938c2.783203,0,4.660156,1.096191,5.633789,3.287598l1.787109-10.749512 H294.807617z M283.329102,17.021484c0.044922-0.243164,0.067383-0.50293,0.067383-0.776855 c0-0.65332-0.232422-1.20752-0.695312-1.663574c-0.461914-0.456543-1.019531-0.68457-1.672852-0.68457 c-1.5625,0-2.688477,1.205566-3.378906,3.616211c-0.69043,2.412109-1.035156,4.416016-1.035156,6.012695 c0,2.099609,0.814453,3.149414,2.444336,3.149414c1.614258,0,2.6875-1.048828,3.220703-3.147461L283.329102,17.021484z"/>
+  <path fill="#FFFFFF" d="M320.798828,2.281738l-0.547852,5.75c-0.911133-0.105469-1.595703-0.15918-2.051758-0.15918 c-1.686523,0-2.834961,0.615723-3.442383,1.848633c2.356445,1.414062,3.53418,3.247559,3.53418,5.498535 c0,1.962891-0.766602,3.705078-2.299805,5.224609c-1.533203,1.521484-4.348633,2.282227-8.446289,2.282227 c-0.866211,0-1.579102-0.030273-2.140625-0.09082c-0.819336-0.091797-1.396484-0.136719-1.729492-0.136719 c-0.554688,0-1.010742,0.162109-1.37207,0.487305s-0.541016,0.699219-0.541016,1.121094 c0,0.363281,0.121094,0.65625,0.364258,0.882812s0.524414,0.359375,0.84375,0.395508 c0.319336,0.039062,1.686523,0.094727,4.104492,0.169922c2.644531,0.092773,4.357422,0.1875,5.140625,0.287109 c0.783203,0.098633,1.645508,0.400391,2.587891,0.902344c0.941406,0.50293,1.683594,1.208008,2.222656,2.114258 s0.80957,1.922852,0.80957,3.050781c0,2.163086-0.958008,4.052734-2.873047,5.667969 C313.046875,39.192383,309.421875,40,304.086914,40c-8.071289,0-12.106445-1.856445-12.106445-5.567383 c0-1.931641,1.37207-3.415039,4.117188-4.449219c-1.483398-0.989258-2.224609-2.213867-2.224609-3.673828 c0-2.555664,1.864258-4.373047,5.594727-5.453125c-2.134766-1.202148-3.201172-2.913086-3.201172-5.134766 c0-2.022949,0.880859-3.772461,2.644531-5.248047c1.763672-1.474609,4.727539-2.212891,8.891602-2.212891 c1.277344,0,2.470703,0.11377,3.580078,0.341797c0.65332-4.304688,3.009766-6.457031,7.068359-6.457031 C319.058594,2.145508,319.841797,2.19043,320.798828,2.281738z M300.527344,31.876953 c-0.865234,0.516602-1.296875,1.049805-1.296875,1.59668c0,1.15625,1.896484,1.734375,5.688477,1.734375 c1.865234,0,3.21875-0.118164,4.061523-0.353516c0.84082-0.235352,1.261719-0.696289,1.261719-1.380859 c0-0.456055-0.197266-0.756836-0.59082-0.901367c-0.395508-0.143555-1.251953-0.24707-2.571289-0.306641 C303.256836,32.09668,301.073242,31.967773,300.527344,31.876953z M307.154297,18.574219 c0.96875,0,1.729492-0.342773,2.282227-1.027344s0.828125-1.459961,0.828125-2.327148 c0-1.688477-0.832031-2.533203-2.49707-2.533203c-1.029297,0-1.813477,0.351074-2.350586,1.050781 s-0.805664,1.52832-0.805664,2.486328c0,0.745117,0.242188,1.323242,0.726562,1.734375S306.427734,18.574219,307.154297,18.574219z"/>
+  <path fill="#FFFFFF" d="M345.650391,22.042969h-15.868164c-0.076172,0.625977-0.114258,1.092773-0.114258,1.397461 c0,1.008789,0.323242,1.796875,0.96875,2.362305c0.645508,0.566406,1.462891,0.848633,2.451172,0.848633 c1.869141,0,3.191406-0.972656,3.966797-2.920898l7.751953,1.255859c-1.00293,2.256836-2.625977,4.084961-4.868164,5.480469 c-2.241211,1.396484-4.730469,2.094727-7.466797,2.094727c-3.43457,0-6.220703-0.976562-8.355469-2.931641 c-2.135742-1.955078-3.204102-4.621094-3.204102-7.999023c0-3.665039,1.262695-6.810547,3.786133-9.434082 c2.522461-2.624512,5.821289-3.936035,9.894531-3.936035c3.450195,0,6.197266,1.01709,8.242188,3.052246 c2.043945,2.035156,3.06543,4.737793,3.06543,8.109863C345.900391,20.182617,345.816406,21.055664,345.650391,22.042969z M337.350586,17.615234c0.076172-0.470703,0.115234-0.835938,0.115234-1.094727c0-0.821777-0.255859-1.536133-0.763672-2.144531 c-0.510742-0.608398-1.220703-0.912598-2.132812-0.912598c-0.972656,0-1.853516,0.368164-2.644531,1.106445 s-1.276367,1.753418-1.458984,3.04541H337.350586z"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" fill="#4F8CCA" d="M34.401367,0.722168h22.350098c0,0,1.194336,0,1.15625,1.239258 L53.055664,30.75c-0.20752,1.061523-1.129395,1.125977-1.129395,1.125977h-22.41748c0,0-1.026367,0-0.961914-1.219727 l4.873047-28.866211C33.411133,0.790039,34.401367,0.722168,34.401367,0.722168z"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" fill="#6AA9DC" d="M62.686035,0.722168h22.350098c0,0,1.194336,0,1.15625,1.239258 L81.34082,30.75c-0.20752,1.061523-1.129883,1.125977-1.129883,1.125977H57.793945c0,0-1.026855,0-0.961914-1.219727 l4.873047-28.866211C61.696289,0.790039,62.686035,0.722168,62.686035,0.722168z"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" fill="#3B6BA0" d="M5.856934,0.722168h22.350098c0,0,1.194336,0,1.15625,1.239258 L24.511719,30.75c-0.20752,1.061523-1.129883,1.125977-1.129883,1.125977H0.964844c0,0-1.026855,0-0.961914-1.219727 L4.875977,1.790039C4.867188,0.790039,5.856934,0.722168,5.856934,0.722168z"/>
+</svg></div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+
+
+  <!-- Page Content -->
+  <div class="container-fluid">
+    <div id="main">
+      <!-- Content Row -->
+      <div class="row">
+
+        <div class="col-body">
+          <!-- row-oriented flex container -->
+          
+
+          <!-- Sidebar Column -->
+          <nav class="col-nav hidden-sm hidden-xs" id="tg-sb-sidebar">
+            
+
+<ul id="sidebar" class="sidebar">
+  
+  
+  
+  
+  <li>
+      <a href="#proxmox-ve-storage-guide">ABOUT THIS GUIDE</a>
+      <ul>
+          
+      </ul>
+   </li>
+     
+      
+  
+  <li>
+      <a href="#feature-overview">FEATURE OVERVIEW</a>
+      <ul>
+          
+          
+          
+          <li><a href="#formats--content-types">Formats & Content Types</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#high-availability">High Availability</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#multi-tenancy--multi-proxmox">Multi-Tenancy & Multi-Proxmox</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#high-performance">High Performance</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#at-rest--in-flight-encryption">At-Rest & In-Flight Encryption</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#snapshots--clones">Snapshots & Clones</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#thin-provisioning--data-reduction">Thin Provisioning & Data Reduction</a></li>
+          
+          
+          
+          
+      </ul>
+   </li>
+     
+      
+  
+  <li>
+      <a href="#quickstart">QUICKSTART</a>
+      <ul>
+          
+          
+          
+          <li><a href="#driver-installation">Driver Installation</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#authentication-token">Authentication Token</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#proxmox-configuration">Proxmox Configuration</a></li>
+          
+          
+          
+          
+      </ul>
+   </li>
+     
+      
+  
+  <li>
+      <a href="#deployment--management">DEPLOYMENT & MANAGEMENT</a>
+      <ul>
+          
+          
+          
+          <li><a href="#supported-versions">Supported Versions</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#driver-packages">Driver Packages</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#driver-options">Driver Options</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#driver-authentication">Driver Authentication</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#proxmox-storage-definition">Proxmox Storage Definition</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#troubleshooting">Troubleshooting</a></li>
+          
+          
+          
+          
+      </ul>
+   </li>
+     
+      
+  
+  <li>
+      <a href="#proxmox-storage-primitives">PROXMOX STORAGE PRIMITIVES</a>
+      <ul>
+          
+          
+          
+          <li><a href="#device-naming-specification">Volume Name</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#show-storage-pools">Show Storage Pools</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#list-volumes">List Volumes</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#allocate-a-volume">Allocate A Volume</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#delete-a-volume">Delete A Volume</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#attach-a-volume">Attach A Volume</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#detach-a-volume">Detach A Volume</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#resize-a-volume">Resize A Volume</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#create-a-snapshot">Create A Snapshot</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#remove-a-snapshot">Remove A Snapshot</a></li>
+          
+          
+          
+          
+      </ul>
+   </li>
+     
+      
+      
+      <!-- if you aren't using the accordion, uncomment this block:
+         <p class="external">
+             <a href="#" id="collapseAll">Collapse All</a> | <a href="#" id="expandAll">Expand All</a>
+         </p>
+         -->
+</ul>
+
+<!-- this highlights the active parent class in the navgoco sidebar. this is critical so that the parent expands when you're viewing a page. This must appear below the sidebar code above. Otherwise, if placed inside customscripts.js, the script runs before the sidebar code runs and the class never gets inserted.-->
+<script>$("li.active").parents('li').toggleClass("active");</script>
+
+          </nav>
+          
+
+          <!-- Content Column -->
+          <main class="col-content">
+            <div class="post-header">
+   <h1 class="post-title-main">PROXMOX VE STORAGE GUIDE</h1>
+</div>
+
+
+
+<div class="post-content">
+
+   
+
+    
+
+
+    
+
+   <p>This guide provides technical details for deploying Proxmox VE with Blockbridge iSCSI storage using the Blockbridge storage driver for Proxmox.</p>
+
+<p>Most readers will want to start with the Quickstart section. It’s an ordered list of configuration steps and is the fastest path to an installation. The rest of the document provides details on all aspects of using Proxmox with Blockbridge.</p>
+
+<hr />
+
+<h1 id="feature-overview">FEATURE OVERVIEW</h1>
+
+<h2 id="formats--content-types">Formats &amp; Content Types</h2>
+
+<p>Blockbridge provides <strong>block-level storage</strong> optimized for performance, security, and efficiency. Block storage is used by Proxmox to store raw disk <strong>images</strong>. Disk images are attached to virtual machines and typically formatted with a filesystem for use by the guest.</p>
+
+<p>Proxmox supports several built-in storage types. Environments with existing
+enterprise or datacenter storage systems can use the LVM or iSCSI/kernel
+storage types for shared storage in support of high-availability. For service
+providers, however, these solutions are simply not scalable.  The configuration
+management required to implement and maintain Proxmox on traditional shared
+storage systems is too large a burden. We developed our Proxmox-native driver
+specifically to address these challenges.</p>
+
+<p>The table below provides a high-level overview of the capabilities of popular block storage types. For a complete list of storage types, visit the <a href="https://pve.proxmox.com/wiki/Storage">Proxmox Storage Wiki</a>.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Description</th>
+      <th style="text-align: center">Level</th>
+      <th style="text-align: center">High-Availability</th>
+      <th style="text-align: center">Shared</th>
+      <th style="text-align: center">Snapshots</th>
+      <th style="text-align: center">Stable</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left">iSCSI/Blockbridge</td>
+      <td style="text-align: center">block</td>
+      <td style="text-align: center">yes</td>
+      <td style="text-align: center">yes</td>
+      <td style="text-align: center">yes</td>
+      <td style="text-align: center">yes</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">Ceph/RBD</td>
+      <td style="text-align: center">block</td>
+      <td style="text-align: center">yes</td>
+      <td style="text-align: center">yes</td>
+      <td style="text-align: center">yes</td>
+      <td style="text-align: center">yes</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">iSCSI/kernel</td>
+      <td style="text-align: center">block</td>
+      <td style="text-align: center">inherit [1]</td>
+      <td style="text-align: center">yes</td>
+      <td style="text-align: center">no</td>
+      <td style="text-align: center">yes</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">LVM</td>
+      <td style="text-align: center">block</td>
+      <td style="text-align: center">inherit [1]</td>
+      <td style="text-align: center">yes [2]</td>
+      <td style="text-align: center">no</td>
+      <td style="text-align: center">yes</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">LVM-thin</td>
+      <td style="text-align: center">block</td>
+      <td style="text-align: center">no</td>
+      <td style="text-align: center">no</td>
+      <td style="text-align: center">yes</td>
+      <td style="text-align: center">yes</td>
+    </tr>
+    <tr>
+      <td style="text-align: left">iSCSI/ZFS</td>
+      <td style="text-align: center">block</td>
+      <td style="text-align: center">no</td>
+      <td style="text-align: center">yes</td>
+      <td style="text-align: center">yes</td>
+      <td style="text-align: center">yes</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Note 1: LVM and iSCSI inherit the availability characteristics of the underlying storage.<br />Note 2: LVM can be deployed on iSCSI-based storage to achieve shared storage.</p>
+
+<h2 id="high-availability">High Availability</h2>
+
+<p>Blockbridge provides highly-available storage that is self-healing.
+Controlplane (i.e., API) and dataplane (i.e., iSCSI) services transparently
+failover in the event of hardware failure. Depending on your network
+configuration, it may be appropriate to deploy Linux multipathing for
+protection against network failure. The Blockbridge driver supports automated multipath management.</p>
+
+<h2 id="multi-tenancy--multi-proxmox">Multi-Tenancy &amp; Multi-Proxmox</h2>
+
+<p>Blockbridge implements features critical for multi-tenant environments,
+including management segregation, automated performance shaping, and always-on
+encryption. The Blockbridge driver leverages these functions, allowing you to
+create storage pools dedicated for different users, applications, and
+performance tiers. Service providers can safely deploy multiple Proxmox
+clusters on Blockbridge storage without the risk of collision.</p>
+
+<h2 id="high-performance">High Performance</h2>
+
+<p>Blockbridge is heavily optimized for performance. Expect approximately a 5x write latency and IOPS advantage when compared to native Proxmox CEPH/RBD solution. Optionally, the Blockbridge driver can tune your hosts for the best possible latency and performance.</p>
+
+<h2 id="at-rest--in-flight-encryption">At-Rest &amp; In-Flight Encryption</h2>
+
+<p>Blockbridge implements always-on per-virtual disk encryption, automated key management, and instant secure erase for at-rest security. The Blockbridge driver also supports in-flight encryption for end-to-end protection.</p>
+
+<h2 id="snapshots--clones">Snapshots &amp; Clones</h2>
+
+<p>Snapshots and Clones are thin and instantaneous. Both technologies take advantage of an allocate-on-write storage architecture for significantly improved latency compared to copy-on-write strategies.</p>
+
+<h2 id="thin-provisioning--data-reduction">Thin Provisioning &amp; Data Reduction</h2>
+
+<p>Blockbridge supports thin-provisioning, pattern elimination, and
+latency-optimized adaptive data reduction. These features are transparent to
+Proxmox.</p>
+
+<hr />
+
+<h1 id="quickstart">QUICKSTART</h1>
+
+<p>This is a quick reference for installing and configuring the Blockbridge
+Proxmox VE shared storage plugin.</p>
+
+<p>Some of these topics have more information available by selecting the
+information <strong>ⓘ</strong> links next to items where they appear.</p>
+
+<h2 id="driver-installation">Driver Installation</h2>
+
+<p>Repeat this section’s instructions on each Proxmox node.</p>
+
+<ol>
+  <li>
+    <p><strong>Import the Blockbridge release signing key.</strong></p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo apt update
+ sudo apt install apt-transport-https ca-certificates curl \
+   gnupg-agent software-properties-common
+ curl -fsSL https://get.blockbridge.com/tools/5.1/debian/gpg | sudo apt-key add -
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>Verify the key fingerprint.</strong></p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo apt-key fingerprint 7ECF5373
+
+ pub   rsa4096 2016-11-01 [SC]
+       9C1D E2AE 5970 CFD4 ADC5  E0BA DDDE 845D 7ECF 5373
+ uid           [ unknown] Blockbridge (Official Signing Key) &lt;security@blockbridge.com&gt;
+ sub   rsa4096 2016-11-01 [E]
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>Add the Blockbridge Tools repository and install the plugin.</strong></p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> sudo apt-add-repository \
+   "deb https://get.blockbridge.com/tools/5.1/debian $(lsb_release -cs) main"
+ sudo apt update
+ sudo apt install blockbridge-proxmox
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h2 id="authentication-token">Authentication Token</h2>
+
+<p>This section describes creating a dedicated Blockbridge account for your
+Proxmox storage, and then creating an authorization token to use it.  These
+steps only need to happen once.</p>
+
+<ol>
+  <li>
+    <p><strong>Log in to your Blockbridge controlplane as the <code class="highlighter-rouge">system</code> user.</strong></p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> root@proxmox-1:~# bb auth login
+ Enter a default management host: blockbridge.yourcompany.com
+ Authenticating to https://blockbridge.yourcompany.com/api
+    
+ Enter user or access token: system
+ Password for system:
+ Authenticated; token expires in 3599 seconds.
+ == Authenticated as user system.
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>Create a dedicated <code class="highlighter-rouge">proxmox</code> account.</strong></p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> root@proxmox-1:~# bb account create --name proxmox
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>Use the ‘substitute user’ option to switch your session to the newly created <code class="highlighter-rouge">proxmox</code> account.</strong></p>
+
+    <p><em>Note that you will have to re-authenticate as the <strong>system</strong> user.</em></p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> root@proxmox-1:~# bb auth login --su proxmox
+ Authenticating to https://blockbridge.yourcompany.com/api
+    
+ Enter user or access token: system
+ Password for system: ......
+ Authenticated; token expires in 3599 seconds.
+    
+ == Authenticated as user proxmox.
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>Create a persistent authorization token.</strong></p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> root@proxmox-1:~# bb authorization create --notes "Proxmox Cluster token"
+ == Created authorization: ATH4762194C412D97FE
+ ... [output trimmed] ...
+    
+ == Access Token
+ access token          1/LtVVws54+bGvb/l...njz8A
+</code></pre></div>    </div>
+
+    <p><em>Remember to record your access token!</em></p>
+  </li>
+</ol>
+
+<h2 id="proxmox-configuration">Proxmox Configuration</h2>
+
+<ol>
+  <li>
+    <p><strong>Edit <code class="highlighter-rouge">/etc/pve/storage.cfg</code> on any node to add a Blockbridge storage pool.
+The changes will be propagated to the other nodes.</strong></p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> blockbridge: shared-block-gp
+         api_url https://blockbridge.yourcompany.com/api
+         auth_token 1/nalF+/S1pO............2qitqUX79LWtpw
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><strong>Restart the <code class="highlighter-rouge">pvedaemon</code>, <code class="highlighter-rouge">pveproxy</code> and <code class="highlighter-rouge">pvestatd</code> services.</strong></p>
+
+    <p>Though the configuration is automatically synchronized to all Proxmox nodes,
+ you must restart services on all Proxmox nodes.</p>
+
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> systemctl restart pvedaemon pveproxy pvestatd
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<hr />
+
+<h1 id="deployment--management">DEPLOYMENT &amp; MANAGEMENT</h1>
+
+<p>This section describes how to install and configure the Blockbridge Proxmox
+storage plugin.</p>
+
+<h2 id="supported-versions">Supported Versions</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: center">PVE Version</th>
+      <th>Debian Version</th>
+      <th>QEMU Version</th>
+      <th>Linux Kernel</th>
+      <th>Release Date</th>
+      <th>Blockbridge Version</th>
+      <th>Blockbridge Driver</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: center">6.0</td>
+      <td>10.0 (Buster)</td>
+      <td>4.0.0</td>
+      <td>5.0</td>
+      <td>July 2019</td>
+      <td>5.1</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">6.1</td>
+      <td>10.2 (Buster)</td>
+      <td>4.1.1</td>
+      <td>5.3</td>
+      <td>March 2020</td>
+      <td>5.1</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">6.2</td>
+      <td>10.4 (Buster)</td>
+      <td>5.0</td>
+      <td>5.4 LTS</td>
+      <td>May 2020</td>
+      <td>5.1</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <td style="text-align: center">6.3</td>
+      <td>10.6 (Buster)</td>
+      <td>5.1</td>
+      <td>5.4 LTS</td>
+      <td>November 2020</td>
+      <td>5.1</td>
+      <td>1.0</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="driver-packages">Driver Packages</h2>
+
+<h3 id="import-the-blockbridge-release-signing-key">Import the Blockbridge Release Signing Key</h3>
+
+<p>On each Proxmox node, import the Blockbridge release signing key.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt update
+sudo apt install apt-transport-https ca-certificates curl \
+    gnupg-agent software-properties-common
+curl -fsSL https://get.blockbridge.com/tools/5.1/debian/gpg | sudo apt-key add -
+</code></pre></div></div>
+
+<p>Verify the key fingerprint:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt-key fingerprint 7ECF5373
+pub   rsa4096 2016-11-01 [SC]
+      9C1D E2AE 5970 CFD4 ADC5  E0BA DDDE 845D 7ECF 5373
+uid           [ unknown] Blockbridge (Official Signing Key) &lt;security@blockbridge.com&gt;
+sub   rsa4096 2016-11-01 [E]
+</code></pre></div></div>
+
+<h3 id="add-the-blockbridge-tools-repository-and-install-the-plugin">Add the Blockbridge Tools Repository and Install the Plugin</h3>
+
+<p>On each Proxmox node, install the Blockbridge storage plugin.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt-add-repository \
+  "deb https://get.blockbridge.com/tools/5.1/debian $(lsb_release -cs) main"
+sudo apt update
+sudo apt install blockbridge-proxmox
+</code></pre></div></div>
+
+<h3 id="optional-packages">Optional Packages</h3>
+
+<p>To use TLS transport encryption for iSCSI traffic, install the <code class="highlighter-rouge">stunnel</code> package.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apt install stunnel
+</code></pre></div></div>
+
+<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> There is a performance penalty for using stunnel
+to encrypt iSCSI data flows, but it’s not as bad as you might expect.  Consult
+with Blockbridge support on how best to deploy high-performance SSL-secured
+storage.</div>
+
+<h2 id="driver-options">Driver Options</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th style="text-align: left">Parameter</th>
+      <th style="text-align: left">Type</th>
+      <th style="text-align: left">Values</th>
+      <th style="text-align: left">Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="text-align: left"><code class="highlighter-rouge">api_url</code></td>
+      <td style="text-align: left">string</td>
+      <td style="text-align: left"> </td>
+      <td style="text-align: left"> </td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="highlighter-rouge">auth_token</code></td>
+      <td style="text-align: left">string</td>
+      <td style="text-align: left"> </td>
+      <td style="text-align: left">Blockbridge controlplane API authentiction token</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="highlighter-rouge">ssl_verify_peer</code></td>
+      <td style="text-align: left">boolean</td>
+      <td style="text-align: left">0,1 (default)</td>
+      <td style="text-align: left">Enable or disable peer certificate verification</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="highlighter-rouge">service_type</code></td>
+      <td style="text-align: left">string</td>
+      <td style="text-align: left"> </td>
+      <td style="text-align: left">Override default provisioning template selection</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="highlighter-rouge">query_include</code></td>
+      <td style="text-align: left">string-list</td>
+      <td style="text-align: left"> </td>
+      <td style="text-align: left">Require specific tags when provisioning storage</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="highlighter-rouge">query_exclude</code></td>
+      <td style="text-align: left">string-list</td>
+      <td style="text-align: left"> </td>
+      <td style="text-align: left">Reject specific tags when provisioning storage</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="highlighter-rouge">transport_encryption</code></td>
+      <td style="text-align: left">enum</td>
+      <td style="text-align: left">‘tls’,’none’ (default)</td>
+      <td style="text-align: left">Transport data encryption protocol</td>
+    </tr>
+    <tr>
+      <td style="text-align: left"><code class="highlighter-rouge">multipath</code></td>
+      <td style="text-align: left">boolean</td>
+      <td style="text-align: left">1,0 (default)</td>
+      <td style="text-align: left">Automatically detect and configure storage paths</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="driver-authentication">Driver Authentication</h2>
+
+<h3 id="create-a-persistent-authorization-for-proxmox-use">Create a persistent authorization for Proxmox use</h3>
+
+<p>Log in to your Blockbridge controlplane as the <code class="highlighter-rouge">system</code> user.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@proxmox-1:~# bb auth login
+Enter a default management host: blockbridge.yourcompany.com
+Authenticating to https://blockbridge.yourcompany.com/api
+
+Enter user or access token: system
+Password for system:
+Authenticated; token expires in 3599 seconds.
+== Authenticated as user system.
+</code></pre></div></div>
+
+<p>Create a dedicated <code class="highlighter-rouge">proxmox</code> account for storage and management isolation.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@proxmox-1:~# bb account create --name proxmox
+== Created account: proxmox (ACT0762194C407BA625)
+
+== Account: proxmox (ACT0762194C407BA625)
+name                  proxmox
+label                 proxmox
+serial                ACT0762194C407BA625
+created               2021-01-27 16:58:53 -0500
+disabled              no
+</code></pre></div></div>
+
+<p>With the <code class="highlighter-rouge">system</code> username and password, use the “substitute user” function to
+switch to the newly created <code class="highlighter-rouge">proxmox</code> account:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@proxmox-1:~# bb auth login --su proxmox
+Authenticating to https://blockbridge.yourcompany.com/api
+
+Enter user or access token: system
+Password for system: ......
+Authenticated; token expires in 3599 seconds.
+
+== Authenticated as user proxmox.
+</code></pre></div></div>
+
+<p>Create a persistent authorization for use by the Blockbridge storage plugin.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@proxmox-1:~# bb authorization create --notes "Proxmox Cluster token"
+== Created authorization: ATH4762194C412D97FE
+
+== Authorization: ATH4762194C412D97FE
+notes                 Proxmox Cluster token
+serial                ATH4762194C412D97FE
+account               proxmox (ACT0762194C407BA625)
+user                  proxmox (USR1B62194C407BA0E5)
+enabled               yes
+created at            2021-01-27 16:59:08 -0500
+access type           online
+token suffix          rDznjz8A
+restrict              auth
+enforce 2-factor      false
+
+== Access Token
+access token          1/LtVVws54+bGvb/l...njz8A
+
+*** Remember to record your access token!
+</code></pre></div></div>
+
+<h2 id="proxmox-storage-definition">Proxmox Storage Definition</h2>
+
+<p>Configure a blockbridge storage backend by addicting a new section to <code class="highlighter-rouge">/etc/pve/storage.cfg</code>. The <code class="highlighter-rouge">/etc/pve</code> directory is an automatically synchronized filesystem (proxmox cluster filesystem, or just <code class="highlighter-rouge">pmxcfs</code>), so you only need to edit the file on a single node; the changes are synchronized to all cluster members.</p>
+
+<p>For example, edit <code class="highlighter-rouge">storage.cfg</code> to add this section:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>blockbridge: shared-block-gp
+        api_url https://blockbridge.yourcompany.com/api
+        auth_token 1/nalF+/S1pO............2qitqUX79LWtpw
+</code></pre></div></div>
+
+<p>After editing <code class="highlighter-rouge">storage.cfg</code> (or updating the blockbridge plugin), restart
+the <code class="highlighter-rouge">pvedaemon</code>, <code class="highlighter-rouge">pveproxy</code> and <code class="highlighter-rouge">pvestatd</code> services.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>systemctl restart pvedaemon pveproxy pvestatd
+</code></pre></div></div>
+
+<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> Though the configuration is automatically
+synchronized to all Proxmox nodes, you’ll still have to restart services on all
+cluster members.</div>
+
+<h2 id="troubleshooting">Troubleshooting</h2>
+
+<p>The Blockbridge plugin logs all interactions with both Proxmox and your
+Blockbridge installation to syslog at <code class="highlighter-rouge">LOG_INFO</code> level.  You can see the logs
+with <code class="highlighter-rouge">journalctl -f | grep blockbridge:</code>.</p>
+
+<hr />
+
+<h1 id="proxmox-storage-primitives">PROXMOX STORAGE PRIMITIVES</h1>
+
+<p>Proxmox offers multiple interfaces for storage management.</p>
+
+<ul>
+  <li>The GUI offers storage management scoped to the context of virtual machine.</li>
+  <li>The <a href="https://pve.proxmox.com/pve-docs/pvesm.1.html">pvesm</a> command provides
+granular storage management for specific node.</li>
+  <li>The <a href="https://pve.proxmox.com/pve-docs/qm.1.html">qm</a> command allows for VM
+specific volume management.</li>
+  <li>The <a href="https://pve.proxmox.com/pve-docs/pvesh.1.html">pvesh</a> API tool provides
+fine-grained storage and VM management, and can operate on any node in your
+Proxmox cluster. To see the available resources, check out the <a href="https://pve.proxmox.com/pve-docs/api-viewer/">browsable
+api viewer</a></li>
+</ul>
+
+<p>For additional detail and for topics not covered in this guide, head over to the
+<a href="https://pve.proxmox.com/pve-docs/">Proxmox VE Documentation Index</a>.</p>
+
+<h2 id="device-naming-specification">Device Naming Specification</h2>
+
+<p>Proxmox does not maintain internal state about storage devices or
+connectivity.  In practice, this means that <strong>Proxmox relies on device naming to
+know which devices are associated with virtual machines and how those device
+are connected to the virtual storage controller.</strong>  The general device name
+format is as follows:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Device Filename Specification:
+vm-&lt;vmid&gt;-disk-&lt;unique-id&gt;
+
+&lt;vmid&gt;: &lt;integer&gt; (100 - N)
+Specify owner VM
+
+&lt;disk-id&gt;: &lt;integer&gt; (1 - N)
+Unique naming of disk files
+</code></pre></div></div>
+
+<div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> Interfaces that accept device filenames do not
+thoroughly validate naming. We advise you to stick rigorously to the format
+described above.</div>
+
+<h2 id="show-storage-pools">Show Storage Pools</h2>
+
+<p>Proxmox supports multiple pools of storage. This flexibility allows for
+optimization of storage resources based on requirements.  With Blockbridge, you
+can offer different classes of storage.  For example, one pool can be
+IOPS-limited, while another can impose quality-of-service with strict performance
+guarantees.</p>
+
+<p>Not all Proxmox storage pools allow for shared access. As such, the interfaces
+that you use to view storage pools are scoped to a node. When working with
+shared storage types, such as Blockbridge, each node will return its own view
+of the storage, consistent with the other nodes’ views.</p>
+
+<h3 id="pvesm">PVESM</h3>
+
+<p>Show available storage types on the local node:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ pvesm status
+Name                      Type  Status      Total      Used  Available       %
+backup                     pbs  active   65792536   7402332   55018432  11.25%
+local                      dir  active    7933384   6342208    1168472  79.94%
+shared-block-gp    blockbridge  active  268435456  83886080  184549376  31.25%
+shared-block-iops  blockbridge  active  268435456  33669120  234766336  12.54%
+shared-file             cephfs  active   59158528    995328   58163200   1.68%
+</code></pre></div></div>
+
+<h3 id="pvesh">PVESH</h3>
+
+<p>Show available storage types on proxmox-1</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ pvesh get /nodes/proxmox-1/storage/
+┌──────────────────────┬───────────────────┬─────────────┬────────┬────────────┬─────────┬────────┬────────────┬────────────┬─────────┐
+│ content              │ storage           │ type        │ active │      avail │ enabled │ shared │      total │       used │  used % │
+╞══════════════════════╪═══════════════════╪═════════════╪════════╪════════════╪═════════╪════════╪════════════╪════════════╪═════════╡
+│ backup               │ backup            │ pbs         │ 1      │  52.47 GiB │ 1       │ 0      │  62.74 GiB │   7.06 GiB │  11.25% │
+├──────────────────────┼───────────────────┼─────────────┼────────┼────────────┼─────────┼────────┼────────────┼────────────┼─────────┤
+│ images               │ shared-block-gp   │ blockbridge │ 1      │ 240.00 GiB │ 1       │ 1      │ 256.00 GiB │  16.00 GiB │   6.25% │
+├──────────────────────┼───────────────────┼─────────────┼────────┼────────────┼─────────┼────────┼────────────┼────────────┼─────────┤
+│ images               │ shared-block-iops │ blockbridge │ 1      │ 191.89 GiB │ 1       │ 1      │ 256.00 GiB │  64.11 GiB │  25.04% │
+├──────────────────────┼───────────────────┼─────────────┼────────┼────────────┼─────────┼────────┼────────────┼────────────┼─────────┤
+│ iso,images,vztmpl,.. │ local             │ dir         │ 1      │   1.11 GiB │ 1       │ 0      │   7.57 GiB │   6.05 GiB │  79.99% │
+├─────────────────────-┼───────────────────┼─────────────┼────────┼────────────┼─────────┼────────┼────────────┼────────────┼─────────┤
+│ vztmpl,backup,iso    │ shared-file       │ cephfs      │ 1      │  55.47 GiB │ 1       │ 1      │  56.42 GiB │ 972.00 MiB │   1.68% │
+└──────────────────────┴───────────────────┴─────────────┴────────┴────────────┴─────────┴────────┴────────────┴────────────┴─────────┘
+</code></pre></div></div>
+
+<h2 id="list-volumes">List Volumes</h2>
+
+<p>You can enumerate volumes stored in a storage pool using the GUI, <code class="highlighter-rouge">pvesm</code>, and <code class="highlighter-rouge">pvesh</code> tools.</p>
+
+<div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> Blockbridge is shared storage. You can enumerate
+the contents of a storage pool from any node in your Proxmox Cluster.</div>
+
+<h3 id="gui">GUI</h3>
+
+<p>To generate a list of all volumes in a storage pool, we recommend <code class="highlighter-rouge">Folder View</code>. To see devices connected to a specific virtual machine, select the VM from the primary navigation plane. Then select <code class="highlighter-rouge">Hardware</code>.</p>
+
+<p>To see a list of all devices in the storage pool, select a storage pool from
+the Storage folder in the primary navigation plane (all nodes have a consistent
+view of storage.) Then select VM Disks.</p>
+
+<h3 id="pvesm-1">PVESM</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pvesm list &lt;storage&gt; [--vmid &lt;integer&gt;]
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th style="text-align: center">Format</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>storage</td>
+      <td style="text-align: center">string</td>
+      <td>Storage pool identifier from <code class="highlighter-rouge">pvesm status</code></td>
+    </tr>
+    <tr>
+      <td>vmid</td>
+      <td style="text-align: center">integer</td>
+      <td>Optional Virtual machine owner ID</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Example</strong></p>
+
+<p>List all volumes from the shared-block-iops pool.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ pvesm list shared-block-iops
+Volid                              Format  Type             Size VMID
+shared-block-iops:vm-101-disk-0    raw     images    34359738368 101
+shared-block-iops:vm-101-disk-1    raw     images    42949672960 101
+shared-block-iops:vm-101-disk-2    raw     images    34359738368 101
+shared-block-iops:vm-101-state-foo raw     images     4819255296 101
+shared-block-iops:vm-10444-disk-1  raw     images    34359738368 10444
+shared-block-iops:vm-2000-disk-0   raw     images      117440512 2000
+</code></pre></div></div>
+
+<p>List volumes of VM 101 stored in the shared-block-iops pool.</p>
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ pvesm list shared-block-iops --vmid 101
+Volid                              Format  Type             Size VMID
+shared-block-iops:vm-101-disk-0    raw     images    34359738368 101
+shared-block-iops:vm-101-disk-1    raw     images    42949672960 101
+shared-block-iops:vm-101-disk-2    raw     images    34359738368 101
+shared-block-iops:vm-101-state-foo raw     images     4819255296 101
+</code></pre></div></div>
+
+<h3 id="pvesh-1">PVESH</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pvesh get &lt;api_path&gt; [-vmid &lt;integer&gt;]
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th style="text-align: center">Format</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>api_path</td>
+      <td style="text-align: center">string</td>
+      <td><code class="highlighter-rouge">/nodes/{node}/storage/{storage}/content</code></td>
+    </tr>
+    <tr>
+      <td>node</td>
+      <td style="text-align: center">string</td>
+      <td>Any pve node listed in the output of <code class="highlighter-rouge">pvesh get /nodes</code></td>
+    </tr>
+    <tr>
+      <td>storage</td>
+      <td style="text-align: center">string</td>
+      <td>Storage pool identifier from <code class="highlighter-rouge">pvesh get /storage</code></td>
+    </tr>
+    <tr>
+      <td>vmid</td>
+      <td style="text-align: center">integer</td>
+      <td>Optional Virtual machine owner ID</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Show volumes from the shared-block-iops pool:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ pvesh get /nodes/proxmox-1/storage/shared-block-iops/content --vmid 101
+┌────────┬────────────┬────────────────────────────────────┬────────────┬───────────┬───────┬────────┬──────┬──────────────┬───────┐
+│ format │       size │ volid                              │      ctime │ encrypted │ notes │ parent │ used │ verification │  vmid │
+╞════════╪════════════╪════════════════════════════════════╪════════════╪═══════════╪═══════╪════════╪══════╪══════════════╪═══════╡
+│ raw    │  32.00 GiB │ shared-block-iops:vm-101-disk-0    │ 1612628760 │           │       │        │      │              │   101 │
+├────────┼────────────┼────────────────────────────────────┼────────────┼───────────┼───────┼────────┼──────┼──────────────┼───────┤
+│ raw    │  40.00 GiB │ shared-block-iops:vm-101-disk-1    │ 1612627879 │           │       │        │      │              │   101 │
+├────────┼────────────┼────────────────────────────────────┼────────────┼───────────┼───────┼────────┼──────┼──────────────┼───────┤
+│ raw    │  32.00 GiB │ shared-block-iops:vm-101-disk-2    │ 1612564950 │           │       │        │      │              │   101 │
+├────────┼────────────┼────────────────────────────────────┼────────────┼───────────┼───────┼────────┼──────┼──────────────┼───────┤
+│ raw    │   4.49 GiB │ shared-block-iops:vm-101-state-foo │ 1612725210 │           │       │        │      │              │   101 │
+├────────┼────────────┼────────────────────────────────────┼────────────┼───────────┼───────┼────────┼──────┼──────────────┼───────┤
+│ raw    │  32.00 GiB │ shared-block-iops:vm-10444-disk-1  │ 1612566379 │           │       │        │      │              │ 10444 │
+├────────┼────────────┼────────────────────────────────────┼────────────┼───────────┼───────┼────────┼──────┼──────────────┼───────┤
+│ raw    │ 112.00 MiB │ shared-block-iops:vm-2000-disk-0   │ 1612478241 │           │       │        │      │              │  2000 │
+└────────┴────────────┴────────────────────────────────────┴────────────┴───────────┴───────┴────────┴──────┴──────────────┴───────┘
+</code></pre></div></div>
+
+<p>List volumes of VM 101 that are stored in the shared-block-iops pool:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ pvesh get /nodes/proxmox-1/storage/shared-block-iops/content
+┌────────┬───────────┬────────────────────────────────────┬────────────┬───────────┬───────┬────────┬──────┬──────────────┬──────┐
+│ format │      size │ volid                              │      ctime │ encrypted │ notes │ parent │ used │ verification │ vmid │
+╞════════╪═══════════╪════════════════════════════════════╪════════════╪═══════════╪═══════╪════════╪══════╪══════════════╪══════╡
+│ raw    │ 32.00 GiB │ shared-block-iops:vm-101-disk-0    │ 1612628760 │           │       │        │      │              │  101 │
+├────────┼───────────┼────────────────────────────────────┼────────────┼───────────┼───────┼────────┼──────┼──────────────┼──────┤
+│ raw    │ 40.00 GiB │ shared-block-iops:vm-101-disk-1    │ 1612627879 │           │       │        │      │              │  101 │
+├────────┼───────────┼────────────────────────────────────┼────────────┼───────────┼───────┼────────┼──────┼──────────────┼──────┤
+│ raw    │ 32.00 GiB │ shared-block-iops:vm-101-disk-2    │ 1612564950 │           │       │        │      │              │  101 │
+├────────┼───────────┼────────────────────────────────────┼────────────┼───────────┼───────┼────────┼──────┼──────────────┼──────┤
+│ raw    │  4.49 GiB │ shared-block-iops:vm-101-state-foo │ 1612725210 │           │       │        │      │              │  101 │
+└────────┴───────────┴────────────────────────────────────┴────────────┴───────────┴───────┴────────┴──────┴──────────────┴──────┘
+</code></pre></div></div>
+
+<h2 id="allocate-a-volume">Allocate A Volume</h2>
+
+<p>Proxmox volumes are provisioned in the context of a VM. In fact, the naming scheme for volumes includes the VMID. When using the GUI, volume allocation automatically attaches the volume to the VM. When <code class="highlighter-rouge">pvesm</code> or <code class="highlighter-rouge">pvesh</code> are used, you are required to attach volumes as a separate step (see: <a href="#attach-a-volume">Attach A Volume</a>). This section covers explicit allocation of volumes as a distinct action.</p>
+
+<h3 id="pvesm-2">PVESM</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pvesm alloc &lt;storage&gt; &lt;vmid&gt; &lt;filename&gt; &lt;size&gt;
+</code></pre></div></div>
+
+<p><strong>Arguments</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th style="text-align: center">Format</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>storage</td>
+      <td style="text-align: center">string</td>
+      <td>Storage pool identifier from <code class="highlighter-rouge">pvesm status</code></td>
+    </tr>
+    <tr>
+      <td>vmid</td>
+      <td style="text-align: center">integer</td>
+      <td>Virtual machine owner ID</td>
+    </tr>
+    <tr>
+      <td>filename</td>
+      <td style="text-align: center">string</td>
+      <td>See: <a href="#device-naming-specification">Device Naming Specification</a></td>
+    </tr>
+    <tr>
+      <td>size</td>
+      <td style="text-align: center">\d+[MG]?</td>
+      <td>Default is KiB (1024). Optional suffixes M (MiB, 1024K) and G (GiB, 1024M)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Example</strong></p>
+
+<p>Allocate a 10G volume for VMID 100 from the general purpose performance pool.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ pvesm alloc shared-block-gp 100 vm-100-disk-1 10G
+successfully created 'shared-block-gp:vm-100-disk-1'
+</code></pre></div></div>
+
+<div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> Proxmox allows you to allocate volumes for VMIDs
+that do not exist.  You must specify a name that conforms to the name
+specification. Failure to do so may result in an error such as <code class="highlighter-rouge">illegal name '101-vm-disk-2' - should be 'vm-10444-*'</code>.</div>
+
+<h3 id="pvesh-2">PVESH</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pvesh create &lt;api_path&gt; -vmid &lt;vmid&gt; -filename &lt;filename&gt; -size &lt;size&gt;
+</code></pre></div></div>
+
+<p><strong>Arguments</strong></p>
+
+<p>Volume management with <code class="highlighter-rouge">pvesh</code> is node-relative. However, Blockbridge’s shared
+storage permits uniform access to storage from all Proxmox nodes. You are free
+to execute allocation requests against any cluster member.  The volume will be
+available globally.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th style="text-align: center">Format</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>api_path</td>
+      <td style="text-align: center">string</td>
+      <td><code class="highlighter-rouge">/nodes/{node}/storage/{storage}/content</code></td>
+    </tr>
+    <tr>
+      <td>node</td>
+      <td style="text-align: center">string</td>
+      <td>Any pve node listed in the output of <code class="highlighter-rouge">pvesh get /nodes</code></td>
+    </tr>
+    <tr>
+      <td>storage</td>
+      <td style="text-align: center">string</td>
+      <td>Storage pool identifier from <code class="highlighter-rouge">pvesh get /storage</code></td>
+    </tr>
+    <tr>
+      <td>vmid</td>
+      <td style="text-align: center">integer</td>
+      <td>Virtual machine owner ID</td>
+    </tr>
+    <tr>
+      <td>filename</td>
+      <td style="text-align: center">string</td>
+      <td>See: <a href="#device-naming-specification">Device Naming Specification</a></td>
+    </tr>
+    <tr>
+      <td>size</td>
+      <td style="text-align: center">\d+[MG]?</td>
+      <td>Default: KiB (1024). Other Suffixes: M (MiB, 1024K) and G (GiB, 1024M)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Example</strong></p>
+
+<p>Allocate a 10G volume for VMID 100 from the general purpose performance pool.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ pvesh create /nodes/proxmox-1/storage/shared-block-gp/content -vmid 100 -filename vm-100-disk-1 -size 10G
+shared-block-gp:vm-100-disk-1
+</code></pre></div></div>
+
+<h2 id="delete-a-volume">Delete A Volume</h2>
+
+<p>You can use either <code class="highlighter-rouge">pvesm</code> or <code class="highlighter-rouge">pvesh</code> commands to delete a volume. It may appear as though the tools use inconsistent terminology. However, keep in mind that <code class="highlighter-rouge">pvesh</code> is submitting a <code class="highlighter-rouge">DELETE</code> HTTP request to the resource URL.</p>
+
+<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> You can delete a volume that is attached to a VM. Failure to detach before release results in a stale attachment: a VM reference to storage that no longer exists. You can remove the stale attachment with the <a href="#detach a volume">Detach command</a>.</div>
+
+<div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> The delete operation with Blockbridge automatically performs an instantaneous secure-erase.</div>
+
+<div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> Blockbridge is shared storage. You can execute the delete operation against any node in your Proxmox cluster.</div>
+
+<h3 id="pvesm-3">PVESM</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pvesm free &lt;volume&gt; --storage &lt;storage&gt;
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th style="text-align: center">Format</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>volume</td>
+      <td style="text-align: center">string</td>
+      <td>Name of volume to destroy</td>
+    </tr>
+    <tr>
+      <td>storage</td>
+      <td style="text-align: center">string</td>
+      <td>Storage pool identifier</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Example</strong></p>
+
+<p>Destroy a volume allocated from the general purpose performance pool.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ pvesm free vm-100-disk-10 --storage shared-block-gp
+Removed volume 'shared-block-gp:vm-100-disk-10'
+</code></pre></div></div>
+
+<h3 id="pvesh-3">PVESH</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pvesh delete &lt;api_path&gt;
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th style="text-align: center">Format</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>api_path</td>
+      <td style="text-align: center">string</td>
+      <td><code class="highlighter-rouge">/nodes/{node}/storage/{storage}/content/{volume}</code></td>
+    </tr>
+    <tr>
+      <td>node</td>
+      <td style="text-align: center">string</td>
+      <td>Any pve node listed in the output of <code class="highlighter-rouge">pvesh get /nodes</code></td>
+    </tr>
+    <tr>
+      <td>storage</td>
+      <td style="text-align: center">string</td>
+      <td>Storage pool identifier</td>
+    </tr>
+    <tr>
+      <td>volume</td>
+      <td style="text-align: center">string</td>
+      <td>Name of volume to destroy</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Example</strong></p>
+
+<p>Destroy a volume allocated from the general purpose performance pool.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ pvesh delete /nodes/proxmox-1/storage/shared-block-gp/content/vm-100-disk-1
+Removed volume 'shared-block-gp:vm-100-disk-1'
+</code></pre></div></div>
+
+<h2 id="attach-a-volume">Attach A Volume</h2>
+
+<p>An attachment is effectively a VM configuration reference to a storage device. An attachment describes how a storage device is connected to a VM and how the guest OS sees it. The attach operation is principally a VM operation.</p>
+
+<div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> Proxmox considers storage devices that are allocated, but not attached, as <code class="highlighter-rouge">unused</code>.</div>
+
+<div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> The <code class="highlighter-rouge">attach</code> and <code class="highlighter-rouge">detach</code> commands are essential primitives required to move a disk between virtual machines.</div>
+
+<div class="alert alert-danger" role="alert"><i class="fa fa-exclamation-circle"></i> <b>Warning:</b> Use these low-level commands with extra caution; it’s possible to accidentally attach the same device multiple times.</div>
+
+<h3 id="gui-1">GUI</h3>
+
+<p>The GUI allows you to <code class="highlighter-rouge">attach</code> devices from the <code class="highlighter-rouge">Hardware</code> list that are identified as <code class="highlighter-rouge">Unused</code>. Select an <code class="highlighter-rouge">Unused</code> disk from the <code class="highlighter-rouge">Hardware</code> table and click the <code class="highlighter-rouge">Edit</code> button. Assign a <code class="highlighter-rouge">Bus</code> and <code class="highlighter-rouge">Device</code> number. Then <code class="highlighter-rouge">Add</code> the device to the VM.</p>
+
+<div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> You may need to execute <code class="highlighter-rouge">qm rescan --vmid &lt;vmid&gt;</code> on the Proxmox node that owns the VM, if you suspect that an unused device is missing.</div>
+
+<h3 id="qm">QM</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>qm set &lt;vmid&gt; --scsihw &lt;scsi-adapter&gt; --scsi&lt;N&gt; &lt;storage&gt;:&lt;volume&gt;
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th style="text-align: center">Format</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>vmid</td>
+      <td style="text-align: center">string</td>
+      <td>The (unique) ID of the VM.</td>
+    </tr>
+    <tr>
+      <td>scsi-adapter</td>
+      <td style="text-align: center">string</td>
+      <td>SCSI controller model (<code class="highlighter-rouge">man qm</code> for more details)</td>
+    </tr>
+    <tr>
+      <td>N</td>
+      <td style="text-align: center">integer</td>
+      <td>SCSI target/device number (min: 0, max: 30)</td>
+    </tr>
+    <tr>
+      <td>storage</td>
+      <td style="text-align: center">string</td>
+      <td>Storage pool identifier</td>
+    </tr>
+    <tr>
+      <td>volume</td>
+      <td style="text-align: center">string</td>
+      <td>Name of volume to attach</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Example</strong></p>
+
+<p>Attach device vm-100-disk-1 to VM 100.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ qm set 100 --scsihw virtio-scsi-pci --scsi1 shared-block-gp:vm-100-disk-1
+update VM 100: -scsi1 shared-block-gp:vm-100-disk-1 -scsihw virtio-scsi-pci
+</code></pre></div></div>
+
+<div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> Although Blockbridge is a shared storage type, the Proxmox <code class="highlighter-rouge">qm</code> command must be executed on the home node of the VM.</div>
+
+<h3 id="pvesh-4">PVESH</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pvesh create &lt;api_path&gt; -scsihw &lt;scsi-adapter&gt; -scsi&lt;n&gt; &lt;storage&gt;:&lt;volume&gt;
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th style="text-align: center">Format</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>api_path</td>
+      <td style="text-align: center">string</td>
+      <td><code class="highlighter-rouge">/nodes/{node}/qemu/{vmid}/config</code></td>
+    </tr>
+    <tr>
+      <td>node</td>
+      <td style="text-align: center">string</td>
+      <td>pve node owner of the VM</td>
+    </tr>
+    <tr>
+      <td>scsi-adapter</td>
+      <td style="text-align: center">string</td>
+      <td>SCSI controller model (<code class="highlighter-rouge">man qm</code> for more details)</td>
+    </tr>
+    <tr>
+      <td>N</td>
+      <td style="text-align: center">integer</td>
+      <td>SCSI target/device number (min: 0, max: 30)</td>
+    </tr>
+    <tr>
+      <td>storage</td>
+      <td style="text-align: center">string</td>
+      <td>Storage pool identifier</td>
+    </tr>
+    <tr>
+      <td>volume</td>
+      <td style="text-align: center">string</td>
+      <td>Name of volume to attach</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Example</strong></p>
+
+<p>Attach device vm-100-disk-1 to VM 100.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ pvesh create /nodes/proxmox-1/qemu/100/config -scsihw virtio-scsi-pci -scsi1 shared-block-gp:vm-100-disk-1
+update VM 100: -scsi1 shared-block-gp:vm-100-disk-1 -scsihw virtio-scsi-pci
+</code></pre></div></div>
+
+<div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> You can perform an attach operation using the <code class="highlighter-rouge">pvesh</code> command while operating on any node in your Proxmox cluster.</div>
+
+<h2 id="detach-a-volume">Detach A Volume</h2>
+
+<p>The detach operation updates the configuration of a VM to remove references to
+a storage device. If the VM is running, the device will disappear from the
+guest. Detach is a non-destructive operation.  It does not overwrite or release
+storage.</p>
+
+<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> The Proxmox interfaces use inconsistent terminology for this operation across management interfaces. The <code class="highlighter-rouge">detach</code> in the GUI is synonymous with <code class="highlighter-rouge">unlink</code> in <code class="highlighter-rouge">pvesh</code> and <code class="highlighter-rouge">qm</code>.</div>
+
+<h3 id="gui-2">GUI</h3>
+
+<p>The GUI allows you to <code class="highlighter-rouge">detach</code> devices in <code class="highlighter-rouge">Hardware</code> list. Select a disk from the <code class="highlighter-rouge">Hardware</code> table and click the <code class="highlighter-rouge">Detach</code> button.</p>
+
+<h3 id="qm-1">QM</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>qm unlink &lt;vmid&gt; --idlist scsi&lt;N&gt;
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th style="text-align: center">Format</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>vmid</td>
+      <td style="text-align: center">string</td>
+      <td>The (unique) ID of the VM.</td>
+    </tr>
+    <tr>
+      <td>N</td>
+      <td style="text-align: center">integer</td>
+      <td>SCSI target/device number (min: 0, max: 30)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Example</strong></p>
+
+<p>Unlink the scsi1 device from VM 100.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ qm unlink 100 --idlist scsi1
+update VM 100: -delete scsi1
+</code></pre></div></div>
+
+<div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> You can display a list of storage devices attached to a VM using the <code class="highlighter-rouge">qm config &lt;VMID&gt;</code> command.</div>
+
+<h3 id="pvesh-5">PVESH</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pvesh set &lt;api_path&gt; -idlist scsi&lt;N&gt;
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th style="text-align: center">Format</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>api_path</td>
+      <td style="text-align: center">string</td>
+      <td><code class="highlighter-rouge">/nodes/{node}/qemu/{vmid}/unlink</code></td>
+    </tr>
+    <tr>
+      <td>node</td>
+      <td style="text-align: center">string</td>
+      <td>pve node owner of the VM</td>
+    </tr>
+    <tr>
+      <td>vmid</td>
+      <td style="text-align: center">string</td>
+      <td>The (unique) ID of the VM.</td>
+    </tr>
+    <tr>
+      <td>N</td>
+      <td style="text-align: center">integer</td>
+      <td>SCSI target/device number (min: 0, max: 30)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Example</strong></p>
+
+<p>Unlink the scsi1 device from VM 100.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ pvesh set /nodes/proxmox-1/qemu/100/unlink -idlist scsi1
+update VM 100: -delete scsi1
+</code></pre></div></div>
+
+<div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> You can display a list of storage devices attached to a VM using <code class="highlighter-rouge">pvesh get /nodes/&lt;node&gt;/qemu/&lt;vmid&gt;/config</code>.</div>
+
+<h2 id="resize-a-volume">Resize A Volume</h2>
+
+<p>The resize operation extends the logical address space of a storage device. Reducing the size of a device is not permitted by Proxmox. The resize operation can only execute against devices that are attached to a VM.</p>
+
+<div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> If you need to extend a filesystem, resizing the underlying storage device is only one step of many. See the Proxmox Wiki for <a href="https://pve.proxmox.com/wiki/Resize_disks">Resize disks</a> for additional information on partition management, LVM, and guest specific considerations.</div>
+
+<h3 id="gui-3">GUI</h3>
+
+<p>The GUI allows you to <code class="highlighter-rouge">resize</code> devices available from <code class="highlighter-rouge">Hardware</code> list. Select a disk from the <code class="highlighter-rouge">Hardware</code> table and click the <code class="highlighter-rouge">Resize</code> button.</p>
+
+<h3 id="qm-2">QM</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>qm resize &lt;vmid&gt; scsi&lt;N&gt; &lt;size&gt;
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th style="text-align: center">Format</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>vmid</td>
+      <td style="text-align: center">string</td>
+      <td>The (unique) ID of the VM.</td>
+    </tr>
+    <tr>
+      <td>N</td>
+      <td style="text-align: center">integer</td>
+      <td>SCSI target/device number (min: 0, max: 30)</td>
+    </tr>
+    <tr>
+      <td>size</td>
+      <td style="text-align: center">+?\d+(.\d+)?[KMGT]?</td>
+      <td>With the + sign the value is added to the actual size of the volume. Without it, the value is taken as absolute.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Example</strong></p>
+
+<p>Extend the device attached to scsi1 of VM 100 by 1GiB.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ qm resize 100 scsi1 +1G
+</code></pre></div></div>
+
+<h3 id="pvesh-6">PVESH</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pvesh set &lt;api_path&gt; -disk scsi&lt;N&gt; -size &lt;size&gt;
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th style="text-align: center">Format</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>api_path</td>
+      <td style="text-align: center">string</td>
+      <td><code class="highlighter-rouge">/nodes/{node}/qemu/{vmid}/resize</code></td>
+    </tr>
+    <tr>
+      <td>node</td>
+      <td style="text-align: center">string</td>
+      <td>pve node owner of the VM</td>
+    </tr>
+    <tr>
+      <td>vmid</td>
+      <td style="text-align: center">string</td>
+      <td>The (unique) ID of the VM.</td>
+    </tr>
+    <tr>
+      <td>N</td>
+      <td style="text-align: center">integer</td>
+      <td>SCSI target/device number (min: 0, max: 30)</td>
+    </tr>
+    <tr>
+      <td>size</td>
+      <td style="text-align: center">+?\d+(.\d+)?[KMGT]?</td>
+      <td>With the + sign the value is added to the actual size of the volume. Without it, the value is taken as absolute.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Example</strong></p>
+
+<p>Extend the device attached to scsi1 of VM 100 by 1GiB.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ pvesh set /nodes/proxmox-1/qemu/100/resize -disk scsi1 -size +1G
+</code></pre></div></div>
+
+<h2 id="create-a-snapshot">Create A Snapshot</h2>
+
+<p>Snapshots provide a recovery point for a virtual machine’s state,
+configuration, and data. Proxmox orchestrates snapshots via QEMU and backend
+storage providers. When you snapshot a Proxmox VM that uses virtual disks
+backed by Blockbridge, your disk snapshots are thin, they complete instantly,
+and they avoid copy-on-write (COW) performance penalties.</p>
+
+<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> If multiple devices are attached to a single VM, Proxmox will snapshot each active device. Devices that are detached (i.e., <code class="highlighter-rouge">unused</code>) are ignored.</div>
+
+<h3 id="gui-4">GUI</h3>
+
+<p>In the <code class="highlighter-rouge">Snapshots</code> panel for the VM, click <code class="highlighter-rouge">Take Snapshot</code>. The duration of the operation depends on whether VM state is preserved.</p>
+
+<div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> Closing the dialog does not terminate the operation. It will continue to operate in the background.</div>
+
+<h3 id="qm-3">QM</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>qm snapshot &lt;vmid&gt; &lt;snapname&gt; --description &lt;desc&gt; --vmstate &lt;save&gt;
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th style="text-align: center">Format</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>vmid</td>
+      <td style="text-align: center">string</td>
+      <td>The (unique) ID of the VM.</td>
+    </tr>
+    <tr>
+      <td>snapname</td>
+      <td style="text-align: center">string</td>
+      <td>The name of the snapshot.</td>
+    </tr>
+    <tr>
+      <td>desc</td>
+      <td style="text-align: center">string</td>
+      <td>Snapshot description - Optional</td>
+    </tr>
+    <tr>
+      <td>save</td>
+      <td style="text-align: center">boolean</td>
+      <td>[0,1] Save VM RAM state - Optional</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Example</strong></p>
+
+<p>Take a snapshot of VM 100, including RAM.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>qm snapshot 100 snap_1 --description "hello world" --vmstate 1
+</code></pre></div></div>
+
+<h3 id="pvesh-7">PVESH</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pvesh create &lt;api_path&gt; -snapname -description &lt;desc&gt; -vmstate &lt;save&gt;
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th style="text-align: center">Format</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>api_path</td>
+      <td style="text-align: center">string</td>
+      <td><code class="highlighter-rouge">/nodes/{node}/qemu/{vmid}/snapshot</code></td>
+    </tr>
+    <tr>
+      <td>node</td>
+      <td style="text-align: center">string</td>
+      <td>pve node owner of the VM.</td>
+    </tr>
+    <tr>
+      <td>vmid</td>
+      <td style="text-align: center">string</td>
+      <td>The (unique) ID of the VM.</td>
+    </tr>
+    <tr>
+      <td>snapname</td>
+      <td style="text-align: center">string</td>
+      <td>The name of the snapshot.</td>
+    </tr>
+    <tr>
+      <td>desc</td>
+      <td style="text-align: center">string</td>
+      <td>Snapshot description - Optional</td>
+    </tr>
+    <tr>
+      <td>save</td>
+      <td style="text-align: center">boolean</td>
+      <td>[0,1] Save VM RAM state - Optional</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Example</strong></p>
+
+<p>Take a snapshot of VM 100, including RAM.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pvesh create /nodes/proxmox-1/qemu/100/snapshot -snapname snap_1 -description "hello world" -vmstate 1
+</code></pre></div></div>
+
+<h2 id="remove-a-snapshot">Remove A Snapshot</h2>
+
+<p>Delete a VM snapshot and release associated storage resources.</p>
+
+<h3 id="gui-5">GUI</h3>
+
+<p>In the <code class="highlighter-rouge">Snapshots</code> panel for the VM, select the snapshot to remove, and then click <code class="highlighter-rouge">Remove</code>. A dialog will appear to confirm your intent.</p>
+
+<h3 id="qm-4">QM</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>qm delsnapshot &lt;vmid&gt; &lt;snapname&gt; --force &lt;force&gt;
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th style="text-align: center">Format</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>vmid</td>
+      <td style="text-align: center">string</td>
+      <td>The (unique) ID of the VM.</td>
+    </tr>
+    <tr>
+      <td>snapname</td>
+      <td style="text-align: center">string</td>
+      <td>The name of the snapshot.</td>
+    </tr>
+    <tr>
+      <td>force</td>
+      <td style="text-align: center">boolean</td>
+      <td>Remove config, even if storage removal fails. - Optional</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Example</strong></p>
+
+<p>Gracefully delete the snapshot snap1 of VM 100.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>qm delsnapshot 100 snap1
+</code></pre></div></div>
+
+<h3 id="pvesh-8">PVESH</h3>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pvesh delete &lt;api_path&gt; -force &lt;force&gt;
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th style="text-align: center">Format</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>api_path</td>
+      <td style="text-align: center">string</td>
+      <td><code class="highlighter-rouge">/nodes/{node}/qemu/{vmid}/snapshot/{snapname}</code></td>
+    </tr>
+    <tr>
+      <td>node</td>
+      <td style="text-align: center">string</td>
+      <td>pve node owner of the VM</td>
+    </tr>
+    <tr>
+      <td>vmid</td>
+      <td style="text-align: center">string</td>
+      <td>The (unique) ID of the VM.</td>
+    </tr>
+    <tr>
+      <td>snapname</td>
+      <td style="text-align: center">string</td>
+      <td>The name of the snapshot to delete.</td>
+    </tr>
+    <tr>
+      <td>force</td>
+      <td style="text-align: center">boolean</td>
+      <td>Remove config, even if storage removal fails. - Optional</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Example</strong></p>
+
+<p>Gracefully Delete the snapshot snap1 of VM 100.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pvesh delete /nodes/proxmox-1/qemu/100/snapshot/snap1
+</code></pre></div></div>
+
+
+    <div class="tags">
+        
+    </div>
+
+</div>
+
+<hr class="shaded"/>
+
+<footer>
+            <div class="row">
+                <div class="col-lg-12 footer">
+               &copy;2021 Blockbridge Networks LLC. All rights reserved. <br />
+ Site last generated: Mar 19, 2021
+                </div>
+            </div>
+</footer>
+
+
+          </main>
+
+          <!-- /.col-body -->
+        </div>
+
+        <!-- /.row -->
+      </div>
+      <!-- /#main -->
+    </div>
+  </div>
+
+</body>
+
+</html>

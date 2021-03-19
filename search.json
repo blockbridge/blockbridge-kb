@@ -15,10 +15,10 @@
 
 
 {
-"title": "Installing a Custom TLS Key and Certificate",
+"title": "Blockbridge VMware Storage Guide",
 "tags": "",
-"keywords": "security,ssl,certificate",
-"url": "/guide/custom-certs/index.html",
+"keywords": "vmware",
+"url": "/guide/vmware/index.html",
 "summary": ""
 }
 ,
@@ -26,10 +26,32 @@
 
 
 {
-"title": "Using Blockbridge Storage with Kubernetes",
+"title": "PROXMOX VE STORAGE GUIDE",
 "tags": "",
-"keywords": "kubernetes,containers",
-"url": "/guide/kubernetes/index.html",
+"keywords": "proxmox iSCSI shared",
+"url": "/guide/proxmox/index.html",
+"summary": ""
+}
+,
+
+
+
+{
+"title": "Installing and configuring Squid",
+"tags": "",
+"keywords": "security,proxy,squid",
+"url": "/guide/squid/index.html",
+"summary": ""
+}
+,
+
+
+
+{
+"title": "OPENSTACK CINDER STORAGE GUIDE",
+"tags": "",
+"keywords": "openstack cinder",
+"url": "/guide/openstack/index.html",
 "summary": ""
 }
 ,
@@ -59,32 +81,32 @@
 
 
 {
+"title": "KUBERNETES CSI STORAGE GUIDE",
+"tags": "",
+"keywords": "kubernetes containers K8s",
+"url": "/guide/kubernetes/index.html",
+"summary": ""
+}
+,
+
+
+
+{
+"title": "Installing a Custom TLS Key and Certificate",
+"tags": "",
+"keywords": "security,ssl,certificate",
+"url": "/guide/custom-certs/index.html",
+"summary": ""
+}
+,
+
+
+
+{
 "title": "Version 5.0 Release Notes",
 "tags": "",
 "keywords": "release",
 "url": "/release/5.0/index.html",
-"summary": ""
-}
-,
-
-
-
-{
-"title": "Installing and configuring Squid",
-"tags": "",
-"keywords": "security,proxy,squid",
-"url": "/guide/squid/index.html",
-"summary": ""
-}
-,
-
-
-
-{
-"title": "Blockbridge VMware Storage Guide",
-"tags": "",
-"keywords": "vmware",
-"url": "/guide/vmware/index.html",
 "summary": ""
 }
 ,

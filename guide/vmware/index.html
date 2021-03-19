@@ -12,15 +12,14 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto&display=swap">
 
 <link rel="stylesheet" href="/css/syntax.css">
-
 <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-<!--<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">-->
-<link rel="stylesheet" href="/css/modern-business.css">
+
 <!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<link rel="stylesheet" href="/css/bootstrap.min.css">
 <link rel="stylesheet" href="/css/customstyles.css">
+<link rel="stylesheet" href="/css/navbar.css">
 <link rel="stylesheet" href="/css/sidebar.css">
-<link rel="stylesheet" href="/css/boxshadowproperties.css">
 <!-- most color styles are extracted out to here -->
 <link rel="stylesheet" href="/css/theme-blockbridge.css">
 
@@ -1615,7 +1614,7 @@ it’s stuck at 32 (or 64) for multiple guests, it’s a safe bet they’re subj
 to this parameter. If you believe that your guest workloads are unfairly
 penalized by this setting, try increasing it to the device queue depth (192).</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[root@esx:~] esxcli storage core device set -sched-num-req-outstanding 192 -d naa.60a010a0b139fa8b1962194c406263ad
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[root@esx:~] esxcli storage core device set --sched-num-req-outstanding 192 -d naa.60a010a0b139fa8b1962194c406263ad
 </code></pre></div></div>
 
 <h2 id="queue-depth-throttling">Queue Depth Throttling</h2>
@@ -1904,6 +1903,8 @@ maintain that kind of control on an ESXi server. We recommend that you accept
 the default balancing. ESXi appears to do a decent job of avoiding cores under
 heavy utilization by VMs.</p>
 
+<p>As this is a kernel setting, it requires a reboot to take effect.</p>
+
 <h2 id="mellanox-specific-optimizations">Mellanox Specific Optimizations</h2>
 
 <p>On ConnectX-3 NICs, we recommend disabling adaptive receive interrupt
@@ -2067,8 +2068,8 @@ dedicated to another VM:</p>
 <footer>
             <div class="row">
                 <div class="col-lg-12 footer">
-               &copy;2020 Blockbridge Networks LLC. All rights reserved. <br />
- Site last generated: Dec 8, 2020
+               &copy;2021 Blockbridge Networks LLC. All rights reserved. <br />
+ Site last generated: Mar 19, 2021
                 </div>
             </div>
 </footer>
