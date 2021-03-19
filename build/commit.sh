@@ -11,4 +11,4 @@ git reset origin/gh-pages
 cp -r _site/* .
 git add .
 git diff --cached --quiet --exit-code || git commit -m "update static site"
-git checkout $cbranch
+git checkout "$cbranch"
