@@ -12,6 +12,8 @@ This release brings numerous performance and stability improvements alongside
 support for Proxmox, multi-cloud Openstack deployments, and an updated
 Kubernetes driver.
 
+---
+
 Management
 --------------
 
@@ -23,7 +25,7 @@ web application and the command line tool.
   tenants by approiately restricting the visibility of administrative and
   infrastructure commands.  Admins can further limit or expand the number of
   commands and options shown with levels like "advanced" and "expert" levels.
-  
+
 * **Hourly Roll-up Datastore Statistics:** You can now view a robust set of
   utilization statistics from the CLI, via the "datastore stats" subcommand.
 
@@ -31,6 +33,7 @@ web application and the command line tool.
   consistent and easier to navigate view of enclosures, volumes, and their
   underlying physical storage devices.
 
+---
 
 Integrations
 ------------
@@ -59,6 +62,8 @@ OpenStack clouds and per-tenant accounts.
 
 Our K8s driver version 2.0.0 is up to spec with Kubernetes 1.14.
 
+---
+
 Compression Metadata
 --------------------
 
@@ -76,6 +81,8 @@ more than an order of magnitude.
 * **Cache Sweeping:** We've taken steps to limit the impact of compression
 scans on the metadata cache.  These scans now use their own pool of cache
 memory, to avoid impacting cached user metadata.
+
+---
 
 Performance
 -----------
@@ -103,6 +110,8 @@ lower acheivable latency and more IOPS headroom.
 client-side tunings on "host attach" over a wider range of 3.x, 4.x, and 5.x
 Linux kernels.
 * **Adjustable TLS Compression:** You can now adjust the TLS compression level of tunneled data sessions.
+
+---
 
 Platform
 --------
@@ -134,11 +143,12 @@ HTTP proxy.
 * **Diskctl Enclosure View:** Management of devices and volumes is
 significantly simpler with an enclosure-centric view that's now the default in
 the "diskctl" command.
-* **IP Addresses Scale:** The dataplane now supports up to 32 front-facing IP
-addresses for iSCSI data services.
-* **iSCSI Sessions Scale:** The dataplane now permits up to 256 iSCSI sessions
-  on a single target.
+* **IP Addresses Scale:** Doubled the number of supported front-facing IP
+addresses for data services.
+* **iSCSI Sessions Scale:** Doubled the number iSCSI sessions
+  on a single target to support large multipath shared storage clusters.
 
+---
 
 Miscellaneous
 -------------
@@ -155,4 +165,3 @@ Miscellaneous
 
 *(Note: Some of the above features were backported to later 5.0 releases as
 part of our early access program.)*
-
