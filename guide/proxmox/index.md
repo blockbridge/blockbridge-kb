@@ -430,7 +430,7 @@ shared storage types, such as Blockbridge, each node will return its own view
 of the storage, consistent with the other nodes' views.
 
 
-#### PVESM
+### PVESM
 
 Show available storage types on the local node:
 
@@ -444,7 +444,7 @@ shared-block-iops  blockbridge  active  268435456  33669120  234766336  12.54%
 shared-file             cephfs  active   59158528    995328   58163200   1.68%
 ```
 
-#### PVESH
+### PVESH
 
 Show available storage types on proxmox-1
 
@@ -473,7 +473,7 @@ You can enumerate volumes stored in a storage pool using the GUI, `pvesm`, and `
 {% include tip.html content="Blockbridge is shared storage. You can enumerate
 the contents of a storage pool from any node in your Proxmox Cluster." %}
 
-#### GUI
+### GUI
 
 To generate a list of all volumes in a storage pool, we recommend `Folder View`. To see devices connected to a specific virtual machine, select the VM from the primary navigation plane. Then select `Hardware`.
 
@@ -481,7 +481,7 @@ To see a list of all devices in the storage pool, select a storage pool from
 the Storage folder in the primary navigation plane (all nodes have a consistent
 view of storage.) Then select VM Disks.
 
-#### PVESM
+### PVESM
 
 ```
 pvesm list <storage> [--vmid <integer>]
@@ -517,7 +517,7 @@ shared-block-iops:vm-101-disk-2    raw     images    34359738368 101
 shared-block-iops:vm-101-state-foo raw     images     4819255296 101
 ```
 
-#### PVESH
+### PVESH
 
 ```
 pvesh get <api_path> [-vmid <integer>]
@@ -575,7 +575,7 @@ Allocate A Volume
 Proxmox volumes are provisioned in the context of a VM. In fact, the naming scheme for volumes includes the VMID. When using the GUI, volume allocation automatically attaches the volume to the VM. When `pvesm` or `pvesh` are used, you are required to attach volumes as a separate step (see: [Attach A Volume](#attach-a-volume)). This section covers explicit allocation of volumes as a distinct action.
 
 
-#### PVESM
+### PVESM
 
 ```
 pvesm alloc <storage> <vmid> <filename> <size>
@@ -603,7 +603,7 @@ successfully created 'shared-block-gp:vm-100-disk-1'
 that do not exist.  You must specify a name that conforms to the name
 specification. Failure to do so may result in an error such as `illegal name '101-vm-disk-2' - should be 'vm-10444-*'`." %}
 
-#### PVESH
+### PVESH
 
 ```
 pvesh create <api_path> -vmid <vmid> -filename <filename> -size <size>
@@ -645,7 +645,7 @@ You can use either `pvesm` or `pvesh` commands to delete a volume. It may appear
 
 {% include tip.html content="Blockbridge is shared storage. You can execute the delete operation against any node in your Proxmox cluster." %}
 
-#### PVESM
+### PVESM
 
 ```
 pvesm free <volume> --storage <storage>
@@ -665,7 +665,7 @@ $ pvesm free vm-100-disk-10 --storage shared-block-gp
 Removed volume 'shared-block-gp:vm-100-disk-10'
 ```
 
-#### PVESH
+### PVESH
 
 ```
 pvesh delete <api_path>
@@ -698,13 +698,13 @@ An attachment is effectively a VM configuration reference to a storage device. A
 
 {% include warning.html content="Use these low-level commands with extra caution; it's possible to accidentally attach the same device multiple times." %}
 
-#### GUI
+### GUI
 
 The GUI allows you to `attach` devices from the `Hardware` list that are identified as `Unused`. Select an `Unused` disk from the `Hardware` table and click the `Edit` button. Assign a `Bus` and `Device` number. Then `Add` the device to the VM.
 
 {% include tip.html content="You may need to execute `qm rescan --vmid <vmid>` on the Proxmox node that owns the VM, if you suspect that an unused device is missing." %}
 
-#### QM
+### QM
 
 ```
 qm set <vmid> --scsihw <scsi-adapter> --scsi<N> <storage>:<volume>
@@ -729,7 +729,7 @@ update VM 100: -scsi1 shared-block-gp:vm-100-disk-1 -scsihw virtio-scsi-pci
 
 {% include tip.html content="Although Blockbridge is a shared storage type, the Proxmox `qm` command must be executed on the home node of the VM." %}
 
-#### PVESH
+### PVESH
 
 ```
 pvesh create <api_path> -scsihw <scsi-adapter> -scsi<n> <storage>:<volume>
@@ -766,11 +766,11 @@ storage.
 
 {% include note.html content="The Proxmox interfaces use inconsistent terminology for this operation across management interfaces. The `detach` in the GUI is synonymous with `unlink` in `pvesh` and `qm`." %}
 
-#### GUI
+### GUI
 
 The GUI allows you to `detach` devices in `Hardware` list. Select a disk from the `Hardware` table and click the `Detach` button.
 
-#### QM
+### QM
 
 ```
 qm unlink <vmid> --idlist scsi<N>
@@ -792,7 +792,7 @@ update VM 100: -delete scsi1
 
 {% include tip.html content="You can display a list of storage devices attached to a VM using the `qm config <VMID>` command." %}
 
-#### PVESH
+### PVESH
 
 ```
 pvesh set <api_path> -idlist scsi<N>
@@ -824,11 +824,11 @@ The resize operation extends the logical address space of a storage device. Redu
 
 {% include tip.html content="If you need to extend a filesystem, resizing the underlying storage device is only one step of many. See the Proxmox Wiki for [Resize disks](https://pve.proxmox.com/wiki/Resize_disks) for additional information on partition management, LVM, and guest specific considerations." %}
 
-#### GUI
+### GUI
 
 The GUI allows you to `resize` devices available from `Hardware` list. Select a disk from the `Hardware` table and click the `Resize` button.
 
-#### QM
+### QM
 
 ```
 qm resize <vmid> scsi<N> <size>
@@ -849,7 +849,7 @@ Extend the device attached to scsi1 of VM 100 by 1GiB.
 $ qm resize 100 scsi1 +1G
 ```
 
-#### PVESH
+### PVESH
 
 ```
 pvesh set <api_path> -disk scsi<N> -size <size>
@@ -882,13 +882,13 @@ and they avoid copy-on-write (COW) performance penalties.
 
 {% include note.html content="If multiple devices are attached to a single VM, Proxmox will snapshot each active device. Devices that are detached (i.e., `unused`) are ignored." %}
 
-#### GUI
+### GUI
 
 In the `Snapshots` panel for the VM, click `Take Snapshot`. The duration of the operation depends on whether VM state is preserved.
 
 {% include tip.html content="Closing the dialog does not terminate the operation. It will continue to operate in the background." %}
 
-#### QM
+### QM
 
 ```
 qm snapshot <vmid> <snapname> --description <desc> --vmstate <save>
@@ -909,7 +909,7 @@ Take a snapshot of VM 100, including RAM.
 qm snapshot 100 snap_1 --description "hello world" --vmstate 1
 ```
 
-#### PVESH
+### PVESH
 
 ```
 pvesh create <api_path> -snapname -description <desc> -vmstate <save>
@@ -938,11 +938,11 @@ Remove A Snapshot
 
 Delete a VM snapshot and release associated storage resources.
 
-#### GUI
+### GUI
 
 In the `Snapshots` panel for the VM, select the snapshot to remove, and then click `Remove`. A dialog will appear to confirm your intent.
 
-#### QM
+### QM
 
 ```
 qm delsnapshot <vmid> <snapname> --force <force>
@@ -962,7 +962,7 @@ Gracefully delete the snapshot snap1 of VM 100.
 qm delsnapshot 100 snap1
 ```
 
-#### PVESH
+### PVESH
 
 ```
 pvesh delete <api_path> -force <force>
