@@ -31,6 +31,8 @@ Additionally, this release is supported with the following Blockbridge releases:
   * 5.1.0
   * 4.4.14
 
+---
+
 QUICKSTART
 ==========
 
@@ -135,6 +137,7 @@ configuration group to the `/etc/cinder/cinder.conf` file.**
       --property volume_backend_name=bbcinder
   ```
 
+---
 
 DEPLOYMENT & MANAGEMENT
 =======================
@@ -372,7 +375,7 @@ accessible on the 10.0.0.0 network, with high resiliency, for non-production
 workloads, with guaranteed IOPS of 1000 and a storage reservation for 30% of
 the volume capacity specified at create time.
 
-To make this style of attribute-based provisioning work, you need to tag Blockbridge
+To make this style of attribute-based provisioning work, tag Blockbridge
 datastores with the appropriate information.  In the example above, the query
 would only provision storage from datastores configured with the `ssd`,
 `10.0.0.0`, and `6nines` tags.  It would skip datastores tagged `production`.
@@ -429,6 +432,7 @@ blockbridge_tenant_mode = single
 ```
 
 
+---
 
 REFERENCE
 =========

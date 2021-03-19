@@ -12,6 +12,8 @@ This guide provides technical details for deploying Proxmox VE with Blockbridge 
 
 Most readers will want to start with the Quickstart section. It’s an ordered list of configuration steps and is the fastest path to an installation. The rest of the document provides details on all aspects of using Proxmox with Blockbridge.
 
+---
+
 FEATURE OVERVIEW
 ================
 
@@ -82,6 +84,7 @@ Blockbridge supports thin-provisioning, pattern elimination, and
 latency-optimized adaptive data reduction. These features are transparent to
 Proxmox.
 
+---
 
 QUICKSTART
 ==========
@@ -185,6 +188,7 @@ Proxmox Configuration
 
         systemctl restart pvedaemon pveproxy pvestatd
 
+---
 
 DEPLOYMENT & MANAGEMENT
 =======================
@@ -367,6 +371,7 @@ The Blockbridge plugin logs all interactions with both Proxmox and your
 Blockbridge installation to syslog at `LOG_INFO` level.  You can see the logs
 with `journalctl -f | grep blockbridge:`.
 
+---
 
 PROXMOX STORAGE PRIMITIVES
 ==========================
