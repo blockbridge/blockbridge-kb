@@ -39,7 +39,7 @@ driver in single-tenant mode.  We recommend working through the installation in
 this order:
 
 1. Install the driver.
-2. Configure and your Blockbridge installation to permit the driver to connect.
+2. Configure your Blockbridge installation to permit the driver to connect.
 3. Configure the Blockbridge volume type in OpenStack.
 
 Some of these topics have more information available by selecting the
@@ -144,7 +144,7 @@ OpenStack environment.
 
 Deployment Modes
 ----------------
-When you deploy Blockbridge as a volume backend for OpenStack, you choose how
+When you deploy Blockbridge as a volume backend for OpenStack, you can choose how
 to best integrate it with your OpenStack installation.  There are two
 deployment modes, which can be mixed and matched: **single-cloud** and
 **multi-cloud**.
@@ -153,8 +153,8 @@ If you have a single OpenStack cloud, you can integrate it using Blockbridge's
 **single-cloud** mode.  In this mode, Blockbridge automatically creates its own
 tenant accounts on demand to service your OpenStack users.
 
-In **multi-cloud** mode, you create a Blockbridge account for each of your tenants
-and define an OpenStack volume backend for that account in the Cinder
+In **multi-cloud** mode, you create a Blockbridge account for each of your OpenStack
+clouds and define an OpenStack volume backend for that account in the Cinder
 configuration for that OpenStack cloud.  You can map the same account into
 multiple OpenStack clouds.
 
@@ -282,6 +282,8 @@ For tenant accounts in multi-cloud deployments, authenticate as the tenant and
 create a token with default options:
 
 ```
+bb -kH localhost auth login --su bbcinder
+... [output trimmed]
 bb -kH bb-api authorization create --notes 'Cinder volume driver API access for Cloud-BOS-1'
 ... [output trimmed]
 ```
@@ -292,7 +294,7 @@ Cinder Backend
 On every OpenStack Cinder node, configure a new backend by adding a named
 configuration group to the `/etc/cinder/cinder.conf` file. Set the
 `blockbridge_api_host` to the DNS name or IP address of the Blockbridge
-management node. If you've got a clustered management installation, be sure to
+management node. If you have a clustered management installation, be sure to
 use a cluster-managed VIP, otherwise cinder won't be able to communicate with
 the backend after service failover. For `blockbridge_auth_token`, use the
 access token generated in the previous step.
@@ -327,7 +329,7 @@ Though we've used `bbcinder` for our configuration group name and the
 `volume_backend_name`, they don't have to match. The `enabled_backends`
 parameter is a list of configuration group names (as specified in square
 brackets in `cinder.conf`), _not_ a list of `volume_backend_name` values.  More
-information in the [Multiple Volume Types](#multiple-volume-types) section below.
+information can be found in the [Multiple Volume Types](#multiple-volume-types) section below.
 
 After editing the `cinder.conf` configuration file, restart the cinder-volume
 service.
@@ -370,7 +372,7 @@ accessible on the 10.0.0.0 network, with high resiliency, for non-production
 workloads, with guaranteed IOPS of 1000 and a storage reservation for 30% of
 the volume capacity specified at create time.
 
-To make this style of attribute-based provisioning work, you tag Blockbridge
+To make this style of attribute-based provisioning work, you need to tag Blockbridge
 datastores with the appropriate information.  In the example above, the query
 would only provision storage from datastores configured with the `ssd`,
 `10.0.0.0`, and `6nines` tags.  It would skip datastores tagged `production`.
@@ -407,7 +409,7 @@ Example cinder.conf
 
 ```
 [Default]
-enabled_backends = bb_devel bb_prod
+enabled_backends = bb_devel,bb_prod
 
 [bb_prod]
 volume_driver = cinder.volume.drivers.blockbridge.BlockbridgeISCSIDriver
@@ -422,8 +424,8 @@ volume_driver = cinder.volume.drivers.blockbridge.BlockbridgeISCSIDriver
 volume_backend_name = blockbridge_devel
 blockbridge_api_host = [ip or dns of management cluster]
 blockbridge_auth_token = 1/elvMWilMvcLAajl...3ms3U1u2KzfaMw6W8xaKUy3gw
-blockbridge_tenant_mode = single
 blockbridge_pools = Development: +development
+blockbridge_tenant_mode = single
 ```
 
 

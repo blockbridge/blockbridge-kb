@@ -107,6 +107,15 @@ defaults:
       sidebar: custom_certs
 
   - scope:
+      path: "guide/squid"
+      type: "pages"
+    values:
+      layout: "page"
+      comments: false
+      search: true
+      sidebar: squid
+
+  - scope:
       path: "guide/kubernetes"
       type: "pages"
     values:

@@ -5,7 +5,7 @@ entries:
   folders:
   - title: ABOUT THIS GUIDE
     output: web, pdf
-    url: '#blockbridge-openstack-storage-guide'
+    url: '#openstack-cinder-storage-guide'
 
   - title: QUICKSTART
     output: web, pdf

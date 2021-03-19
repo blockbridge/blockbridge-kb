@@ -10,7 +10,7 @@ toc: false
 
 This guide provides technical details for deploying Proxmox VE with Blockbridge iSCSI storage using the Blockbridge storage driver for Proxmox.
 
-Most readers will want to start with the Deployment and Tuning Quickstart section. It’s an ordered list of configuration steps and is the fastest path to an installation. The rest of the document provides detail on all aspects of using Proxmox with Blockbridge.
+Most readers will want to start with the Quickstart section. It’s an ordered list of configuration steps and is the fastest path to an installation. The rest of the document provides details on all aspects of using Proxmox with Blockbridge.
 
 FEATURE OVERVIEW
 ================

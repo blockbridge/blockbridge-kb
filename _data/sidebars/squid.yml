@@ -1,0 +1,21 @@
+# This is your sidebar TOC. The sidebar code loops through sections here and provides the appropriate formatting.
+
+entries:
+- title: sidebar
+  folders:
+  - title: INSTALLING AND CONFIGURING SQUID
+    output: web, pdf
+    url: '#installing-and-configuring-squid'
+    folderitems:
+    - title: Configure network access
+      output: web, pdf
+      url: '#configure-network-access'
+    - title: Install and enable Squid
+      output: web, pdf
+      url: '#install-and-enable-squid'
+    - title: Review and Customize Configuration
+      output: web, pdf
+      url: '#review-and-customize-configuration'
+    - title: Verifying Proxy Configuration
+      output: web, pdf
+      url: '#verifying-proxy-configuration'

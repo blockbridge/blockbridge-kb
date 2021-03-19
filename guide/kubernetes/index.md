@@ -233,7 +233,7 @@ Use the containerized Blockbridge CLI to create the account.
     $ docker run --rm -it -e BLOCKBRIDGE_API_HOST docker.io/blockbridge/cli:latest-alpine bb --no-ssl-verify-peer account create --name kubernetes
 ```
 
-When prompted, then authenticate to the Blockbridge controlplane as the `system` user.
+When prompted, authenticate to the Blockbridge controlplane as the `system` user.
 
 ```
     Authenticating to https://blockbridge.mycompany.example/api
@@ -312,7 +312,7 @@ This creates the authorization and displays the access token.
 ```
 
 Make a note of the displayed access token somewhere safe. Set the environment
-variable to `BLOCKBRIDGE_API_KEY` to use in the forthcoming steps to install
+variable `BLOCKBRIDGE_API_KEY` to use in the forthcoming steps to install
 the driver.
 
 ```
@@ -372,7 +372,7 @@ expands the variables:
     EOF
 ```
 
-Verify that the contents look correct.
+Verify that the content look correct.
 
 ```
     $ cat secret.yml
