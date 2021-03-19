@@ -18,6 +18,8 @@ start with the **[Quickstart](#quickstart)** section. The rest of the guide has
 detailed information about features, driver configuration options and
 troubleshooting.
 
+---
+
 REQUIREMENTS & VERSIONS
 =======================
 
@@ -71,6 +73,7 @@ more information.
 
 
 
+---
 
 QUICKSTART
 ==========
@@ -191,6 +194,8 @@ cluster to proceed.
     csi-blockbridge-controller-0            3/3       Running   0          6s
     csi-blockbridge-node-4679b              2/2       Running   0          5s
     ```
+
+---
 
 CONFIGURATION & DEPLOYMENT
 ==========================
@@ -372,7 +377,7 @@ expands the variables:
     EOF
 ```
 
-Verify that the content look correct.
+Verify that its contents are correct.
 
 ```
     $ cat secret.yml
@@ -638,6 +643,7 @@ Inside the app container, write data to the mounted volume.
 
 
 
+---
 
 TROUBLESHOOTING
 ===============
