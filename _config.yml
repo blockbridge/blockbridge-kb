@@ -98,6 +98,15 @@ defaults:
       sidebar: release_5_0
 
   - scope:
+      path: "release/5.1"
+      type: "pages"
+    values:
+      layout: "page"
+      comments: false
+      search: true
+      sidebar: release_5_1
+
+  - scope:
       path: "guide/custom-certs"
       type: "pages"
     values:

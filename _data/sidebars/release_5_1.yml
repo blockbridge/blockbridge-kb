@@ -1,0 +1,112 @@
+# This is your sidebar TOC. The sidebar code loops through sections here and provides the appropriate formatting.
+
+entries:
+- title: sidebar
+  folders:
+  - title: RELEASE 5.1
+    output: web, pdf
+    url: '#blockbridge-5-1-release-notes'
+
+  - title: MANAGEMENT
+    output: web, pdf
+    url: '#management'
+    folderitems:
+      - title: CLI Roles and Levels
+        output: web, pdf
+        url: '#management'
+      - title: Hourly Datastore Statistics
+        output: web, pdf
+        url: '#managament'
+      - title: Enclosure Visibility
+        output: web, pdf
+        url: '#management'
+
+  - title: INTEGRATIONS
+    output: web, pdf
+    url: '#integrations'
+    folderitems:
+      - title: Proxmox
+        output: web, pdf
+        url: '#proxmox'
+      - title: Multi-Cloud Openstack
+        output: web, pdf
+        url: '#multi-cloud-openstack'
+      - title: Kubernetes Version 1.14
+        output: web, pdf
+        url: '#kubernetes-version-1.14'
+
+  - title: COMPRESSION METADATA
+    output: web, pdf
+    url: '#compression-metadata'
+    folderitems:
+      - title: Metadata Efficiency
+        output: web, pdf
+        url: '#compression-metadata'
+      - title: Metadata Cache
+        output: web, pdf
+        url: '#compression-metadata'
+      - title: Metadata Concurrency
+        output: web, pdf
+        url: '#compression-metadata'
+      - title: Cache Sweeping
+        output: web, pdf
+        url: '#compression-metadata'
+
+  - title: PERFORMANCE
+    output: web, pdf
+    url: '#performance'
+    folderitems:
+      - title: Snapshot Remove Fairness
+        output: web, pdf
+        url: '#performance'
+      - title: Offloaded Message Logging
+        output: web, pdf
+        url: '#performance'
+      - title: Improved Write-Combining
+        output: web, pdf
+        url: '#performance'
+      - title: Micro Optimizations
+        output: web, pdf
+        url: '#performance'
+      - title: Client-Side Tunings
+        output: web, pdf
+        url: '#performance'
+      - title: Adjustable TLS Compression
+        output: web, pdf
+        url: '#performance'
+
+  - title: PLATFORM
+    output: web, pdf
+    url: '#platform'
+    folderitems:
+      - title: Linux Kernel 5.4.21
+        output: web, pdf
+        url: '#platform'
+      - title: Centos 7.9
+        output: web, pdf
+        url: '#platform'
+      - title: AMD EPYC Naples & Rome
+        output: web, pdf
+        url: '#platform'
+      - title: SCSI Enclosure Stability
+        output: web, pdf
+        url: '#platform'
+      - title: Memory Usage
+        output: web, pdf
+        url: '#platform'
+      - title: Blockbridge Shell
+        output: web, pdf
+        url: '#platform'
+      - title: Diskctl Enclosure View
+        output: web, pdf
+        url: '#platform'
+      - title: IP Address Scale
+        output: web, pdf
+        url: '#platform'
+      - title: iSCSI Sessions Scale
+        output: web, pdf
+        url: '#platform'
+
+  - title: MISCELLANEOUS
+    output: web, pdf
+    url: '#miscellaneous'
