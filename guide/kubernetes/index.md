@@ -663,7 +663,7 @@ $ kubectl get pod/blockbridge-demo
 NAME               READY   STATUS              RESTARTS   AGE
 blockbridge-demo   0/2     ContainerCreating   0          20s
 
-$ kubectl describe pod/blockbridge-dmo
+$ kubectl describe pod/blockbridge-demo
 Events:
   Type     Reason                  Age   From                            Message
   ----     ------                  ----  ----                            -------
@@ -687,6 +687,49 @@ Events:
     apt install open-iscsi-utils
 ```
     
+* Delete/re-create the application pod to retry.
+
+### Symptom
+
+Check the app status.
+
+```
+$ kubectl get pod/blockbridge-demo
+NAME               READY   STATUS              RESTARTS   AGE
+blockbridge-demo   0/2     ContainerCreating   0          20s
+
+$ kubectl describe pod/blockbridge-demo
+Events:
+  Type     Reason                  Age    From                     Message
+  ----     ------                  ----   ----                     -------
+  Normal   Scheduled               10m    default-scheduler        Successfully assigned default/blockbridge-demo to crc-l6qvn-master-0
+  Normal   SuccessfulAttachVolume  10m    attachdetach-controller  AttachVolume.Attach succeeded for volume "pvc-9b2e8116-62a6-4089-8b0d-fab0f839b7aa"
+  Warning  FailedMount             9m56s  kubelet                  MountVolume.MountDevice failed for volume "pvc-9b2e8116-62a6-4089-8b0d-fab0f839b7aa" : rpc error: code = Unknown desc = exec_error: Failed to connect to bus: No data available
+iscsiadm: can not connect to iSCSI daemon (111)!
+iscsiadm: Could not login to [iface: default, target: iqn.2009-12.com.blockbridge:t-pjwajzvdho-471c1b66-e24d-4377-a16b-71ac1d580061, portal: 172.16.100.129,3260].
+iscsiadm: initiator reported error (20 - could not connect to iscsid)
+iscsiadm: Could not log into all portals
+```
+
+### Resolution
+
+* Ensure the host running the kubelet has iSCSI daemon installed and started on the host/node.
+* For CentOS/RHEL, install the `iscsi-initiator-utils` package on the host running the kubelet.
+
+```
+    yum install iscsi-initiator-utils
+    systemctl enable iscsid
+    systemctl start iscsid
+```
+
+* For Ubuntu, install the `open-iscsi-utils` package on the host running the kubelet.
+
+```
+    apt install open-iscsi-utils
+    systemctl enable iscsid
+    systemctl start iscsid
+```
+
 * Delete/re-create the application pod to retry.
 
 
