@@ -96,19 +96,19 @@ Blockbridge Configuration
 These steps use the containerized Blockbridge CLI utility to create an account
 and an authorization token.
 
-1. **Set `BLOCKBRIDGE_API_HOST` to point to your Blockbridge API endpoint.**
+1. **Set `BLOCKBRIDGE_API_HOST` to point to your Blockbridge API endpoint.** [**&#9432;**](#linked-blockbridge-account)
 
     ```
     $ export BLOCKBRIDGE_API_HOST=blockbridge.mycompany.example
     ```
 
-2. **Use the containerized CLI to create the account.**
+2. **Use the containerized CLI to create the account.** [**&#9432;**](#linked-blockbridge-account)
 
     ```
     $ docker run --rm -it -e BLOCKBRIDGE_API_HOST docker.io/blockbridge/cli:latest-alpine bb --no-ssl-verify-peer account create --name kubernetes
     ```
 
-3. **When prompted, authenticate as the `system` user.**
+3. **When prompted, authenticate as the `system` user.** [**&#9432;**](#linked-blockbridge-account)
 
     ```
     Authenticating to https://blockbridge.mycompany.example/api
@@ -118,7 +118,7 @@ and an authorization token.
     Authenticated; token expires in 3599 seconds.
     ```
 
-4. **Use the containerized CLI to create the auth token.**
+4. **Use the containerized CLI to create the auth token.** [**&#9432;**](#authorization-token)
 
     ```
     $ export BLOCKBRIDGE_API_HOST=blockbridge.mycompany.example
@@ -126,7 +126,7 @@ and an authorization token.
     $ docker run --rm -it -e BLOCKBRIDGE_API_HOST -e BLOCKBRIDGE_API_SU docker.io/blockbridge/cli:latest-alpine bb --no-ssl-verify-peer authorization create --notes 'csi-blockbridge driver access'
     ```
 
-5. **Again, authenticate as the `system` user.**
+5. **Again, authenticate as the `system` user.** [**&#9432;**](#authorization-token)
 
     ```
     Authenticating to https://blockbridge.mycompany.example/api
@@ -136,7 +136,7 @@ and an authorization token.
     Authenticated; token expires in 3599 seconds.
     ```
 
-6. **Set the `BLOCKBRIDGE_API_KEY` environment variable to the new token.**
+6. **Set the `BLOCKBRIDGE_API_KEY` environment variable to the new token.** [**&#9432;**](#authorization-token)
 
     ```
     $ export BLOCKBRIDGE_API_KEY="1/Nr7qLedL/P0KXxbrB8+jpfrFPBrNi3X+8H9BBwyOYg/mvOot50v2vA"
@@ -150,7 +150,7 @@ The following steps install and configure the Blockbridge Kubernetes driver on
 your cluster.  Your session must already be authenticated with your Kubernetes
 cluster to proceed.
 
-1. **Create a file with the definition of a _secret_ for the Blockbridge API.**
+1. **Create a file with the definition of a _secret_ for the Blockbridge API.** [**&#9432;**](#create-a-secret)
 
     ```
     $ cat > secret.yml <<- EOF
@@ -166,13 +166,13 @@ cluster to proceed.
     EOF
     ```
 
-2. **Create the secret in Kubernetes.**
+2. **Create the secret in Kubernetes.** [**&#9432;**](#create-a-secret)
 
     ```
     $ kubectl create -f ./secret.yml
     ```
 
-3. **Check that the secret exists.**
+3. **Check that the secret exists.** [**&#9432;**](#create-a-secret)
 
     ```
     $ kubectl -n kube-system get secrets blockbridge
@@ -180,13 +180,13 @@ cluster to proceed.
     blockbridge   Opaque    3         2m
     ```
 
-4. **Deploy the Blockbridge driver.**
+4. **Deploy the Blockbridge driver.** [**&#9432;**](#deploy-the-blockbridge-driver)
 
     ```
     $ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/csi/v2.0.0/csi-blockbridge.yaml
     ```
 
-5. **Check that the driver is running.**
+5. **Check that the driver is running.** [**&#9432;**](#ensure-the-driver-is-operational)
 
     ```
     $ kubectl -n kube-system get pods -l role=csi-blockbridge

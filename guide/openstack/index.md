@@ -52,7 +52,7 @@ Driver Installation
 -------------------
 
 Install the Blockbridge driver on each OpenStack node that will access
-Blockbridge volumes.
+Blockbridge volumes.  [**&#9432;**](#cinder-driver)
 
 **For CentOS 7, install the el7 package.**
 
@@ -68,25 +68,25 @@ Blockbridge Configuration
 The following steps use the `bb` command-line utility.
 
 
-1. **Authenticate as the `system` user:**
+1. **Authenticate as the `system` user:** [**&#9432;**](#blockbridge-login)
 
     ```
     $ bb -kH localhost auth login
     ```
 
-2. **Create the `bbcinder` tenant account:**
+2. **Create the `bbcinder` tenant account:** [**&#9432;**](#account-creation)
 
     ```
     $ bb -kH localhost account create --name bbcinder
     ```
 
-3. **Log in as the new `bbcinder` tenant, using the "substitute user" switch:**
+3. **Log in as the new `bbcinder` tenant, using the "substitute user" switch:** [**&#9432;**](#multi-cloud-tenant-token)
 
     ```
     $ bb -kH localhost auth login --su bbcinder
     ```
 
-4. **Create a persistent authorization token for the cinder volume driver API access:**
+4. **Create a persistent authorization token for the cinder volume driver API access:** [**&#9432;**](#multi-cloud-tenant-token)
 
     ```
     $ bb -kH localhost authorization create --notes 'cinder volume driver api access'
@@ -99,7 +99,7 @@ OpenStack Configuration
 -----------------------
 
 1. **On your OpenStack Cinder node, configure a new backend by adding a named
-configuration group to the `/etc/cinder/cinder.conf` file.**
+configuration group to the `/etc/cinder/cinder.conf` file.** [**&#9432;**](#cinder-backend)
 
     ```
     [bbcinder]
@@ -111,26 +111,26 @@ configuration group to the `/etc/cinder/cinder.conf` file.**
     blockbridge_ssl_verify_peer = False
     ```
 
-2. **Add `bbcinder` to the `enabled_backends` list in the `[DEFAULT]` group:**
+2. **Add `bbcinder` to the `enabled_backends` list in the `[DEFAULT]` group:** [**&#9432;**](#cinder-backend)
 
     ```
     [DEFAULT]
     enabled_backends=lvm,bbcinder
     ```
 
-3. **Restart the cinder-volume service.**
+3. **Restart the cinder-volume service.** [**&#9432;**](#cinder-backend)
 
     ```
     systemctl restart openstack-cinder-volume
     ```
 
-4. **Create the blockbridge volume type:**
+4. **Create the blockbridge volume type:** [**&#9432;**](#volume-type)
 
     ```
     openstack --os-username admin --os-tenant-name admin volume type create blockbridge
     ```
 
-5. **Map the volume type to its corresponding `volume_backend_name`:**
+5. **Map the volume type to its corresponding `volume_backend_name`:** [**&#9432;**](#volume-type)
 
     ```
     openstack --os-username admin --os-tenant-name admin volume type set blockbridge \
