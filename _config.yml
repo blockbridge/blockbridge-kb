@@ -89,6 +89,15 @@ defaults:
       sidebar: guide_vmware
 
   - scope:
+      path: "release/4.4"
+      type: "pages"
+    values:
+      layout: "page"
+      comments: false
+      search: true
+      sidebar: release_4_4
+
+  - scope:
       path: "release/5.0"
       type: "pages"
     values:
