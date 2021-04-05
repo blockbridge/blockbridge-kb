@@ -54,13 +54,24 @@ Driver Installation
 Install the Blockbridge driver on each OpenStack node that will access
 Blockbridge volumes.
 
-**For CentOS 7, install the el7 package.**
+**Add the YUM repository**
 
-    yum install -y https://github.com/blockbridge/blockbridge-cinder/releases/download/v2.0.0/python3-blockbridge_cinder-2.0.0-14.el7.noarch.rpm
+    sudo yum install -y yum-utils
+    sudo yum-config-manager \
+      --add-repo=https://get.blockbridge.com/tools/5.1/centos/blockbridge-tools.repo
 
-**For CentOS 8, install the el8 package.**
+**Install the Blockbridge driver package**
 
-    yum install -y https://github.com/blockbridge/blockbridge-cinder/releases/download/v2.0.0/python3-blockbridge_cinder-2.0.0-14.el78.noarch.rpm
+    sudo yum install -y python3-blockbridge_cinder
+
+**When prompted, verify the Blockbridge signing key fingerprint**
+
+    Retrieving key from https://get.blockbridge.com/RPM-GPG-KEY-Blockbridge
+    Importing GPG key 0x7ECF5373:
+     Userid     : "Blockbridge (Official Signing Key) <security@blockbridge.com>"
+     Fingerprint: 9c1d e2ae 5970 cfd4 adc5 e0ba ddde 845d 7ecf 5373
+     From       : https://get.blockbridge.com/RPM-GPG-KEY-Blockbridge
+    Is this ok [y/N]: y
 
 Blockbridge Configuration
 -------------------------
