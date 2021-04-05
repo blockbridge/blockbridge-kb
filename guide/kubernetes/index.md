@@ -26,13 +26,13 @@ REQUIREMENTS & VERSIONS
 Supported Versions
 ------------------
 
-Blockbridge supports Kubernetes version 1.14. 
+Blockbridge supports Kubernetes version 1.14+.
 
 | Component                             | Version |
 | ------------------------------------  | ------- |
 | Blockbridge                           | 5.1     |
 | Blockbridge K8s Driver                | 2.0.0   | 
-| Kubernetes                            | 1.14    |
+| Kubernetes                            | 1.14+   |
 | CSI (container storage) Specification | 1.0.0   |
 
 Supported Features
@@ -183,7 +183,7 @@ cluster to proceed.
 4. **Deploy the Blockbridge driver.**
 
     ```
-    $ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/csi/v2.0.0/csi-blockbridge.yaml
+    $ kubectl apply -f https://get.blockbridge.com/kubernetes/5.1/csi/csi-blockbridge-v2.0.0.yaml
     ```
 
 5. **Check that the driver is running.**
@@ -412,7 +412,7 @@ Finally, ensure the secret exists in the `kube-system` namespace.
 Deploy the Blockbridge Driver as a DaemonSet / StatefulSet using `kubectl`.
 
 ```
-    $ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/csi/v2.0.0/csi-blockbridge.yaml
+    $ kubectl apply -f https://get.blockbridge.com/kubernetes/5.1/csi/csi-blockbridge-v2.0.0.yaml
 ```
 
 If everything was created successfully, the command output should look like
@@ -470,7 +470,7 @@ There are several additional example storage classes in
 classes as needed.
 
 ```
-    $ curl -OsSL https://get.blockbridge.com/kubernetes/deploy/csi/v2.0.0/csi-storageclass.yaml
+    $ curl -OsSL https://get.blockbridge.com/kubernetes/5.1/csi/csi-storageclass.yaml
     $ cat csi-storageclass.yaml
     ... [output trimmed] ...
     ---
@@ -506,7 +506,7 @@ To test this out, create a PersistentVolumeClaim. It will dynamically provision 
 volume in Blockbridge and make it accessible to applications.
 
 ```
-    $ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/examples/csi-pvc.yaml
+    $ kubectl apply -f https://get.blockbridge.com/kubernetes/5.1/examples/csi-pvc.yaml
 ```
 ```
     persistentvolumeclaim "csi-pvc-blockbridge" created
@@ -515,7 +515,7 @@ volume in Blockbridge and make it accessible to applications.
 Alternatively, download the example volume yaml, modify it as needed, and apply.
 
 ```
-    $ curl -OsSL https://get.blockbridge.com/kubernetes/deploy/examples/csi-pvc.yaml
+    $ curl -OsSL https://get.blockbridge.com/kubernetes/5.1/examples/csi-pvc.yaml
 ```
 ```
     $ cat csi-pvc.yaml
@@ -559,7 +559,7 @@ available to the specified application.
 Create the application.
 
 ```
-    $ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/examples/csi-app.yaml
+    $ kubectl apply -f https://get.blockbridge.com/kubernetes/5.1/examples/csi-app.yaml
 ```
 ```
     pod "blockbridge-demo" created
@@ -568,7 +568,7 @@ Create the application.
 Alternatively, download the application yaml, modify as needed, and apply.
 
 ```
-    $ curl -OsSL https://get.blockbridge.com/kubernetes/deploy/examples/csi-app.yaml
+    $ curl -OsSL https://get.blockbridge.com/kubernetes/5.1/examples/csi-app.yaml
 ```
 ```
     $ cat csi-app.yaml
@@ -715,11 +715,11 @@ Provisioning failed due to "unauthorized" because the authorization access token
 * delete secret: `kubectl delete -f secret.yml`
 * create secret: `kubectl create -f secret.yml`
 * remove old configuration:
-   * `kubectl delete -f https://get.blockbridge.com/kubernetes/deploy/examples/csi-pvc.yaml`
-   * `kubectl delete -f https://get.blockbridge.com/kubernetes/deploy/csi/v2.0.0/csi-blockbridge.yaml`
+   * `kubectl delete -f https://get.blockbridge.com/kubernetes/5.1/examples/csi-pvc.yaml`
+   * `kubectl delete -f https://get.blockbridge.com/kubernetes/5.1/csi/csi-blockbridge-v2.0.0.yaml`
 * re-apply configuration:
-   * `kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/csi/v2.0.0/csi-blockbridge.yaml`
-   * `kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/examples/csi-pvc.yaml`
+   * `kubectl apply -f https://get.blockbridge.com/kubernetes/5.1/csi/csi-blockbridge-v2.0.0.yaml`
+   * `kubectl delete -f https://get.blockbridge.com/kubernetes/5.1/examples/csi-pvc.yaml`
 
 
 Provisioning Storage Class Invalid
@@ -750,13 +750,13 @@ Ensure the StorageClass exists with the same name.
 * If it doesn't exist, then create the storageclass.
 
 ```
-    $ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/csi/v1.0.0/csi-storageclass.yaml
+    $ kubectl apply -f https://get.blockbridge.com/kubernetes/5.1/csi/csi-storageclass.yaml
 ```
 
 * Alternatively, download and edit the desired storageclass.
 
 ```
-    $ curl -OsSL https://get.blockbridge.com/kubernetes/deploy/csi/v1.0.0/csi-storageclass.yaml
+    $ curl -OsSL https://get.blockbridge.com/kubernetes/5.1/csi/csi-storageclass.yaml
     $ edit csi-storageclass.yaml
     $ kubectl -f apply ./csi-storageclass.yaml
 ```
@@ -811,7 +811,7 @@ it's missing.
 If it's missing, create it.
 
 ```
-    $ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/examples/csi-pvc.yaml
+    $ kubectl apply -f https://get.blockbridge.com/kubernetes/5.1/examples/csi-pvc.yaml
 persistentvolumeclaim "csi-pvc-blockbridge" created
 ```
 
