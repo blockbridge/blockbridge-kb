@@ -358,14 +358,26 @@ information <strong>ⓘ</strong> links next to items where they appear.</p>
 <p>Install the Blockbridge driver on each OpenStack node that will access
 Blockbridge volumes.</p>
 
-<p><strong>For CentOS 7, install the el7 package.</strong></p>
+<p><strong>Add the YUM repository</strong></p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>yum install -y https://github.com/blockbridge/blockbridge-cinder/releases/download/v2.0.0/python3-blockbridge_cinder-2.0.0-14.el7.noarch.rpm
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo yum install -y yum-utils
+sudo yum-config-manager \
+  --add-repo=https://get.blockbridge.com/tools/5.1/centos/blockbridge-tools.repo
 </code></pre></div></div>
 
-<p><strong>For CentOS 8, install the el8 package.</strong></p>
+<p><strong>Install the Blockbridge driver package</strong></p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>yum install -y https://github.com/blockbridge/blockbridge-cinder/releases/download/v2.0.0/python3-blockbridge_cinder-2.0.0-14.el78.noarch.rpm
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo yum install -y python3-blockbridge_cinder
+</code></pre></div></div>
+
+<p><strong>When prompted, verify the Blockbridge signing key fingerprint</strong></p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Retrieving key from https://get.blockbridge.com/RPM-GPG-KEY-Blockbridge
+Importing GPG key 0x7ECF5373:
+ Userid     : "Blockbridge (Official Signing Key) &lt;security@blockbridge.com&gt;"
+ Fingerprint: 9c1d e2ae 5970 cfd4 adc5 e0ba ddde 845d 7ecf 5373
+ From       : https://get.blockbridge.com/RPM-GPG-KEY-Blockbridge
+Is this ok [y/N]: y
 </code></pre></div></div>
 
 <h2 id="blockbridge-configuration">Blockbridge Configuration</h2>
@@ -852,7 +864,7 @@ demand.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 Blockbridge Networks LLC. All rights reserved. <br />
- Site last generated: Mar 19, 2021
+ Site last generated: Apr 5, 2021
                 </div>
             </div>
 </footer>

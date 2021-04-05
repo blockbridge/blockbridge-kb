@@ -333,7 +333,7 @@ troubleshooting.</p>
 
 <h2 id="supported-versions">Supported Versions</h2>
 
-<p>Blockbridge supports Kubernetes version 1.14.</p>
+<p>Blockbridge supports Kubernetes version 1.14+.</p>
 
 <table>
   <thead>
@@ -353,7 +353,7 @@ troubleshooting.</p>
     </tr>
     <tr>
       <td>Kubernetes</td>
-      <td>1.14</td>
+      <td>1.14+</td>
     </tr>
     <tr>
       <td>CSI (container storage) Specification</td>
@@ -509,7 +509,7 @@ cluster to proceed.</p>
   <li>
     <p><strong>Deploy the Blockbridge driver.</strong></p>
 
-    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/csi/v2.0.0/csi-blockbridge.yaml
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ kubectl apply -f https://get.blockbridge.com/kubernetes/5.1/csi/csi-blockbridge-v2.0.0.yaml
 </code></pre></div>    </div>
   </li>
   <li>
@@ -733,7 +733,7 @@ expands the variables:</p>
 
 <p>Deploy the Blockbridge Driver as a DaemonSet / StatefulSet using <code class="highlighter-rouge">kubectl</code>.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/csi/v2.0.0/csi-blockbridge.yaml
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl apply -f https://get.blockbridge.com/kubernetes/5.1/csi/csi-blockbridge-v2.0.0.yaml
 </code></pre></div></div>
 
 <p>If everything was created successfully, the command output should look like
@@ -788,7 +788,7 @@ including:</p>
 <code class="highlighter-rouge">csi-storageclass.yaml</code>. You can download, edit, and apply these storage
 classes as needed.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ curl -OsSL https://get.blockbridge.com/kubernetes/deploy/csi/v2.0.0/csi-storageclass.yaml
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ curl -OsSL https://get.blockbridge.com/kubernetes/5.1/csi/csi-storageclass.yaml
     $ cat csi-storageclass.yaml
     ... [output trimmed] ...
     ---
@@ -820,14 +820,14 @@ persistent volume claims (PVC).</p>
 <p>To test this out, create a PersistentVolumeClaim. It will dynamically provision a
 volume in Blockbridge and make it accessible to applications.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/examples/csi-pvc.yaml
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl apply -f https://get.blockbridge.com/kubernetes/5.1/examples/csi-pvc.yaml
 </code></pre></div></div>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    persistentvolumeclaim "csi-pvc-blockbridge" created
 </code></pre></div></div>
 
 <p>Alternatively, download the example volume yaml, modify it as needed, and apply.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ curl -OsSL https://get.blockbridge.com/kubernetes/deploy/examples/csi-pvc.yaml
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ curl -OsSL https://get.blockbridge.com/kubernetes/5.1/examples/csi-pvc.yaml
 </code></pre></div></div>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ cat csi-pvc.yaml
     ---
@@ -865,14 +865,14 @@ available to the specified application.</p>
 
 <p>Create the application.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/examples/csi-app.yaml
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl apply -f https://get.blockbridge.com/kubernetes/5.1/examples/csi-app.yaml
 </code></pre></div></div>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    pod "blockbridge-demo" created
 </code></pre></div></div>
 
 <p>Alternatively, download the application yaml, modify as needed, and apply.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ curl -OsSL https://get.blockbridge.com/kubernetes/deploy/examples/csi-app.yaml
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ curl -OsSL https://get.blockbridge.com/kubernetes/5.1/examples/csi-app.yaml
 </code></pre></div></div>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ cat csi-app.yaml
     ---
@@ -1004,14 +1004,14 @@ Events:
   <li>create secret: <code class="highlighter-rouge">kubectl create -f secret.yml</code></li>
   <li>remove old configuration:
     <ul>
-      <li><code class="highlighter-rouge">kubectl delete -f https://get.blockbridge.com/kubernetes/deploy/examples/csi-pvc.yaml</code></li>
-      <li><code class="highlighter-rouge">kubectl delete -f https://get.blockbridge.com/kubernetes/deploy/csi/v2.0.0/csi-blockbridge.yaml</code></li>
+      <li><code class="highlighter-rouge">kubectl delete -f https://get.blockbridge.com/kubernetes/5.1/examples/csi-pvc.yaml</code></li>
+      <li><code class="highlighter-rouge">kubectl delete -f https://get.blockbridge.com/kubernetes/5.1/csi/csi-blockbridge-v2.0.0.yaml</code></li>
     </ul>
   </li>
   <li>re-apply configuration:
     <ul>
-      <li><code class="highlighter-rouge">kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/csi/v2.0.0/csi-blockbridge.yaml</code></li>
-      <li><code class="highlighter-rouge">kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/examples/csi-pvc.yaml</code></li>
+      <li><code class="highlighter-rouge">kubectl apply -f https://get.blockbridge.com/kubernetes/5.1/csi/csi-blockbridge-v2.0.0.yaml</code></li>
+      <li><code class="highlighter-rouge">kubectl delete -f https://get.blockbridge.com/kubernetes/5.1/examples/csi-pvc.yaml</code></li>
     </ul>
   </li>
 </ul>
@@ -1041,14 +1041,14 @@ Events:
   <li>If it doesn’t exist, then create the storageclass.</li>
 </ul>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/csi/v1.0.0/csi-storageclass.yaml
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl apply -f https://get.blockbridge.com/kubernetes/5.1/csi/csi-storageclass.yaml
 </code></pre></div></div>
 
 <ul>
   <li>Alternatively, download and edit the desired storageclass.</li>
 </ul>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ curl -OsSL https://get.blockbridge.com/kubernetes/deploy/csi/v1.0.0/csi-storageclass.yaml
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ curl -OsSL https://get.blockbridge.com/kubernetes/5.1/csi/csi-storageclass.yaml
     $ edit csi-storageclass.yaml
     $ kubectl -f apply ./csi-storageclass.yaml
 </code></pre></div></div>
@@ -1097,7 +1097,7 @@ it’s missing.</p>
 
 <p>If it’s missing, create it.</p>
 
-<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl apply -f https://get.blockbridge.com/kubernetes/deploy/examples/csi-pvc.yaml
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl apply -f https://get.blockbridge.com/kubernetes/5.1/examples/csi-pvc.yaml
 persistentvolumeclaim "csi-pvc-blockbridge" created
 </code></pre></div></div>
 
@@ -1123,7 +1123,7 @@ starting.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 Blockbridge Networks LLC. All rights reserved. <br />
- Site last generated: Mar 19, 2021
+ Site last generated: Apr 5, 2021
                 </div>
             </div>
 </footer>
