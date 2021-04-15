@@ -154,16 +154,16 @@ cluster to proceed.
 
     ```
     $ cat > secret.yml <<- EOF
-    apiVersion: v1
-    kind: Secret
-    metadata:
-      name: blockbridge
-      namespace: kube-system
-    stringData:
-      api-url: "https://${BLOCKBRIDGE_API_HOST}/api"
-      access-token: "$BLOCKBRIDGE_API_KEY"
-      ssl-verify-peer: "false"
-    EOF
+   apiVersion: v1
+   kind: Secret
+   metadata:
+     name: blockbridge
+     namespace: kube-system
+   stringData:
+     api-url: "https://${BLOCKBRIDGE_API_HOST}/api"
+     access-token: "$BLOCKBRIDGE_API_KEY"
+     ssl-verify-peer: "false"
+   EOF
     ```
 
 2. **Create the secret in Kubernetes.** [**&#9432;**](#create-a-secret)
@@ -457,6 +457,14 @@ named `blockbridge-gp`.  This is the **default** StorageClass for dynamic
 provisioning of storage volumes. It provisions using the default Blockbridge
 storage template configured in the Blockbridge controlplane.
 
+
+```
+    $ kubectl get storageclass
+    NAME                       PROVISIONER           RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
+    blockbridge-gp (default)   csi.blockbridge.com   Delete          Immediate           true                   65m
+    blockbridge-tls            csi.blockbridge.com   Delete          Immediate           false                  65m
+```
+
 There are a variety of additional storage class configuration options available,
 including:
 
@@ -523,7 +531,7 @@ Alternatively, download the example volume yaml, modify it as needed, and apply.
     apiVersion: v1
     kind: PersistentVolumeClaim
     metadata:
-      name: csi-pvc-blockbridge-example
+      name: csi-pvc-blockbridge
     spec:
       accessModes:
       - ReadWriteOnce
