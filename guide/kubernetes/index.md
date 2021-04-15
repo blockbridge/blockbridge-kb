@@ -64,6 +64,18 @@ The following minimum requirements must be met to use the Blockbridge driver in 
   (default to true since version 1.10).
 * If you use Docker, the Docker daemon of the cluster nodes [must allow shared
   mounts](https://kubernetes.io/docs/concepts/storage/volumes/#configuration).
+* Ensure the host running the kubelet has iSCSI client support installed and iscsid started on the host/node.  
+  
+   For CentOS/RHEL, install the iscsi-initiator-utils package:
+```
+yum install iscsi-initiator-utils
+systemctl systemctl enable --now iscsid
+```  
+For Ubuntu, install the open-iscsi package:
+```
+apt install open-iscsi
+systemctl systemctl enable --now iscsid
+```  
   
 See [CSI Deploying](https://kubernetes-csi.github.io/docs/deploying.html) for
 more information.
@@ -689,10 +701,10 @@ Events:
     yum install iscsi-initiator-utils
 ```
 
-* For Ubuntu, install the `open-iscsi-utils` package on the host running the kubelet.
+* For Ubuntu, install the `open-iscsi` package on the host running the kubelet.
 
 ```
-    apt install open-iscsi-utils
+    apt install open-iscsi
 ```
     
 * Delete/re-create the application pod to retry.
