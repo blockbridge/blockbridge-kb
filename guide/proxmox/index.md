@@ -101,14 +101,14 @@ Driver Installation
 
 Repeat this section's instructions on each Proxmox node.
 
-1. **Import the Blockbridge release signing key.**
+1. **Import the Blockbridge release signing key.** [**&#9432;**](#import-the-blockbridge-release-signing-key)
 
         sudo apt update
         sudo apt install apt-transport-https ca-certificates curl \
           gnupg-agent software-properties-common
         curl -fsSL https://get.blockbridge.com/tools/5.1/debian/gpg | sudo apt-key add -
 
-1. **Verify the key fingerprint.**
+1. **Verify the key fingerprint.** [**&#9432;**](#import-the-blockbridge-release-signing-key)
 
         sudo apt-key fingerprint 7ECF5373
 
@@ -117,7 +117,7 @@ Repeat this section's instructions on each Proxmox node.
         uid           [ unknown] Blockbridge (Official Signing Key) <security@blockbridge.com>
         sub   rsa4096 2016-11-01 [E]
 
-1. **Add the Blockbridge Tools repository and install the plugin.**
+1. **Add the Blockbridge Tools repository and install the plugin.** [**&#9432;**](#add-the-blockbridge-tools-repository-and-install-the-plugin)
 
         sudo apt-add-repository \
           "deb https://get.blockbridge.com/tools/5.1/debian $(lsb_release -cs) main"
@@ -131,7 +131,7 @@ This section describes creating a dedicated Blockbridge account for your
 Proxmox storage, and then creating an authorization token to use it.  These
 steps only need to happen once.
 
-1. **Log in to your Blockbridge controlplane as the `system` user.**
+1. **Log in to your Blockbridge controlplane as the `system` user.** [**&#9432;**](#create-a-persistent-authorization-for-proxmox-use)
 
         root@proxmox-1:~# bb auth login
         Enter a default management host: blockbridge.yourcompany.com
@@ -142,11 +142,11 @@ steps only need to happen once.
         Authenticated; token expires in 3599 seconds.
         == Authenticated as user system.
 
-1. **Create a dedicated `proxmox` account.**
+1. **Create a dedicated `proxmox` account.** [**&#9432;**](#create-a-persistent-authorization-for-proxmox-use)
 
         root@proxmox-1:~# bb account create --name proxmox
 
-1. **Use the 'substitute user' option to switch your session to the newly created `proxmox` account.**
+1. **Use the 'substitute user' option to switch your session to the newly created `proxmox` account.** [**&#9432;**](#create-a-persistent-authorization-for-proxmox-use)
 
     *Note that you will have to re-authenticate as the **system** user.*
 
@@ -159,7 +159,7 @@ steps only need to happen once.
         
         == Authenticated as user proxmox.
 
-1. **Create a persistent authorization token.**
+1. **Create a persistent authorization token.** [**&#9432;**](#create-a-persistent-authorization-for-proxmox-use)
 
         root@proxmox-1:~# bb authorization create --notes "Proxmox Cluster token"
         == Created authorization: ATH4762194C412D97FE
@@ -175,13 +175,13 @@ Proxmox Configuration
 ---------------------
 
 1. **Edit `/etc/pve/storage.cfg` on any node to add a Blockbridge storage pool.
-   The changes will be propagated to the other nodes.**
+   The changes will be propagated to the other nodes.** [**&#9432;**](#proxmox-storage-definition)
    
         blockbridge: shared-block-gp
                 api_url https://blockbridge.yourcompany.com/api
                 auth_token 1/nalF+/S1pO............2qitqUX79LWtpw
 
-1. **Restart the `pvedaemon`, `pveproxy` and `pvestatd` services.**
+1. **Restart the `pvedaemon`, `pveproxy` and `pvestatd` services.** [**&#9432;**](#proxmox-storage-definition)
 
     Though the configuration is automatically synchronized to all Proxmox nodes,
     you must restart services on all Proxmox nodes.

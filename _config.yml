@@ -89,6 +89,15 @@ defaults:
       sidebar: guide_vmware
 
   - scope:
+      path: "release/4.4"
+      type: "pages"
+    values:
+      layout: "page"
+      comments: false
+      search: true
+      sidebar: release_4_4
+
+  - scope:
       path: "release/5.0"
       type: "pages"
     values:
@@ -96,6 +105,15 @@ defaults:
       comments: false
       search: true
       sidebar: release_5_0
+
+  - scope:
+      path: "release/5.1"
+      type: "pages"
+    values:
+      layout: "page"
+      comments: false
+      search: true
+      sidebar: release_5_1
 
   - scope:
       path: "guide/custom-certs"
