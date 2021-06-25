@@ -79,7 +79,8 @@ Configure the data source using the Blockbridge management API details:
 * Basic Auth Details
 
   * User: Set this to a user with statistics query permissions. The simplest
-    option is to use the existing `system` user. ** Password: You may use either
+    option is to use the existing `system` user.
+  * Password: You may use either
     a persistent authorization access token or a password. We recommend using a
     persistent authorization, as this allows for fine-grained permissions control
     and access revocation.
