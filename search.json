@@ -15,10 +15,21 @@
 
 
 {
-"title": "Blockbridge VMware Storage Guide",
+"title": "Installing and configuring Squid",
 "tags": "",
-"keywords": "vmware",
-"url": "/guide/vmware/index.html",
+"keywords": "security,proxy,squid",
+"url": "/guide/squid/index.html",
+"summary": ""
+}
+,
+
+
+
+{
+"title": "KUBERNETES CSI STORAGE GUIDE",
+"tags": "",
+"keywords": "kubernetes containers K8s",
+"url": "/guide/kubernetes/index.html",
 "summary": ""
 }
 ,
@@ -48,21 +59,10 @@
 
 
 {
-"title": "Installing and configuring Squid",
+"title": "Grafana with Blockbridge",
 "tags": "",
-"keywords": "security,proxy,squid",
-"url": "/guide/squid/index.html",
-"summary": ""
-}
-,
-
-
-
-{
-"title": "KUBERNETES CSI STORAGE GUIDE",
-"tags": "",
-"keywords": "kubernetes containers K8s",
-"url": "/guide/kubernetes/index.html",
+"keywords": "grafana statistics visualization",
+"url": "/guide/grafana/index.html",
 "summary": ""
 }
 ,
@@ -92,10 +92,10 @@
 
 
 {
-"title": "Grafana with Blockbridge",
+"title": "Blockbridge VMware Storage Guide",
 "tags": "",
-"keywords": "grafana statistics visualization",
-"url": "/guide/grafana/index.html",
+"keywords": "vmware",
+"url": "/guide/vmware/index.html",
 "summary": ""
 }
 ,

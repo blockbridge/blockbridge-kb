@@ -252,7 +252,8 @@ specify <code class="highlighter-rouge">https://blockbridge.example/api/grafana/
 
     <ul>
       <li>User: Set this to a user with statistics query permissions. The simplest
-option is to use the existing <code class="highlighter-rouge">system</code> user. ** Password: You may use either
+option is to use the existing <code class="highlighter-rouge">system</code> user.</li>
+      <li>Password: You may use either
 a persistent authorization access token or a password. We recommend using a
 persistent authorization, as this allows for fine-grained permissions control
 and access revocation.</li>
@@ -532,13 +533,13 @@ the <code class="highlighter-rouge">custom_metric</code> key, which must be an a
     <tr>
       <td>reduce_y</td>
       <td>+</td>
-      <td>+, -, \/, *</td>
+      <td>+, -, /, *</td>
       <td>For series with more than one <code class="highlighter-rouge">field</code> value specified, this operator defines how the values are reduced. By default, the values are summed. Any ruby-provided binary arithmatic operator should work.</td>
     </tr>
     <tr>
       <td>reduce_rate</td>
       <td>+</td>
-      <td>+, -, \/, *</td>
+      <td>+, -, /, *</td>
       <td>For series with more than one <code class="highlighter-rouge">rate</code> value specified, this operator defines how the values are reduced. By default, the values are summed. As with <code class="highlighter-rouge">reduce_y</code>, any ruby-provided binary arithmatic operator is fair game.</td>
     </tr>
     <tr>

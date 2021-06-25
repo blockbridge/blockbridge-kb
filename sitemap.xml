@@ -14,7 +14,13 @@
   
   
   <url>
-    <loc>https://kb.blockbridge.com/guide/vmware/index.html</loc>
+    <loc>https://kb.blockbridge.com/guide/squid/index.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://kb.blockbridge.com/guide/kubernetes/index.html</loc>
   </url>
   
   
@@ -32,13 +38,7 @@
   
   
   <url>
-    <loc>https://kb.blockbridge.com/guide/squid/index.html</loc>
-  </url>
-  
-  
-  
-  <url>
-    <loc>https://kb.blockbridge.com/guide/kubernetes/index.html</loc>
+    <loc>https://kb.blockbridge.com/guide/grafana/index.html</loc>
   </url>
   
   
@@ -56,7 +56,7 @@
   
   
   <url>
-    <loc>https://kb.blockbridge.com/guide/grafana/index.html</loc>
+    <loc>https://kb.blockbridge.com/guide/vmware/index.html</loc>
   </url>
   
   
