@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Guide to monitoring a Blockbridge Storage with Grafana">
+<meta name="keywords" content=" grafana statistics visualization">
+<title>Grafana with Blockbridge | Blockbridge Knowledgebase</title>
+<!-- Google Fonts -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto&display=swap">
+
+<link rel="stylesheet" href="/css/syntax.css">
+<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<!-- Latest compiled and minified CSS -->
+
+<link rel="stylesheet" href="/css/bootstrap.min.css">
+<link rel="stylesheet" href="/css/customstyles.css">
+<link rel="stylesheet" href="/css/navbar.css">
+<link rel="stylesheet" href="/css/sidebar.css">
+<!-- most color styles are extracted out to here -->
+<link rel="stylesheet" href="/css/theme-blockbridge.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script src="/js/jquery.navgoco.min.js"></script>
+
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!-- Anchor.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/2.0.0/anchor.min.js"></script>
+<script src="/js/toc.js"></script>
+<script src="/js/customscripts.js"></script>
+
+<link rel="shortcut icon" href="/images/bb-favicon.ico" type="image/png">
+
+<script>var clicky_site_ids = clicky_site_ids || []; clicky_site_ids.push(101238799);</script>
+<script async src="//static.getclicky.com/js"></script>
+
+<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+<![endif]-->
+
+    <script>
+        $(document).ready(function() {
+          // Initialize navgoco with default options
+          $("#mysidebar").navgoco({
+            caretHtml: '',
+            accordion: false,
+            openClass: 'active', // open
+            save: false, // leave false or nav highlighting doesn't work right
+            cookie: {
+              name: 'navgoco',
+              expires: false,
+              path: '/'
+            },
+            slide: {
+              duration: 400,
+              easing: 'swing'
+            }
+          });
+
+          $("#collapseAll").click(function(e) {
+                e.preventDefault();
+                $("#mysidebar").navgoco('toggle', false);
+            });
+
+            $("#expandAll").click(function(e) {
+                e.preventDefault();
+                $("#mysidebar").navgoco('toggle', true);
+            });
+
+        });
+
+    </script>
+    <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
+    <script>
+        $(document).ready(function() {
+            $("#tg-sb-link").click(function() {
+                $("#tg-sb-sidebar").toggle();
+                $("#tg-sb-content").toggleClass('col-md-9');
+                $("#tg-sb-content").toggleClass('col-md-12');
+                $("#tg-sb-icon").toggleClass('fa-toggle-on');
+                $("#tg-sb-icon").toggleClass('fa-toggle-off');
+            });
+        });
+    </script>
+    
+
+</head>
+<body>
+  <!-- Navigation -->
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container-fluid topnavlinks">
+        <div class="navbar-header">
+            <div class="navbar-brand"><svg class="bb-logo" width="100%" xmlns="http://www.w3.org/2000/svg" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 346 40" enable-background="new 0 0 346 40" space="preserve">
+  <path fill="#FFFFFF" d="M85.328613,31.876953L90.526855,0.72998h12.858887c2.340332,0,4.255859,0.209961,5.745117,0.62793 c1.489746,0.418457,2.739746,1.274414,3.750977,2.566895c1.010742,1.293457,1.515625,2.806641,1.515625,4.541016 c0,1.902344-0.600098,3.518066-1.800781,4.848633c-1.201172,1.331543-2.8125,2.225098-4.833496,2.681152 c3.419922,1.20166,5.129883,3.461426,5.129883,6.777832c0,2.416992-0.817383,4.540039-2.451172,6.365234 s-4.350586,2.738281-8.150391,2.738281H85.328613z M95.493652,24.986328h4.652832c1.444336,0,2.440918-0.304688,2.987793-0.913086 c0.547363-0.608398,0.821777-1.269531,0.821777-1.985352c0-0.881836-0.300781-1.59375-0.902344-2.132812 c-0.601074-0.540039-1.495117-0.810547-2.681641-0.810547h-3.90332L95.493652,24.986328z M97.557129,12.618652h3.563477 c2.847656,0,4.271484-0.943359,4.271484-2.82959c0-1.657715-1.127441-2.487305-3.382324-2.487305h-3.564941L97.557129,12.618652z"/>
+  <path fill="#FFFFFF" d="M129.130859,0.72998l-5.196777,31.146973h-8.76123l5.19873-31.146973H129.130859z"/>
+  <path fill="#FFFFFF" d="M140.753906,32.561523c-3.20752,0-5.901367-0.954102-8.08252-2.864258 c-2.181152-1.908203-3.271484-4.513672-3.271484-7.814453c0-3.970703,1.265137-7.23291,3.79541-9.788574 c2.530762-2.555664,5.726562-3.833496,9.587402-3.833496c3.526367,0,6.32666,1,8.401367,3 c2.075195,2.000977,3.112305,4.469238,3.112305,7.405273c0,4.365234-1.333984,7.772461-4.000977,10.22168 C147.627441,31.336914,144.447266,32.561523,140.753906,32.561523z M141.118652,26.948242 c1.595703,0,2.678711-1.186523,3.248535-3.55957c0.570312-2.373047,0.855469-4.357422,0.855469-5.956055 c0-2.433105-0.882324-3.650879-2.64502-3.650879c-1.56543,0-2.648438,1.213867-3.249023,3.640137 c-0.600586,2.426758-0.900879,4.408203-0.900879,5.943359C138.427734,25.754883,139.324707,26.948242,141.118652,26.948242z"/>
+  <path fill="#FFFFFF" d="M171.578125,22.932617l6.953125,1.710938c-1.246094,2.981445-2.880859,5.046875-4.900879,6.195312 c-2.021973,1.147461-4.111816,1.722656-6.27002,1.722656c-3.176758,0-5.771973-1.008789-7.786133-3.026367 c-2.013672-2.017578-3.020508-4.610352-3.020508-7.776367c0-3.608398,1.188965-6.79834,3.567871-9.570312 c2.378906-2.77002,5.528809-4.156738,9.450195-4.156738c2.842285,0,5.251465,0.855957,7.227051,2.567871 c1.975586,1.710938,2.963867,3.912598,2.963867,6.605469l-7.819824,0.913086c0-2.494629-0.843262-3.742188-2.530273-3.742188 c-1.444336,0-2.470215,1.021484-3.078125,3.063477s-0.912109,3.825195-0.912109,5.349609 c0,2.255859,0.851074,3.383789,2.553711,3.383789C169.647949,26.172852,170.848633,25.092773,171.578125,22.932617z"/>
+  <path fill="#FFFFFF" d="M208.717773,8.836426l-4.012695,3.602051c-2.220703,1.990234-3.77832,3.441895-4.675781,4.353516 l5.541992,15.084961h-8.745117l-3.182617-9.854492l-3.962891,3.580078l-1.051758,6.274414h-8.113281l5.198242-31.146973h8.134766 l-2.888672,17.239746l1.666016-1.666016c0.500977-0.533203,0.926758-0.958984,1.275391-1.279297l6.775391-6.187988H208.717773z"/>
+  <path fill="#FFFFFF" d="M221.697266,0.72998l-1.841797,10.977539c1.200195-1.430664,2.269531-2.374023,3.210938-2.830078 c0.941406-0.456543,1.998047-0.685547,3.167969-0.685547c2.216797,0,3.993164,0.787109,5.330078,2.361816 c1.335938,1.574219,2.004883,3.898438,2.004883,6.970703c0,3.773438-1.056641,7.195312-3.168945,10.268555 c-2.112305,3.072266-5.043945,4.608398-8.796875,4.608398c-3.555664,0-6.032227-1.459961-7.429688-4.380859l-2.579102,3.856445 h-3.994141l5.199219-31.146973H221.697266z M217.824219,23.800781c0,0.851562,0.060547,1.4375,0.182617,1.756836 c0.12207,0.318359,0.387695,0.623047,0.796875,0.912109s0.917969,0.432617,1.524414,0.432617 c0.774414,0,1.438477-0.253906,1.992188-0.764648c0.554688-0.508789,1.085938-1.638672,1.59375-3.387695 c0.508789-1.75,0.763672-3.613281,0.763672-5.59082c0-2.296387-0.802734-3.445312-2.40918-3.445312 c-1.545898,0-2.65918,1.172852-3.34082,3.517578L217.824219,23.800781z"/>
+  <path fill="#FFFFFF" d="M238.8125,8.831055h7.674805l-0.919922,5.55957c1.598633-4.163574,4.042969-6.244141,7.333008-6.244141 c0.258789,0,0.616211,0.037598,1.073242,0.114258l-1.025391,8.214844c-0.791016-0.046875-1.31543-0.069336-1.574219-0.069336 c-1.900391,0-3.294922,0.445312-4.18457,1.333984s-1.523438,2.463867-1.901367,4.726562l-1.567383,9.410156h-8.761719 L238.8125,8.831055z"/>
+  <path fill="#FFFFFF" d="M266.025391,8.831055l-3.857422,23.045898h-8.945312l3.857422-23.045898H266.025391z M267.503906,0 l-1.134766,6.777344h-8.946289L258.556641,0H267.503906z"/>
+  <path fill="#FFFFFF" d="M294.807617,0.72998l-5.198242,31.146973h-8.181641l0.564453-3.485352 c-1.884766,2.780273-4.164062,4.169922-6.838867,4.169922c-2.082031,0-3.875-0.821289-5.379883-2.464844 c-1.503906-1.642578-2.256836-3.993164-2.256836-7.049805c0-3.789062,1.041992-7.210449,3.125977-10.269043 c2.083008-3.056641,4.751953-4.585938,8.006836-4.585938c2.783203,0,4.660156,1.096191,5.633789,3.287598l1.787109-10.749512 H294.807617z M283.329102,17.021484c0.044922-0.243164,0.067383-0.50293,0.067383-0.776855 c0-0.65332-0.232422-1.20752-0.695312-1.663574c-0.461914-0.456543-1.019531-0.68457-1.672852-0.68457 c-1.5625,0-2.688477,1.205566-3.378906,3.616211c-0.69043,2.412109-1.035156,4.416016-1.035156,6.012695 c0,2.099609,0.814453,3.149414,2.444336,3.149414c1.614258,0,2.6875-1.048828,3.220703-3.147461L283.329102,17.021484z"/>
+  <path fill="#FFFFFF" d="M320.798828,2.281738l-0.547852,5.75c-0.911133-0.105469-1.595703-0.15918-2.051758-0.15918 c-1.686523,0-2.834961,0.615723-3.442383,1.848633c2.356445,1.414062,3.53418,3.247559,3.53418,5.498535 c0,1.962891-0.766602,3.705078-2.299805,5.224609c-1.533203,1.521484-4.348633,2.282227-8.446289,2.282227 c-0.866211,0-1.579102-0.030273-2.140625-0.09082c-0.819336-0.091797-1.396484-0.136719-1.729492-0.136719 c-0.554688,0-1.010742,0.162109-1.37207,0.487305s-0.541016,0.699219-0.541016,1.121094 c0,0.363281,0.121094,0.65625,0.364258,0.882812s0.524414,0.359375,0.84375,0.395508 c0.319336,0.039062,1.686523,0.094727,4.104492,0.169922c2.644531,0.092773,4.357422,0.1875,5.140625,0.287109 c0.783203,0.098633,1.645508,0.400391,2.587891,0.902344c0.941406,0.50293,1.683594,1.208008,2.222656,2.114258 s0.80957,1.922852,0.80957,3.050781c0,2.163086-0.958008,4.052734-2.873047,5.667969 C313.046875,39.192383,309.421875,40,304.086914,40c-8.071289,0-12.106445-1.856445-12.106445-5.567383 c0-1.931641,1.37207-3.415039,4.117188-4.449219c-1.483398-0.989258-2.224609-2.213867-2.224609-3.673828 c0-2.555664,1.864258-4.373047,5.594727-5.453125c-2.134766-1.202148-3.201172-2.913086-3.201172-5.134766 c0-2.022949,0.880859-3.772461,2.644531-5.248047c1.763672-1.474609,4.727539-2.212891,8.891602-2.212891 c1.277344,0,2.470703,0.11377,3.580078,0.341797c0.65332-4.304688,3.009766-6.457031,7.068359-6.457031 C319.058594,2.145508,319.841797,2.19043,320.798828,2.281738z M300.527344,31.876953 c-0.865234,0.516602-1.296875,1.049805-1.296875,1.59668c0,1.15625,1.896484,1.734375,5.688477,1.734375 c1.865234,0,3.21875-0.118164,4.061523-0.353516c0.84082-0.235352,1.261719-0.696289,1.261719-1.380859 c0-0.456055-0.197266-0.756836-0.59082-0.901367c-0.395508-0.143555-1.251953-0.24707-2.571289-0.306641 C303.256836,32.09668,301.073242,31.967773,300.527344,31.876953z M307.154297,18.574219 c0.96875,0,1.729492-0.342773,2.282227-1.027344s0.828125-1.459961,0.828125-2.327148 c0-1.688477-0.832031-2.533203-2.49707-2.533203c-1.029297,0-1.813477,0.351074-2.350586,1.050781 s-0.805664,1.52832-0.805664,2.486328c0,0.745117,0.242188,1.323242,0.726562,1.734375S306.427734,18.574219,307.154297,18.574219z"/>
+  <path fill="#FFFFFF" d="M345.650391,22.042969h-15.868164c-0.076172,0.625977-0.114258,1.092773-0.114258,1.397461 c0,1.008789,0.323242,1.796875,0.96875,2.362305c0.645508,0.566406,1.462891,0.848633,2.451172,0.848633 c1.869141,0,3.191406-0.972656,3.966797-2.920898l7.751953,1.255859c-1.00293,2.256836-2.625977,4.084961-4.868164,5.480469 c-2.241211,1.396484-4.730469,2.094727-7.466797,2.094727c-3.43457,0-6.220703-0.976562-8.355469-2.931641 c-2.135742-1.955078-3.204102-4.621094-3.204102-7.999023c0-3.665039,1.262695-6.810547,3.786133-9.434082 c2.522461-2.624512,5.821289-3.936035,9.894531-3.936035c3.450195,0,6.197266,1.01709,8.242188,3.052246 c2.043945,2.035156,3.06543,4.737793,3.06543,8.109863C345.900391,20.182617,345.816406,21.055664,345.650391,22.042969z M337.350586,17.615234c0.076172-0.470703,0.115234-0.835938,0.115234-1.094727c0-0.821777-0.255859-1.536133-0.763672-2.144531 c-0.510742-0.608398-1.220703-0.912598-2.132812-0.912598c-0.972656,0-1.853516,0.368164-2.644531,1.106445 s-1.276367,1.753418-1.458984,3.04541H337.350586z"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" fill="#4F8CCA" d="M34.401367,0.722168h22.350098c0,0,1.194336,0,1.15625,1.239258 L53.055664,30.75c-0.20752,1.061523-1.129395,1.125977-1.129395,1.125977h-22.41748c0,0-1.026367,0-0.961914-1.219727 l4.873047-28.866211C33.411133,0.790039,34.401367,0.722168,34.401367,0.722168z"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" fill="#6AA9DC" d="M62.686035,0.722168h22.350098c0,0,1.194336,0,1.15625,1.239258 L81.34082,30.75c-0.20752,1.061523-1.129883,1.125977-1.129883,1.125977H57.793945c0,0-1.026855,0-0.961914-1.219727 l4.873047-28.866211C61.696289,0.790039,62.686035,0.722168,62.686035,0.722168z"/>
+  <path fill-rule="evenodd" clip-rule="evenodd" fill="#3B6BA0" d="M5.856934,0.722168h22.350098c0,0,1.194336,0,1.15625,1.239258 L24.511719,30.75c-0.20752,1.061523-1.129883,1.125977-1.129883,1.125977H0.964844c0,0-1.026855,0-0.961914-1.219727 L4.875977,1.790039C4.867188,0.790039,5.856934,0.722168,5.856934,0.722168z"/>
+</svg></div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+
+
+  <!-- Page Content -->
+  <div class="container-fluid">
+    <div id="main">
+      <!-- Content Row -->
+      <div class="row">
+
+        <div class="col-body">
+          <!-- row-oriented flex container -->
+          
+
+          <!-- Sidebar Column -->
+          <nav class="col-nav hidden-sm hidden-xs" id="tg-sb-sidebar">
+            
+
+<ul id="sidebar" class="sidebar">
+  
+  
+      <!-- if you aren't using the accordion, uncomment this block:
+         <p class="external">
+             <a href="#" id="collapseAll">Collapse All</a> | <a href="#" id="expandAll">Expand All</a>
+         </p>
+         -->
+</ul>
+
+<!-- this highlights the active parent class in the navgoco sidebar. this is critical so that the parent expands when you're viewing a page. This must appear below the sidebar code above. Otherwise, if placed inside customscripts.js, the script runs before the sidebar code runs and the class never gets inserted.-->
+<script>$("li.active").parents('li').toggleClass("active");</script>
+
+          </nav>
+          
+
+          <!-- Content Column -->
+          <main class="col-content">
+            <div class="post-header">
+   <h1 class="post-title-main">Grafana with Blockbridge</h1>
+</div>
+
+
+
+<div class="post-content">
+
+   
+
+    
+
+
+    
+
+   <p>This guide covers using Grafana to visualize realtime and historical Blockbridge
+statistics. After configuring Grafana and your datasource, the easiest way to
+get started is to use the official dashboard – this is described in the
+Blockbridge Dashboard section. For more advanced usage and customization, take a
+look at the following sections.</p>
+
+<hr />
+
+<h1 id="requirements">Requirements</h1>
+
+<p>Blockbridge integrates with Grafana using the <a href="https://grafana.com/grafana/plugins/simpod-json-datasource/">JSON API Grafana
+Datasource</a>.
+Install the datasource on your Grafana server using the <code class="highlighter-rouge">grafana-cli</code> command:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ grafana-cli plugins install simpod-json-datasource
+Iinstalling simpod-json-datasource @ 0.2.5
+from: https://grafana.com/api/plugins/simpod-json-datasource/versions/0.2.5/download
+into: /usr/local/var/lib/grafana/plugins
+
+✔ Installed simpod-json-datasource successfully
+</code></pre></div></div>
+
+<p>After installing the datasource, restart the grafana-server service. For <a href="https://grafana.com/docs/grafana/latest/installation/rpm/">CentOS 7</a>, use systemctl:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo systemctl start grafana-server
+</code></pre></div></div>
+
+<p>If you’re running Grafana in macOS with <a href="https://brew.sh/">Homebrew</a>, restart
+the brew service:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew services restart grafana
+</code></pre></div></div>
+
+<p>If you need help with other operating systems, contact <a href="mailto:support@blockbridge.com">support@blockbridge.com</a>.</p>
+
+<h2 id="minimum-supported-versions">Minimum supported versions</h2>
+
+<ul>
+  <li>Blockbridge: 5.1.3</li>
+  <li>Grafana: 7.5.0</li>
+  <li>simpod-json-datasource: 0.2.5</li>
+</ul>
+
+<h1 id="datasource-configuration">Datasource Configuration</h1>
+
+<p>Configure a datasource for each Blockbridge backend you’d like to monitor. Go to
+the Grafana “Data Sources” configuration section. Click <em>Add data source</em>. Enter
+“JSON” into the search box and select the newly installed datasource.</p>
+
+<figure style="text-align:center;"><img class="docimage" align="middle" src="./images/add-data-source.png" alt="An image showing the datasource description 'Load JSON data over your arbitrary HTTP backend'" style="max-width: 90%" /></figure>
+
+<p>Configure the data source using the Blockbridge management API details:</p>
+
+<ul>
+  <li>HTTP
+    <ul>
+      <li>
+        <p>URL: Enter the HTTPS url for your blockbridge management host, appending
+“/api/grafana”. If your management node is a cluster, be sure to use a VIP for
+API access. For example, if your management host is <code class="highlighter-rouge">blockbridge.example</code>,
+specify <code class="highlighter-rouge">https://blockbridge.example/api/grafana/</code> for the datasource URL.</p>
+      </li>
+      <li>
+        <p>Access: Server. Currently, only <em>Server</em> access is supported.</p>
+      </li>
+    </ul>
+  </li>
+  <li>Auth
+    <ul>
+      <li>Basic Auth: This must be enabled.</li>
+      <li>Skip TLS Verify: Enable this if your management host’s HTTPS certificate is self-signed.</li>
+      <li>Leave the remaining Auth options disabled.</li>
+    </ul>
+  </li>
+  <li>
+    <p>Basic Auth Details</p>
+
+    <ul>
+      <li>User: Set this to a user with statistics query permissions. The simplest
+option is to use the existing <code class="highlighter-rouge">system</code> user. ** Password: You may use either
+a persistent authorization access token or a password. We recommend using a
+persistent authorization, as this allows for fine-grained permissions control
+and access revocation.</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="save-and-test-the-data-sources">Save and Test the Data Sources</h2>
+
+<p>Once you’ve entered the datasource configuration, click <em>Save &amp; Test</em>. You
+should see a <em>Data source is working</em> message displayed; If you don’t, ensure
+your blockbridge management node is accessible from Grafana and try again. If
+you’re still having trouble, contact <a href="mailto:support@blockbridge.com">support@blockbridge.com</a>.</p>
+
+<h1 id="blockbridge-dashboard">Blockbridge Dashboard</h1>
+
+<p>(How do we supply this to users?)</p>
+
+<h1 id="query-parameters">Query Parameters</h1>
+
+<p>There are a variety of parameters available to adjust query execution.
+Parameters may be supplied in two ways:</p>
+
+<ol>
+  <li>as variables associated with the dashboard.</li>
+  <li>as data associated with a particular panel’s query specification.</li>
+</ol>
+
+<p>Parameters specified in a query body take precedence over dashboard-level
+variables. A reasonable default is selected by the backend query processor if
+neither are specified.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>parameter</th>
+      <th>default value</th>
+      <th>valid values</th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>dataset</em></td>
+      <td>historical</td>
+      <td>historical, realtime</td>
+      <td>Specify the set of series to return for a given metric. By default, long-term historical data is returned. To select the high-frequency realtime data series, specify <code class="highlighter-rouge">realtime</code>. This is effectively a series name prefix selector; for more control over what series to return, use the <code class="highlighter-rouge">series_filter</code> parameter.</td>
+    </tr>
+    <tr>
+      <td><em>series_filter</em></td>
+      <td><em>none</em></td>
+      <td>string or array of strings</td>
+      <td>Interpreted as a regular expression, this parameter filters the set of series which are returned. An array of strings turns into a regexp union (i.e., an <em>or</em> match.)</td>
+    </tr>
+    <tr>
+      <td><em>func</em></td>
+      <td><em>series dependent</em></td>
+      <td>min, max, avg</td>
+      <td>Specify the function used for calculating a value over a given range. For historical datasets, each stx block includes a [min, max, average] tuple, as a gauge. Each series has a default <em>func</em> value appropriate for most purposes. For realtime data, the only supported <em>func</em> value is <em>avg</em>.</td>
+    </tr>
+    <tr>
+      <td><em>consolidate_by</em></td>
+      <td><em>func</em></td>
+      <td>min, max, avg, disabled</td>
+      <td>Specify the point consolidation function used when the number of available data points exceeds a query’s <em>max data points</em>. By default, point consolidation is performed using the currently selected <em>func</em> value. The special value <em>disabled</em> may be used to completely disable point consolidation.</td>
+    </tr>
+    <tr>
+      <td><em>legend_format</em></td>
+      <td><em>automatic</em></td>
+      <td>templated string</td>
+      <td>By default, the query processor selects a legend that makes sense for the series data. (In reality, the default is currently always “%{title}”, but that may change in the future.) For a list of variables available in format string interpolation, see the Format String Variables section.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="format-string-variables">Format String Variables</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>variable</th>
+      <th>example</th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em>title</em></td>
+      <td>Read IOPS (Metered)</td>
+      <td>Series title formatted for human consumption. This may change from one software release to the next.</td>
+    </tr>
+    <tr>
+      <td><em>name</em></td>
+      <td>realtime_metered_read_iops</td>
+      <td>Series name. This is the series identifier used in selection filters, and won’t change from one software release to the next.</td>
+    </tr>
+    <tr>
+      <td><em>unit</em></td>
+      <td>iops</td>
+      <td>Series unit of measure.</td>
+    </tr>
+    <tr>
+      <td><em>block</em></td>
+      <td>sys_ds_history</td>
+      <td>Backend stats block name used to source series data.</td>
+    </tr>
+    <tr>
+      <td><em>func</em></td>
+      <td>avg</td>
+      <td>Series data function. (see the description in Query Parameters for more detail.)</td>
+    </tr>
+    <tr>
+      <td><em>eval_interval</em></td>
+      <td>10m</td>
+      <td>Series data evaluation interval. This is automatically determined based on the source scrape interval, the series-specific evaluation interval (if any), and the query <code class="highlighter-rouge">intervalMs</code> parameter.</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>In addition, any series configuration parameters and backend timeseries tags may
+be used.</p>
+
+<p>Available tags as of Blockbridge 5.1.3 are: <code class="highlighter-rouge">obj_id</code> (serial number of the
+object being inspected), <code class="highlighter-rouge">obj_label</code> (user-specificed object label, if any. If
+the object has no label, the serial number is returned for this tag as well.)</p>
+
+<p>Formatting a legend using additional series configuration values may or may not
+be useful – perhaps when specifying a custom metric via the query payload json.</p>
+
+<h1 id="variable-queries">Variable Queries</h1>
+
+<p>Grafana variables allow for easy switching between several different (or
+multiple) options. For Blockbridge Data Sources, several variable queries are
+defined. This allows a single generic dashboard to be used with multiple
+different backends.</p>
+
+<p>Some queries return simple selections that may only change on backend software
+update. Others retrieve data based on the current backend configuration.</p>
+
+<h2 id="object-labels">Object Labels</h2>
+
+<p>To query object labels, use the following syntax:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>object_labels(&lt;type&gt;)
+</code></pre></div></div>
+
+<p>An object-label query retrieves the current set of labels and IDs for a
+particular backend object type. Currently, the only supported object type is
+<code class="highlighter-rouge">sys_ds</code> (a Datastore).</p>
+
+<p>Use <code class="highlighter-rouge">object_labels(sys_ds)</code> to query for Datastore object labels.</p>
+
+<p>Set the Query Refresh option to <em>On Dashboard Load</em> to pick up backend
+configuration changes.</p>
+
+<p>Enable the Selection Multi-value option to allow selection of more than one
+Datastore. If multiple datastores are selected, their statistical data is
+displayed on the same chart. Enable the Selection “Include All option” to allow
+the dashboard user to easily select <em>all</em> datastores.</p>
+
+<p>The backend query processor automatically consumes variables which have properly
+formatted Blockbridge serial numbers as values. When grafana support is expanded
+to other types of objects, this may need to be revisited. As currently
+implemented, every query will be executed for every submitted serial number,
+which could get out of hand pretty quickly.</p>
+
+<h2 id="datasets">Datasets</h2>
+
+<p>To query for dataset options, use the following syntax:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>datasets
+</code></pre></div></div>
+
+<p>The default metrics define series grouped into two distinct datasets:</p>
+
+<ol>
+  <li><em>historical</em> – lower-resolution, but stored for longer.</li>
+  <li><em>realtime</em> – higher-resolution, stored for less time.</li>
+</ol>
+
+<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> The query handler backend expects this variable to
+be named ‘dataset’ – a variable with any other name will not affect query
+processing.</div>
+
+<h1 id="metrics">Metrics</h1>
+
+<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> Grafana support is currently limited to Datastore statistics.</div>
+
+<p>Statistics data is divided up into a collection of Metrics. Each metric has one
+or more series defined. When a metric is queried, the metric’s set of series are
+returned. Each metric has a collection of historical and realtime series. By
+default, the historical series are returned.</p>
+
+<p>There is one additional metric which is not exposed by default – <em>Debug</em>.
+Entering the string “Debug” into the “Metric:” query will a set of internal
+debug series. As of 5.1.3, there are two series: <code class="highlighter-rouge">realtime_cfg_obj_chg</code> and
+<code class="highlighter-rouge">realtime_rpc_recv</code>. There is no corresponding <code class="highlighter-rouge">historical</code> data, so if you’re
+not seeing anything, you’re probably missing a dataset parameter.</p>
+
+<h1 id="custom-metrics">Custom Metrics</h1>
+
+<p>A completely custom metric specification may be supplied in the query Body using
+the <code class="highlighter-rouge">custom_metric</code> key, which must be an array of series specifications.</p>
+
+<p>Each series specification must be a json object with one or more keys:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>default</th>
+      <th>valid values</th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>type</td>
+      <td>Timeseries</td>
+      <td>Timeseries, MeterTimeseries, PerSecSeries, StorageSeries, FreespaceSeries</td>
+      <td>This maps directly to a Timeseries class in the backend query processor. The biggest thing to note is that <em>MeterTimeseries</em> must be used when querying and processing <code class="highlighter-rouge">sys_ds_meter</code> data, as it accounts for the difference in stats block data format. Other classes may be used for counter based data, or if raw stats are being returned.</td>
+    </tr>
+    <tr>
+      <td>title</td>
+      <td><em>none</em></td>
+      <td>any string value</td>
+      <td>(required) Human-readable series title</td>
+    </tr>
+    <tr>
+      <td>name</td>
+      <td><em>none</em></td>
+      <td>any string value</td>
+      <td>(required) Internal series identifier string</td>
+    </tr>
+    <tr>
+      <td>block</td>
+      <td><em>none</em></td>
+      <td>stats block name</td>
+      <td>(required) Backend stats block name</td>
+    </tr>
+    <tr>
+      <td>field</td>
+      <td><em>none</em></td>
+      <td>string or object</td>
+      <td>(required) Stats var name or raw specification. Pre-existing vars may be specfied by name; to query ad-hoc stats vars (e.g., from the <code class="highlighter-rouge">system</code> block), specify the var spec using a json object. (see the Custom stats vars) section below for what keys are required.) More than one field may be specified, as an array of strings or raw specification objects.</td>
+    </tr>
+    <tr>
+      <td>scale</td>
+      <td><em>none</em></td>
+      <td>string, object or number</td>
+      <td>(optional) Scaling value. May be a field specification or a constant scaling factor. Specifying a scaling field is identical to the <code class="highlighter-rouge">field</code> specification, except an array is not permitted.</td>
+    </tr>
+    <tr>
+      <td>rate</td>
+      <td><em>none</em></td>
+      <td>string, object or number</td>
+      <td>(optional) Specification of the stat rate of change. This may be a constant scaling factor (number), a single field specification or an array of field specifications.</td>
+    </tr>
+    <tr>
+      <td>unit</td>
+      <td><em>none</em></td>
+      <td><em>grafana unit spec string</em></td>
+      <td>(required) Unit of measure to return with the timeseries data.</td>
+    </tr>
+    <tr>
+      <td>func</td>
+      <td>avg</td>
+      <td>min, max, avg</td>
+      <td>(optional) Raw data processing function. See the earlier discussion of <code class="highlighter-rouge">func</code> for more details.</td>
+    </tr>
+    <tr>
+      <td>consolidate_by</td>
+      <td><em>func value</em></td>
+      <td>min, max, avg, disabled</td>
+      <td>(optional) Point consolidation function. See the earlier discussion of <code class="highlighter-rouge">consolidate_by</code> for more details.</td>
+    </tr>
+    <tr>
+      <td>reduce_y</td>
+      <td>+</td>
+      <td>+, -, \/, *</td>
+      <td>For series with more than one <code class="highlighter-rouge">field</code> value specified, this operator defines how the values are reduced. By default, the values are summed. Any ruby-provided binary arithmatic operator should work.</td>
+    </tr>
+    <tr>
+      <td>reduce_rate</td>
+      <td>+</td>
+      <td>+, -, \/, *</td>
+      <td>For series with more than one <code class="highlighter-rouge">rate</code> value specified, this operator defines how the values are reduced. By default, the values are summed. As with <code class="highlighter-rouge">reduce_y</code>, any ruby-provided binary arithmatic operator is fair game.</td>
+    </tr>
+    <tr>
+      <td>max_period</td>
+      <td><em>none</em></td>
+      <td>integer milliseconds</td>
+      <td>If specified, puts an upper-bound on the <em>backend</em> stats query period. This can be used to ensure all points are returned for non-counter based stx blocks.</td>
+    </tr>
+    <tr>
+      <td>scrape_interval</td>
+      <td>timeseries-class-dependent</td>
+      <td>integer milliseconds</td>
+      <td>Specify the backend scrape interval. For the <code class="highlighter-rouge">Timeseries</code> class, this defaults to 10s. For <code class="highlighter-rouge">MeterTimeseries</code> it defaults to 1hr. This influences the derived value of <code class="highlighter-rouge">eval_interval</code>, and likely doesn’t need to be specified, unless you’re doing something particularly “high end”.</td>
+    </tr>
+    <tr>
+      <td>legend_format</td>
+      <td>”%{title}”</td>
+      <td>format string</td>
+      <td>Specify the series legend format string. See the earlier Format String Variables section for more details.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="custom-stats-vars">Custom stats vars</h2>
+
+<p>Custom vars must specify the following pieces of information:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>key</th>
+      <th>value/type</th>
+      <th>description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>oid_type</td>
+      <td><em>oid magic string</em></td>
+      <td>Object type this var applies to. e.g., <code class="highlighter-rouge">sys_ds</code>.</td>
+    </tr>
+    <tr>
+      <td>block</td>
+      <td><em>stx block name</em></td>
+      <td>Backend stx block name. e.g., <code class="highlighter-rouge">sys_ds_history</code>.</td>
+    </tr>
+    <tr>
+      <td>var</td>
+      <td><em>string</em></td>
+      <td>Name of variable in stat block <code class="highlighter-rouge">data</code> section. e.g., <code class="highlighter-rouge">reserve_size</code>.</td>
+    </tr>
+    <tr>
+      <td>counter</td>
+      <td><em>boolean</em></td>
+      <td>Is this value a counter? If yes, specify true. If it’s a gague (or you want to read/return raw counter values) specify false.</td>
+    </tr>
+    <tr>
+      <td>units</td>
+      <td><em>string</em></td>
+      <td>Variable unit of measure. [Currently unused, but must be specified]</td>
+    </tr>
+    <tr>
+      <td>desc</td>
+      <td><em>string</em></td>
+      <td>Human readable description of variable.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="alert alert-info" role="alert"><i class="fa fa-info-circle"></i> <b>Note:</b> All custom variable keys are required.</div>
+
+
+
+    <div class="tags">
+        
+    </div>
+
+</div>
+
+<hr class="shaded"/>
+
+<footer>
+            <div class="row">
+                <div class="col-lg-12 footer">
+               &copy;2021 Blockbridge Networks LLC. All rights reserved. <br />
+ Site last generated: Jun 25, 2021
+                </div>
+            </div>
+</footer>
+
+
+          </main>
+
+          <!-- /.col-body -->
+        </div>
+
+        <!-- /.row -->
+      </div>
+      <!-- /#main -->
+    </div>
+  </div>
+
+</body>
+
+</html>

@@ -4,9 +4,9 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="">
-<meta name="keywords" content=" ">
-<title>Getting help with Blockbridge | Blockbridge Knowledgebase</title>
+<meta name="description" content="What's changed in Blockbridge 4.4.">
+<meta name="keywords" content=" release 4.4">
+<title>Version 5.4 Release Notes | Blockbridge Knowledgebase</title>
 <!-- Google Fonts -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto&display=swap">
@@ -136,10 +136,196 @@
           <!-- row-oriented flex container -->
           
 
+          <!-- Sidebar Column -->
+          <nav class="col-nav hidden-sm hidden-xs" id="tg-sb-sidebar">
+            
+
+<ul id="sidebar" class="sidebar">
+  
+  
+  
+  
+  <li>
+      <a href="#blockbridge-4-4-release-notes">RELEASE 4.4</a>
+      <ul>
+          
+      </ul>
+   </li>
+     
+      
+  
+  <li>
+      <a href="#dataplane">DATAPLANE</a>
+      <ul>
+          
+          
+          
+          <li><a href="#dataplane">Write Allocation Performance</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#managament">Metadata Encryption Offload</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#dataplane">Compound Read Operations</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#dataplane">Space Check Race Condition</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#dataplane">Third Party Copy Sense Code</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#dataplane">Startup and Failover Time Improvements</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#dataplane">iSCSI NOP Probing</a></li>
+          
+          
+          
+          
+      </ul>
+   </li>
+     
+      
+  
+  <li>
+      <a href="#web-ui">WEB UI</a>
+      <ul>
+          
+          
+          
+          <li><a href="#web-ui">Disk Snapshots Panel</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#web-ui">Account Report Improvements</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#web-ui">Performance and Usage Visualizations</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#web-ui">Tweaks and Adjustments</a></li>
+          
+          
+          
+          
+      </ul>
+   </li>
+     
+      
+  
+  <li>
+      <a href="#compression-metadata">CLI</a>
+      <ul>
+          
+          
+          
+          <li><a href="#cli">Improved IPsec Host Attach</a></li>
+          
+          
+          
+          
+      </ul>
+   </li>
+     
+      
+  
+  <li>
+      <a href="#platform">PLATFORM</a>
+      <ul>
+          
+          
+          
+          <li><a href="#platform">Custom Slot Names</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#platform">SMART Gigabyte Values</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#platform">Reduced Diagnostic Logging</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#platform">Manpages for System Probes</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#platform">Supermicro Chassis Definitions</a></li>
+          
+          
+          
+          
+      </ul>
+   </li>
+     
+      
+      
+      <!-- if you aren't using the accordion, uncomment this block:
+         <p class="external">
+             <a href="#" id="collapseAll">Collapse All</a> | <a href="#" id="expandAll">Expand All</a>
+         </p>
+         -->
+</ul>
+
+<!-- this highlights the active parent class in the navgoco sidebar. this is critical so that the parent expands when you're viewing a page. This must appear below the sidebar code above. Otherwise, if placed inside customscripts.js, the script runs before the sidebar code runs and the class never gets inserted.-->
+<script>$("li.active").parents('li').toggleClass("active");</script>
+
+          </nav>
+          
+
           <!-- Content Column -->
           <main class="col-content">
             <div class="post-header">
-   <h1 class="post-title-main">Getting help with Blockbridge</h1>
+   <h1 class="post-title-main">Version 5.4 Release Notes</h1>
 </div>
 
 
@@ -147,38 +333,91 @@
 <div class="post-content">
 
    
-    <div class="summary">Contact Blockbridge Support for help.</div>
-   
-
-    
-    
-<!-- this handles the automatic toc. use ## for subheads to auto-generate the on-page minitoc. if you use html tags, you must supply an ID for the heading element in order for it to appear in the minitoc. -->
-<script>
-$( document ).ready(function() {
-  // Handler for .ready() called.
-
-$('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3,h4' });
-
-/* this offset helps account for the space taken up by the floating toolbar. */
-$('#toc').on('click', 'a', function() {
-  var target = $(this.getAttribute('href'))
-    , scroll_target = target.offset().top
-
-  $(window).scrollTop(scroll_target - 10);
-  return false
-})
-  
-});
-</script>
-
-<div id="toc"></div>
 
     
 
 
     
 
-   <div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> If you have any questions or run into problems please contact <a href="mailto:support@blockbridge.com">Blockbridge Support</a></div>
+   <p>Blockbridge Version 4.4 is a maintenance release focused on stability
+improvements and performance gains.</p>
+
+<hr />
+
+<h2 id="dataplane">Dataplane</h2>
+
+<ul>
+  <li>
+    <p>We <strong>significantly improved the performance of writes that allocate storage</strong>
+with a blend of database optimizations and system tunings.  Though most
+benchmarks focus on already “thickened” storage, real world applications
+frequently allocate storage on demand.</p>
+  </li>
+  <li>
+    <p><strong>Metadata Encryption Offload</strong> <em>(backported from 5.0)</em>: The
+dataplane provides at-rest encryption for all metadata.  Previously,
+encryption processing happened in the context of processing user I/O.  The
+dataplane now offloads metadata encryption to other CPU cores, improving
+concurrency during write operations significantly.</p>
+  </li>
+  <li>
+    <p><strong>Compound Read Operations for Snapshots and Clones</strong>: This feature
+extends the dataplane’s optimized compound operation handling to reads of
+cloned disks and reads on disks with complex snapshot histories.</p>
+  </li>
+  <li>
+    <p><strong>Addressed a rare race condition</strong> where an “out of space” error could be
+returned to clients prematurely when the system was operating with less than
+1 GiB remaining capacity.</p>
+  </li>
+  <li>
+    <p>Fixed incorrect SCSI sense code when THIRD PARTY COPY target was remote.</p>
+  </li>
+  <li>
+    <p>Startup and failover times improved on SATA and NVMe systems with many
+drives.</p>
+  </li>
+  <li>
+    <p>Hyper-V support: issue more frequent iSCSI NOP probes.</p>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="web-ui">Web UI</h2>
+
+<ul>
+  <li><strong>Disk snapshots panel:</strong> improve handling for updates while in edit mode.</li>
+  <li><strong>Improvements to Account Reports:</strong> display VSS labels and add a datastore
+column.</li>
+  <li><strong>Performance and Usage Visualizations:</strong> <em>(backported from 5.0)</em> From the
+administrator’s view of the Infrastructure, select the heading of any of the
+elements under Global Usage (e.g., Read Bandwidth, IOPS, Snapshots, etc.)  to
+toggle a per-datastore breakdown that updates in real-time.</li>
+  <li><strong>Numerous tweaks and adjustments</strong> throughout the UI.</li>
+</ul>
+
+<hr />
+
+<h2 id="cli">CLI</h2>
+
+<ul>
+  <li><strong>Improved error handling for IPsec “host attach”</strong> including
+controlplane-side errors and checking for the StrongSwan duplicheck plugin.</li>
+</ul>
+
+<hr />
+
+<h2 id="platform">Platform</h2>
+
+<ul>
+  <li>Support for custom slot names in enclosure definitions.</li>
+  <li>Fixed conversion to bytes of certain SMART values represented in gigabytes.</li>
+  <li>Reduced volume of diagnostic logging for Blockbridge components.</li>
+  <li>Added manpages for CPU, Memory, Filesystem, and Heal Volume system probe types.</li>
+  <li>Additional chassis definitions for Supermicro platforms.</li>
+</ul>
+
 
 
     <div class="tags">

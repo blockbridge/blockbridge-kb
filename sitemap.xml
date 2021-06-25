@@ -20,6 +20,12 @@
   
   
   <url>
+    <loc>https://kb.blockbridge.com/guide/openstack/index.html</loc>
+  </url>
+  
+  
+  
+  <url>
     <loc>https://kb.blockbridge.com/guide/proxmox/index.html</loc>
   </url>
   
@@ -32,7 +38,7 @@
   
   
   <url>
-    <loc>https://kb.blockbridge.com/guide/openstack/index.html</loc>
+    <loc>https://kb.blockbridge.com/guide/kubernetes/index.html</loc>
   </url>
   
   
@@ -50,7 +56,19 @@
   
   
   <url>
-    <loc>https://kb.blockbridge.com/guide/kubernetes/index.html</loc>
+    <loc>https://kb.blockbridge.com/guide/grafana/index.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://kb.blockbridge.com/release/5.0/index.html</loc>
+  </url>
+  
+  
+  
+  <url>
+    <loc>https://kb.blockbridge.com/release/5.1/index.html</loc>
   </url>
   
   
@@ -62,7 +80,7 @@
   
   
   <url>
-    <loc>https://kb.blockbridge.com/release/5.0/index.html</loc>
+    <loc>https://kb.blockbridge.com/release/4.4/index.html</loc>
   </url>
   
   

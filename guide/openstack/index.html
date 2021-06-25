@@ -356,7 +356,7 @@ information <strong>ⓘ</strong> links next to items where they appear.</p>
 <h2 id="driver-installation">Driver Installation</h2>
 
 <p>Install the Blockbridge driver on each OpenStack node that will access
-Blockbridge volumes.</p>
+Blockbridge volumes.  <a href="#cinder-driver"><strong>ⓘ</strong></a></p>
 
 <p><strong>Add the YUM repository</strong></p>
 
@@ -386,25 +386,25 @@ Is this ok [y/N]: y
 
 <ol>
   <li>
-    <p><strong>Authenticate as the <code class="highlighter-rouge">system</code> user:</strong></p>
+    <p><strong>Authenticate as the <code class="highlighter-rouge">system</code> user:</strong> <a href="#blockbridge-login"><strong>ⓘ</strong></a></p>
 
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ bb -kH localhost auth login
 </code></pre></div>    </div>
   </li>
   <li>
-    <p><strong>Create the <code class="highlighter-rouge">bbcinder</code> tenant account:</strong></p>
+    <p><strong>Create the <code class="highlighter-rouge">bbcinder</code> tenant account:</strong> <a href="#account-creation"><strong>ⓘ</strong></a></p>
 
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ bb -kH localhost account create --name bbcinder
 </code></pre></div>    </div>
   </li>
   <li>
-    <p><strong>Log in as the new <code class="highlighter-rouge">bbcinder</code> tenant, using the “substitute user” switch:</strong></p>
+    <p><strong>Log in as the new <code class="highlighter-rouge">bbcinder</code> tenant, using the “substitute user” switch:</strong> <a href="#multi-cloud-tenant-token"><strong>ⓘ</strong></a></p>
 
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ bb -kH localhost auth login --su bbcinder
 </code></pre></div>    </div>
   </li>
   <li>
-    <p><strong>Create a persistent authorization token for the cinder volume driver API access:</strong></p>
+    <p><strong>Create a persistent authorization token for the cinder volume driver API access:</strong> <a href="#multi-cloud-tenant-token"><strong>ⓘ</strong></a></p>
 
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ bb -kH localhost authorization create --notes 'cinder volume driver api access'
 </code></pre></div>    </div>
@@ -418,7 +418,7 @@ Is this ok [y/N]: y
 <ol>
   <li>
     <p><strong>On your OpenStack Cinder node, configure a new backend by adding a named
-configuration group to the <code class="highlighter-rouge">/etc/cinder/cinder.conf</code> file.</strong></p>
+configuration group to the <code class="highlighter-rouge">/etc/cinder/cinder.conf</code> file.</strong> <a href="#cinder-backend"><strong>ⓘ</strong></a></p>
 
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> [bbcinder]
  volume_backend_name = bbcinder
@@ -430,26 +430,26 @@ configuration group to the <code class="highlighter-rouge">/etc/cinder/cinder.co
 </code></pre></div>    </div>
   </li>
   <li>
-    <p><strong>Add <code class="highlighter-rouge">bbcinder</code> to the <code class="highlighter-rouge">enabled_backends</code> list in the <code class="highlighter-rouge">[DEFAULT]</code> group:</strong></p>
+    <p><strong>Add <code class="highlighter-rouge">bbcinder</code> to the <code class="highlighter-rouge">enabled_backends</code> list in the <code class="highlighter-rouge">[DEFAULT]</code> group:</strong> <a href="#cinder-backend"><strong>ⓘ</strong></a></p>
 
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> [DEFAULT]
  enabled_backends=lvm,bbcinder
 </code></pre></div>    </div>
   </li>
   <li>
-    <p><strong>Restart the cinder-volume service.</strong></p>
+    <p><strong>Restart the cinder-volume service.</strong> <a href="#cinder-backend"><strong>ⓘ</strong></a></p>
 
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> systemctl restart openstack-cinder-volume
 </code></pre></div>    </div>
   </li>
   <li>
-    <p><strong>Create the blockbridge volume type:</strong></p>
+    <p><strong>Create the blockbridge volume type:</strong> <a href="#volume-type"><strong>ⓘ</strong></a></p>
 
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> openstack --os-username admin --os-tenant-name admin volume type create blockbridge
 </code></pre></div>    </div>
   </li>
   <li>
-    <p><strong>Map the volume type to its corresponding <code class="highlighter-rouge">volume_backend_name</code>:</strong></p>
+    <p><strong>Map the volume type to its corresponding <code class="highlighter-rouge">volume_backend_name</code>:</strong> <a href="#volume-type"><strong>ⓘ</strong></a></p>
 
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> openstack --os-username admin --os-tenant-name admin volume type set blockbridge \
    --property volume_backend_name=bbcinder
@@ -876,7 +876,7 @@ demand.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 Blockbridge Networks LLC. All rights reserved. <br />
- Site last generated: Apr 12, 2021
+ Site last generated: Jun 25, 2021
                 </div>
             </div>
 </footer>

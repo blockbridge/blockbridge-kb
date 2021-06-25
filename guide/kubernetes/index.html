@@ -393,6 +393,18 @@ enabled</a>
 (default to true since version 1.10).</li>
   <li>If you use Docker, the Docker daemon of the cluster nodes <a href="https://kubernetes.io/docs/concepts/storage/volumes/#configuration">must allow shared
 mounts</a>.</li>
+  <li>
+    <p>Ensure the host running the kubelet has iSCSI client support installed and iscsid started on the host/node.</p>
+
+    <p>For CentOS/RHEL, install the iscsi-initiator-utils package:</p>
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>yum install iscsi-initiator-utils
+systemctl systemctl enable --now iscsid
+</code></pre></div>    </div>
+    <p>For Ubuntu, install the open-iscsi package:</p>
+    <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>apt install open-iscsi
+systemctl systemctl enable --now iscsid
+</code></pre></div>    </div>
+  </li>
 </ul>
 
 <p>See <a href="https://kubernetes-csi.github.io/docs/deploying.html">CSI Deploying</a> for
@@ -422,19 +434,19 @@ and an authorization token.</p>
 
 <ol>
   <li>
-    <p><strong>Set <code class="highlighter-rouge">BLOCKBRIDGE_API_HOST</code> to point to your Blockbridge API endpoint.</strong></p>
+    <p><strong>Set <code class="highlighter-rouge">BLOCKBRIDGE_API_HOST</code> to point to your Blockbridge API endpoint.</strong> <a href="#linked-blockbridge-account"><strong>ⓘ</strong></a></p>
 
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ export BLOCKBRIDGE_API_HOST=blockbridge.mycompany.example
 </code></pre></div>    </div>
   </li>
   <li>
-    <p><strong>Use the containerized CLI to create the account.</strong></p>
+    <p><strong>Use the containerized CLI to create the account.</strong> <a href="#linked-blockbridge-account"><strong>ⓘ</strong></a></p>
 
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ docker run --rm -it -e BLOCKBRIDGE_API_HOST docker.io/blockbridge/cli:latest-alpine bb --no-ssl-verify-peer account create --name kubernetes
 </code></pre></div>    </div>
   </li>
   <li>
-    <p><strong>When prompted, authenticate as the <code class="highlighter-rouge">system</code> user.</strong></p>
+    <p><strong>When prompted, authenticate as the <code class="highlighter-rouge">system</code> user.</strong> <a href="#linked-blockbridge-account"><strong>ⓘ</strong></a></p>
 
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> Authenticating to https://blockbridge.mycompany.example/api
 
@@ -444,7 +456,7 @@ and an authorization token.</p>
 </code></pre></div>    </div>
   </li>
   <li>
-    <p><strong>Use the containerized CLI to create the auth token.</strong></p>
+    <p><strong>Use the containerized CLI to create the auth token.</strong> <a href="#authorization-token"><strong>ⓘ</strong></a></p>
 
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ export BLOCKBRIDGE_API_HOST=blockbridge.mycompany.example
  $ export BLOCKBRIDGE_API_SU=kubernetes
@@ -452,7 +464,7 @@ and an authorization token.</p>
 </code></pre></div>    </div>
   </li>
   <li>
-    <p><strong>Again, authenticate as the <code class="highlighter-rouge">system</code> user.</strong></p>
+    <p><strong>Again, authenticate as the <code class="highlighter-rouge">system</code> user.</strong> <a href="#authorization-token"><strong>ⓘ</strong></a></p>
 
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> Authenticating to https://blockbridge.mycompany.example/api
 
@@ -462,7 +474,7 @@ and an authorization token.</p>
 </code></pre></div>    </div>
   </li>
   <li>
-    <p><strong>Set the <code class="highlighter-rouge">BLOCKBRIDGE_API_KEY</code> environment variable to the new token.</strong></p>
+    <p><strong>Set the <code class="highlighter-rouge">BLOCKBRIDGE_API_KEY</code> environment variable to the new token.</strong> <a href="#authorization-token"><strong>ⓘ</strong></a></p>
 
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ export BLOCKBRIDGE_API_KEY="1/Nr7qLedL/P0KXxbrB8+jpfrFPBrNi3X+8H9BBwyOYg/mvOot50v2vA"
 </code></pre></div>    </div>
@@ -477,29 +489,29 @@ cluster to proceed.</p>
 
 <ol>
   <li>
-    <p><strong>Create a file with the definition of a <em>secret</em> for the Blockbridge API.</strong></p>
+    <p><strong>Create a file with the definition of a <em>secret</em> for the Blockbridge API.</strong> <a href="#create-a-secret"><strong>ⓘ</strong></a></p>
 
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ cat &gt; secret.yml &lt;&lt;- EOF
- apiVersion: v1
- kind: Secret
- metadata:
-   name: blockbridge
-   namespace: kube-system
- stringData:
-   api-url: "https://${BLOCKBRIDGE_API_HOST}/api"
-   access-token: "$BLOCKBRIDGE_API_KEY"
-   ssl-verify-peer: "false"
- EOF
+apiVersion: v1
+kind: Secret
+metadata:
+  name: blockbridge
+  namespace: kube-system
+stringData:
+  api-url: "https://${BLOCKBRIDGE_API_HOST}/api"
+  access-token: "$BLOCKBRIDGE_API_KEY"
+  ssl-verify-peer: "false"
+EOF
 </code></pre></div>    </div>
   </li>
   <li>
-    <p><strong>Create the secret in Kubernetes.</strong></p>
+    <p><strong>Create the secret in Kubernetes.</strong> <a href="#create-a-secret"><strong>ⓘ</strong></a></p>
 
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ kubectl create -f ./secret.yml
 </code></pre></div>    </div>
   </li>
   <li>
-    <p><strong>Check that the secret exists.</strong></p>
+    <p><strong>Check that the secret exists.</strong> <a href="#create-a-secret"><strong>ⓘ</strong></a></p>
 
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ kubectl -n kube-system get secrets blockbridge
  NAME          TYPE      DATA      AGE
@@ -507,13 +519,13 @@ cluster to proceed.</p>
 </code></pre></div>    </div>
   </li>
   <li>
-    <p><strong>Deploy the Blockbridge driver.</strong></p>
+    <p><strong>Deploy the Blockbridge driver.</strong> <a href="#deploy-the-blockbridge-driver"><strong>ⓘ</strong></a></p>
 
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ kubectl apply -f https://get.blockbridge.com/kubernetes/5.1/csi/csi-blockbridge-v2.0.0.yaml
 </code></pre></div>    </div>
   </li>
   <li>
-    <p><strong>Check that the driver is running.</strong></p>
+    <p><strong>Check that the driver is running.</strong> <a href="#ensure-the-driver-is-operational"><strong>ⓘ</strong></a></p>
 
     <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code> $ kubectl -n kube-system get pods -l role=csi-blockbridge
  NAME                                    READY     STATUS    RESTARTS   AGE
@@ -774,6 +786,12 @@ named <code class="highlighter-rouge">blockbridge-gp</code>.  This is the <stron
 provisioning of storage volumes. It provisions using the default Blockbridge
 storage template configured in the Blockbridge controlplane.</p>
 
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl get storageclass
+    NAME                       PROVISIONER           RECLAIMPOLICY   VOLUMEBINDINGMODE   ALLOWVOLUMEEXPANSION   AGE
+    blockbridge-gp (default)   csi.blockbridge.com   Delete          Immediate           true                   65m
+    blockbridge-tls            csi.blockbridge.com   Delete          Immediate           false                  65m
+</code></pre></div></div>
+
 <p>There are a variety of additional storage class configuration options available,
 including:</p>
 
@@ -834,7 +852,7 @@ volume in Blockbridge and make it accessible to applications.</p>
     apiVersion: v1
     kind: PersistentVolumeClaim
     metadata:
-      name: csi-pvc-blockbridge-example
+      name: csi-pvc-blockbridge
     spec:
       accessModes:
       - ReadWriteOnce
@@ -950,7 +968,7 @@ has failed.</p>
 NAME               READY   STATUS              RESTARTS   AGE
 blockbridge-demo   0/2     ContainerCreating   0          20s
 
-$ kubectl describe pod/blockbridge-dmo
+$ kubectl describe pod/blockbridge-demo
 Events:
   Type     Reason                  Age   From                            Message
   ----     ------                  ----  ----                            -------
@@ -970,10 +988,56 @@ Events:
 </code></pre></div></div>
 
 <ul>
+  <li>For Ubuntu, install the <code class="highlighter-rouge">open-iscsi</code> package on the host running the kubelet.</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    apt install open-iscsi
+</code></pre></div></div>
+
+<ul>
+  <li>Delete/re-create the application pod to retry.</li>
+</ul>
+
+<h3 id="symptom-1">Symptom</h3>
+
+<p>Check the app status.</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ kubectl get pod/blockbridge-demo
+NAME               READY   STATUS              RESTARTS   AGE
+blockbridge-demo   0/2     ContainerCreating   0          20s
+
+$ kubectl describe pod/blockbridge-demo
+Events:
+  Type     Reason                  Age    From                     Message
+  ----     ------                  ----   ----                     -------
+  Normal   Scheduled               10m    default-scheduler        Successfully assigned default/blockbridge-demo to crc-l6qvn-master-0
+  Normal   SuccessfulAttachVolume  10m    attachdetach-controller  AttachVolume.Attach succeeded for volume "pvc-9b2e8116-62a6-4089-8b0d-fab0f839b7aa"
+  Warning  FailedMount             9m56s  kubelet                  MountVolume.MountDevice failed for volume "pvc-9b2e8116-62a6-4089-8b0d-fab0f839b7aa" : rpc error: code = Unknown desc = exec_error: Failed to connect to bus: No data available
+iscsiadm: can not connect to iSCSI daemon (111)!
+iscsiadm: Could not login to [iface: default, target: iqn.2009-12.com.blockbridge:t-pjwajzvdho-471c1b66-e24d-4377-a16b-71ac1d580061, portal: 172.16.100.129,3260].
+iscsiadm: initiator reported error (20 - could not connect to iscsid)
+iscsiadm: Could not log into all portals
+</code></pre></div></div>
+
+<h3 id="resolution-1">Resolution</h3>
+
+<ul>
+  <li>Ensure the host running the kubelet has iSCSI daemon installed and started on the host/node.</li>
+  <li>For CentOS/RHEL, install the <code class="highlighter-rouge">iscsi-initiator-utils</code> package on the host running the kubelet.</li>
+</ul>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    yum install iscsi-initiator-utils
+    systemctl enable iscsid
+    systemctl start iscsid
+</code></pre></div></div>
+
+<ul>
   <li>For Ubuntu, install the <code class="highlighter-rouge">open-iscsi-utils</code> package on the host running the kubelet.</li>
 </ul>
 
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    apt install open-iscsi-utils
+    systemctl enable iscsid
+    systemctl start iscsid
 </code></pre></div></div>
 
 <ul>
@@ -984,7 +1048,7 @@ Events:
 
 <p>In this failure mode, provisioning fails with an “unauthorized” message.</p>
 
-<h3 id="symptom-1">Symptom</h3>
+<h3 id="symptom-2">Symptom</h3>
 
 <p>Check the PVC describe output.</p>
 
@@ -996,7 +1060,7 @@ Events:
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      Warning  ProvisioningFailed    6s (x2 over 19s)  csi.blockbridge.com csi-provisioner-blockbridge-0 2caddb79-ec46-11e8-845d-465903922841  Failed to provision volume with StorageClass "blockbridge-gp": rpc error: code = Internal desc = unauthorized_error: unauthorized: unauthorized
 </code></pre></div></div>
 
-<h3 id="resolution-1">Resolution</h3>
+<h3 id="resolution-2">Resolution</h3>
 
 <ul>
   <li>Edit <code class="highlighter-rouge">secret.yml</code> and ensure correct access token and API URL are set.</li>
@@ -1020,7 +1084,7 @@ Events:
 
 <p>Provisioning fails with an “invalid storage class” error.</p>
 
-<h3 id="symptom-2">Symptom</h3>
+<h3 id="symptom-3">Symptom</h3>
 <p>Check the PVC describe output:</p>
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    $ kubectl describe pvc csi-pvc-blockbridge
 </code></pre></div></div>
@@ -1029,7 +1093,7 @@ Events:
 <div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>      Warning  ProvisioningFailed  7s (x3 over 10s)  persistentvolume-controller  storageclass.storage.k8s.io "blockbridge-gp" not found
 </code></pre></div></div>
 
-<h3 id="resolution-2">Resolution</h3>
+<h3 id="resolution-3">Resolution</h3>
 
 <p>Ensure the StorageClass exists with the same name.</p>
 
@@ -1066,7 +1130,7 @@ complete, it will pick up the storage class change.</p>
 <p>One of the causes for an application stuck in pending is a missing Persistent
 Volume Claim (PVC).</p>
 
-<h3 id="symptom-3">Symptom</h3>
+<h3 id="symptom-4">Symptom</h3>
 
 <p>The output of <code class="highlighter-rouge">get pod</code> show that the app is stuck in pending.</p>
 
@@ -1086,7 +1150,7 @@ found.</p>
       Warning  FailedScheduling  12s (x6 over 28s)  default-scheduler  persistentvolumeclaim "csi-pvc-blockbridge" not found
 </code></pre></div></div>
 
-<h3 id="resolution-3">Resolution</h3>
+<h3 id="resolution-4">Resolution</h3>
 
 <p>Create the PVC if necessary and ensure that it’s valid.  First, validate that
 it’s missing.</p>
@@ -1123,7 +1187,7 @@ starting.</p>
             <div class="row">
                 <div class="col-lg-12 footer">
                &copy;2021 Blockbridge Networks LLC. All rights reserved. <br />
- Site last generated: Apr 12, 2021
+ Site last generated: Jun 25, 2021
                 </div>
             </div>
 </footer>

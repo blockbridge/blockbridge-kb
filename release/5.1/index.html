@@ -4,9 +4,9 @@
     <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="">
-<meta name="keywords" content=" ">
-<title>Getting help with Blockbridge | Blockbridge Knowledgebase</title>
+<meta name="description" content="New features in Blockbridge 5.1.">
+<meta name="keywords" content=" release 5.1">
+<title>Version 5.1 Release Notes | Blockbridge Knowledgebase</title>
 <!-- Google Fonts -->
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto&display=swap">
@@ -136,10 +136,270 @@
           <!-- row-oriented flex container -->
           
 
+          <!-- Sidebar Column -->
+          <nav class="col-nav hidden-sm hidden-xs" id="tg-sb-sidebar">
+            
+
+<ul id="sidebar" class="sidebar">
+  
+  
+  
+  
+  <li>
+      <a href="#blockbridge-5-1-release-notes">RELEASE 5.1</a>
+      <ul>
+          
+      </ul>
+   </li>
+     
+      
+  
+  <li>
+      <a href="#management">MANAGEMENT</a>
+      <ul>
+          
+          
+          
+          <li><a href="#management">CLI Roles and Levels</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#managament">Hourly Datastore Statistics</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#management">Enclosure Visibility</a></li>
+          
+          
+          
+          
+      </ul>
+   </li>
+     
+      
+  
+  <li>
+      <a href="#integrations">INTEGRATIONS</a>
+      <ul>
+          
+          
+          
+          <li><a href="#proxmox">Proxmox</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#multi-cloud-openstack">Multi-Cloud Openstack</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#kubernetes-version-1.14">Kubernetes Version 1.14</a></li>
+          
+          
+          
+          
+      </ul>
+   </li>
+     
+      
+  
+  <li>
+      <a href="#compression-metadata">COMPRESSION METADATA</a>
+      <ul>
+          
+          
+          
+          <li><a href="#compression-metadata">Metadata Efficiency</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#compression-metadata">Metadata Cache</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#compression-metadata">Metadata Concurrency</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#compression-metadata">Cache Sweeping</a></li>
+          
+          
+          
+          
+      </ul>
+   </li>
+     
+      
+  
+  <li>
+      <a href="#performance">PERFORMANCE</a>
+      <ul>
+          
+          
+          
+          <li><a href="#performance">Snapshot Remove Fairness</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#performance">Offloaded Message Logging</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#performance">Improved Write-Combining</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#performance">Micro Optimizations</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#performance">Client-Side Tunings</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#performance">Adjustable TLS Compression</a></li>
+          
+          
+          
+          
+      </ul>
+   </li>
+     
+      
+  
+  <li>
+      <a href="#platform">PLATFORM</a>
+      <ul>
+          
+          
+          
+          <li><a href="#platform">Linux Kernel 5.4.21</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#platform">Centos 7.9</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#platform">AMD EPYC Naples & Rome</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#platform">SCSI Enclosure Stability</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#platform">Memory Usage</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#platform">Blockbridge Shell</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#platform">Diskctl Enclosure View</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#platform">IP Address Scale</a></li>
+          
+          
+          
+          
+          
+          
+          <li><a href="#platform">iSCSI Sessions Scale</a></li>
+          
+          
+          
+          
+      </ul>
+   </li>
+     
+      
+  
+  <li>
+      <a href="#miscellaneous">MISCELLANEOUS</a>
+      <ul>
+          
+      </ul>
+   </li>
+     
+      
+      
+      <!-- if you aren't using the accordion, uncomment this block:
+         <p class="external">
+             <a href="#" id="collapseAll">Collapse All</a> | <a href="#" id="expandAll">Expand All</a>
+         </p>
+         -->
+</ul>
+
+<!-- this highlights the active parent class in the navgoco sidebar. this is critical so that the parent expands when you're viewing a page. This must appear below the sidebar code above. Otherwise, if placed inside customscripts.js, the script runs before the sidebar code runs and the class never gets inserted.-->
+<script>$("li.active").parents('li').toggleClass("active");</script>
+
+          </nav>
+          
+
           <!-- Content Column -->
           <main class="col-content">
             <div class="post-header">
-   <h1 class="post-title-main">Getting help with Blockbridge</h1>
+   <h1 class="post-title-main">Version 5.1 Release Notes</h1>
 </div>
 
 
@@ -147,38 +407,179 @@
 <div class="post-content">
 
    
-    <div class="summary">Contact Blockbridge Support for help.</div>
-   
-
-    
-    
-<!-- this handles the automatic toc. use ## for subheads to auto-generate the on-page minitoc. if you use html tags, you must supply an ID for the heading element in order for it to appear in the minitoc. -->
-<script>
-$( document ).ready(function() {
-  // Handler for .ready() called.
-
-$('#toc').toc({ minimumHeaders: 0, listType: 'ul', showSpeed: 0, headers: 'h2,h3,h4' });
-
-/* this offset helps account for the space taken up by the floating toolbar. */
-$('#toc').on('click', 'a', function() {
-  var target = $(this.getAttribute('href'))
-    , scroll_target = target.offset().top
-
-  $(window).scrollTop(scroll_target - 10);
-  return false
-})
-  
-});
-</script>
-
-<div id="toc"></div>
 
     
 
 
     
 
-   <div class="alert alert-success" role="alert"><i class="fa fa-check-square-o"></i> <b>Tip:</b> If you have any questions or run into problems please contact <a href="mailto:support@blockbridge.com">Blockbridge Support</a></div>
+   <p>Blockbridge Version 5.1 updates the widely deployed 5.x AnyScale architecture.
+This release brings numerous performance and stability improvements alongside
+support for Proxmox, multi-cloud Openstack deployments, and an updated
+Kubernetes driver.</p>
+
+<hr />
+
+<h2 id="management">Management</h2>
+
+<p>Release 5.1 includes several improvements in management for both the
+web application and the command line tool.
+<br /></p>
+
+<ul>
+  <li>
+    <p><strong>CLI Roles and Levels:</strong> The CLI tool now offers a more focused workflow for
+tenants by approiately restricting the visibility of administrative and
+infrastructure commands.  Admins can further limit or expand the number of
+commands and options shown with levels like “advanced” and “expert” levels.</p>
+  </li>
+  <li>
+    <p><strong>Hourly Roll-up Datastore Statistics:</strong> You can now view a robust set of
+utilization statistics from the CLI, via the “datastore stats” subcommand.</p>
+  </li>
+  <li>
+    <p><strong>Enclosure and Volume Visibility:</strong> The web console now affords a more
+consistent and easier to navigate view of enclosures, volumes, and their
+underlying physical storage devices.</p>
+  </li>
+</ul>
+
+<hr />
+
+<h2 id="integrations">Integrations</h2>
+
+<h3 id="proxmox">Proxmox</h3>
+
+<p>Deploying Proxmox on Blockbridge just got a lot simpler.  Release 5.1 brings
+full shared-block storage support for Proxmox with a supported plugin.  Use the
+full suite of Blockbridge features:</p>
+
+<ul>
+  <li>High Availability</li>
+  <li>Multi-Tenancy &amp; Multi-Proxmox</li>
+  <li>High Performance</li>
+  <li>At-Rest &amp; In-Flight Encryption</li>
+  <li>Snapshots &amp; Clones</li>
+  <li>Thin Provisioning &amp; Data Reduction</li>
+</ul>
+
+<h3 id="multi-cloud-openstack">Multi-Cloud Openstack</h3>
+
+<p>In 5.1, we’ve expanded the types of OpenStack deployments we can support.
+Prior versions of our Cinder driver were limited to one Openstack cloud per
+Blockbridge controlplane.  The 5.1 release now includes support for multiple
+OpenStack clouds and per-tenant accounts.</p>
+
+<h3 id="kubernetes-version-114">Kubernetes Version 1.14</h3>
+
+<p>Our K8s driver version 2.0.0 is up to spec with Kubernetes 1.14.</p>
+
+<hr />
+
+<h2 id="compression-metadata">Compression Metadata</h2>
+
+<p>Release 5.1 has benefitted from a heavy focus on improving the performance of
+our compression-related metadata.</p>
+
+<ul>
+  <li><strong>Metadata Efficiency:</strong> On systems with a heavy re-write workload, database
+pages that store compression metadata could become inefficiently used, leading
+to increased lookup times.  In 5.1, we have improved the way our B+tree handles
+these pages yielding a much improved fill-factor and compact metadata layout.</li>
+  <li><strong>Metadata Cache:</strong> Efficiency has improved more than 40% in release 5.1.</li>
+  <li><strong>Metadata Concurrency:</strong> For large installations where the compression
+metadata exceeds the cache size, we’ve improved our database concurrency by
+more than an order of magnitude.</li>
+  <li><strong>Cache Sweeping:</strong> We’ve taken steps to limit the impact of compression
+scans on the metadata cache.  These scans now use their own pool of cache
+memory, to avoid impacting cached user metadata.</li>
+</ul>
+
+<hr />
+
+<h2 id="performance">Performance</h2>
+
+<p>We’ve improved performance across the board.</p>
+
+<ul>
+  <li>
+    <p><strong>Snapshot Remove Fairness:</strong> Release 5.1 offers lower latency and higher
+IOPS for user traffic during snapshot removal (reclaim) metadata scans,
+effectively getting the system’s traffic out of the way of user I/O.</p>
+  </li>
+  <li><strong>Offloaded Message Logging:</strong> The dataplane made strides in its low-level
+latency consistency by offloading its logging of diagnostic, user, and
+administrative events and statistics to another CPU core.</li>
+  <li><strong>Improved Write-Combining:</strong> Some filesystems, including XFS, intersperse
+their inode metadata with user data.  This forces client access patterns that
+are frequently not aligned with the Blockbridge extent size.  Release 5.1
+includes special handling to re-combine this sort of write pattern to achieve
+higher performance.</li>
+  <li><strong>Micro-Optimizations:</strong> Several critical I/O handling codepaths in the
+dataplane have been hand-optimized to eliminate processor stalls due to
+excessive branching and memory references.  And, we’ve markedly reduced some
+nasty instances of unnecessary data sharing between CPU cores.  Translation:
+lower acheivable latency and more IOPS headroom.</li>
+  <li><strong>Client-Side Tunings:</strong> Release 5.1 includes enhanced support for
+client-side tunings on “host attach” over a wider range of 3.x, 4.x, and 5.x
+Linux kernels.</li>
+  <li><strong>Adjustable TLS Compression:</strong> You can now adjust the TLS compression level of tunneled data sessions.</li>
+</ul>
+
+<hr />
+
+<h2 id="platform">Platform</h2>
+
+<ul>
+  <li><strong>Linux Kernel 5.4.21:</strong> We’re currently shipping our own version of Linux
+kernel 5.4.21, based on the Long-Term Support (LTS) stream.  We continue to
+monitor kernel development for activity related to NVMe support, network
+drivers, server platforms, and all block-layer bug fixes from upstream
+linux. The bare-metal and cloud images include the blockbridge kernel built-in.</li>
+  <li><strong>Centos 7.9:</strong> The latest CentOS 7.9 release is now the base for all
+Blockbridge pre-built bare-metal and cloud images.</li>
+  <li><strong>AMD EPYC Naples &amp; Rome:</strong> With the 5.0 release, we began shipping
+installations specifically optimized for the AMD EPYC line of server
+processors.  Release 5.1 continues this trend with optimizations to IRQ routing
+on 48- and 64-core AMD systems.</li>
+  <li><strong>SCSI Enclosure Stability:</strong> Some Supermicro SCSI expanders manufactured in
+2020 came with faulty firmware that would stop responding to SES enclosure
+queries.  With support from our storage lab, they were able to address the
+issue.  Firmware revisions from 16.16.14.00 have the fix.  Blockbridge platform
+mangement software gained improved resiliency against flaky SCSI enclosures.</li>
+  <li><strong>Memory Usage:</strong> We fixed some slow-growing memory usage problems with our
+platform-level services.  They weren’t leaking memory, but could in some cases
+grow to consume more memory than they really should have.  Release 5.1 enforces
+tight constraints on these processes.</li>
+  <li><strong>Blockbridge Shell:</strong> The installation and management shell “blockbridge”
+got a facelift in 5.1.  It now has much clearer, consistent organization, with
+better documentation.  It also includes built-in support for configuring an
+HTTP proxy.</li>
+  <li><strong>Diskctl Enclosure View:</strong> Management of devices and volumes is
+significantly simpler with an enclosure-centric view that’s now the default in
+the “diskctl” command.</li>
+  <li><strong>IP Addresses Scale:</strong> Doubled the number of supported front-facing IP
+addresses for data services.</li>
+  <li><strong>iSCSI Sessions Scale:</strong> Doubled the number iSCSI sessions
+on a single target to support large multipath shared storage clusters.</li>
+</ul>
+
+<hr />
+
+<h2 id="miscellaneous">Miscellaneous</h2>
+
+<ul>
+  <li>We fixed an extrememly rare case of stuck I/O requests on volumes with IOPS
+limits enabled.</li>
+  <li>Sending-side statistics for targets now properly count status PDUs.</li>
+  <li>Dataplane complex IOPS gauges were sometimes observed to oscillate ~10% when
+the rates were in the 100,000 IOPS range, or higher.  This is fixed in 5.1.</li>
+  <li>Fixed a rare case where the iSCSI target discovery reply could be empty when
+interfaces were disabled.</li>
+</ul>
+
+<p><em>(Note: Some of the above features were backported to later 5.0 releases as
+part of our early access program.)</em></p>
 
 
     <div class="tags">
