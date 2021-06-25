@@ -225,8 +225,8 @@ rate | _none_ | string, object or number | (optional) Specification of the stat 
 unit | _none_ | _grafana unit spec string_ | (required) Unit of measure to return with the timeseries data.
 func | avg | min, max, avg | (optional) Raw data processing function. See the earlier discussion of `func` for more details.
 consolidate\_by | _func value_ | min, max, avg, disabled | (optional) Point consolidation function. See the earlier discussion of `consolidate_by` for more details.
-reduce\_y | + | \+, \-, \/, \* | For series with more than one `field` value specified, this operator defines how the values are reduced. By default, the values are summed. Any ruby-provided binary arithmatic operator should work.
-reduce\_rate | + | \+, \-, \/, \* | For series with more than one `rate` value specified, this operator defines how the values are reduced. By default, the values are summed. As with `reduce_y`, any ruby-provided binary arithmatic operator is fair game.
+reduce\_y | + | \+, \-, /, \* | For series with more than one `field` value specified, this operator defines how the values are reduced. By default, the values are summed. Any ruby-provided binary arithmatic operator should work.
+reduce\_rate | + | \+, \-, /, \* | For series with more than one `rate` value specified, this operator defines how the values are reduced. By default, the values are summed. As with `reduce_y`, any ruby-provided binary arithmatic operator is fair game.
 max\_period | _none_ | integer milliseconds | If specified, puts an upper-bound on the _backend_ stats query period. This can be used to ensure all points are returned for non-counter based stx blocks.
 scrape\_interval | timeseries-class-dependent | integer milliseconds | Specify the backend scrape interval. For the `Timeseries` class, this defaults to 10s. For `MeterTimeseries` it defaults to 1hr. This influences the derived value of `eval_interval`, and likely doesn't need to be specified, unless you're doing something particularly "high end".
 legend\_format | "%{title}" | format string | Specify the series legend format string. See the earlier Format String Variables section for more details.
