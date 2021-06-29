@@ -1,0 +1,35 @@
+# This is your sidebar TOC. The sidebar code loops through sections here and provides the appropriate formatting.
+
+entries:
+- title: sidebar
+  folders:
+  - title: RELEASE 5.0.17
+    output: web, pdf
+    url: '#blockbridge-5-0-17-release-notes'
+
+  - title: MANAGEMENT
+    output: web, pdf
+    url: '#management'
+    folderitems:
+      - title: Capacity-Scaled Burst IOPS Credits
+        output: web, pdf
+        url: '#management'
+
+  - title: PLATFORM & DATAPLANE
+    output: web, pdf
+    url: '#platform--dataplane'
+    folderitems:
+      - title: Kernel 5.4.21 Hotfix
+        output: web, pdf
+        url: '#platform--dataplane'
+      - title: Improved Failover and Service Move Times
+        output: web, pdf
+        url: '#platform--dataplane'
+
+  - title: SNAPSHOT RECLAIM
+    output: web, pdf
+    url: '#snapshot-reclaim'
+
+  - title: Bugs Fixed
+    output: web, pdf
+    url: '#bugs-fixed'

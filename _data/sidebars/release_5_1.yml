@@ -16,7 +16,7 @@ entries:
         url: '#management'
       - title: Hourly Datastore Statistics
         output: web, pdf
-        url: '#managament'
+        url: '#management'
       - title: Enclosure Visibility
         output: web, pdf
         url: '#management'

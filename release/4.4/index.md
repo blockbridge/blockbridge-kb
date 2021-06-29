@@ -1,7 +1,7 @@
 ---
 layout: page
-title: Version 5.4 Release Notes
-description: What's changed in Blockbridge 4.4.
+title: Version 4.4 Release Notes
+description: What's changed in Blockbridge 4.4
 permalink: /release/4.4/index.html
 keywords: release 4.4
 toc: false

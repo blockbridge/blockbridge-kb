@@ -1,0 +1,65 @@
+# This is your sidebar TOC. The sidebar code loops through sections here and provides the appropriate formatting.
+
+entries:
+- title: sidebar
+  folders:
+  - title: RELEASE 5.1.3
+    output: web, pdf
+    url: '#blockbridge-5-1-3-release-notes'
+
+  - title: MANAGEMENT
+    output: web, pdf
+    url: '#management'
+    folderitems:
+      - title: Grafana
+        output: web, pdf
+        url: '#management'
+      - title: Capacity-Scaled Burst IOPS Credits
+        output: web, pdf
+        url: '#management'
+      - title: Compression Scheduling
+        output: web, pdf
+        url: '#management'
+
+  - title: PLATFORM & DATAPLANE
+    output: web, pdf
+    url: '#platform--dataplane'
+    folderitems:
+      - title: Kernel 5.4.21 Hotfix
+        output: web, pdf
+        url: '#platform--dataplane'
+      - title: Lower Memory Fragmentation
+        output: web, pdf
+        url: '#platform--dataplane'
+      - title: Improved Failover and Service Move Times
+        output: web, pdf
+        url: '#platform--dataplane'
+      - title: Per-Volume Maintenance Mode
+        output: web, pdf
+        url: '#platform--dataplane'
+      - title: NVMe Secure Erase
+        output: web, pdf
+        url: '#platform--dataplane'
+
+  - title: SNAPSHOT RECLAIM
+    output: web, pdf
+    url: '#snapshot-reclaim'
+
+  - title: WEB UI
+    output: web, pdf
+    url: '#web-ui'
+    folderitems:
+      - title: Statistics Widget Tooltips
+        output: web, pdf
+        url: '#web-ui'
+      - title: Datastore Statistics
+        output: web, pdf
+        url: '#web-ui'
+
+  - title: Blockbridge Shell
+    output: web, pdf
+    url: '#blockbridge-shell'
+
+  - title: Bugs Fixed
+    output: web, pdf
+    url: '#bugs-fixed'

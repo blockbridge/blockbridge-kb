@@ -22,7 +22,7 @@ web application and the command line tool.
 <br>
 
 * **CLI Roles and Levels:** The CLI tool now offers a more focused workflow for
-  tenants by approiately restricting the visibility of administrative and
+  tenants by appropriately restricting the visibility of administrative and
   infrastructure commands.  Admins can further limit or expand the number of
   commands and options shown with levels like "advanced" and "expert" levels.
 
@@ -67,7 +67,7 @@ Our K8s driver version 2.0.0 is up to spec with Kubernetes 1.14.
 Compression Metadata
 --------------------
 
-Release 5.1 has benefitted from a heavy focus on improving the performance of
+Release 5.1 has benefited from a heavy focus on improving the performance of
 our compression-related metadata.
 
 * **Metadata Efficiency:** On systems with a heavy re-write workload, database
@@ -92,7 +92,6 @@ We've improved performance across the board.
 * **Snapshot Remove Fairness:** Release 5.1 offers lower latency and higher
 IOPS for user traffic during snapshot removal (reclaim) metadata scans,
 effectively getting the system's traffic out of the way of user I/O.
-
 * **Offloaded Message Logging:** The dataplane made strides in its low-level
 latency consistency by offloading its logging of diagnostic, user, and
 administrative events and statistics to another CPU core.
@@ -105,7 +104,7 @@ higher performance.
 dataplane have been hand-optimized to eliminate processor stalls due to
 excessive branching and memory references.  And, we've markedly reduced some
 nasty instances of unnecessary data sharing between CPU cores.  Translation:
-lower acheivable latency and more IOPS headroom.
+lower achievable latency and more IOPS headroom.
 * **Client-Side Tunings:** Release 5.1 includes enhanced support for
 client-side tunings on "host attach" over a wider range of 3.x, 4.x, and 5.x
 Linux kernels.
@@ -120,7 +119,7 @@ Platform
 kernel 5.4.21, based on the Long-Term Support (LTS) stream.  We continue to
 monitor kernel development for activity related to NVMe support, network
 drivers, server platforms, and all block-layer bug fixes from upstream
-linux. The bare-metal and cloud images include the blockbridge kernel built-in.
+Linux. The bare-metal and cloud images include the blockbridge kernel built-in.
 * **Centos 7.9:** The latest CentOS 7.9 release is now the base for all
 Blockbridge pre-built bare-metal and cloud images.
 * **AMD EPYC Naples & Rome:** With the 5.0 release, we began shipping
@@ -131,7 +130,7 @@ on 48- and 64-core AMD systems.
 2020 came with faulty firmware that would stop responding to SES enclosure
 queries.  With support from our storage lab, they were able to address the
 issue.  Firmware revisions from 16.16.14.00 have the fix.  Blockbridge platform
-mangement software gained improved resiliency against flaky SCSI enclosures.
+management software gained improved resiliency against flaky SCSI enclosures.
 * **Memory Usage:** We fixed some slow-growing memory usage problems with our
 platform-level services.  They weren't leaking memory, but could in some cases
 grow to consume more memory than they really should have.  Release 5.1 enforces
@@ -153,7 +152,7 @@ addresses for data services.
 Miscellaneous
 -------------
 
-* We fixed an extrememly rare case of stuck I/O requests on volumes with IOPS
+* We fixed an extremely rare case of stuck I/O requests on volumes with IOPS
   limits enabled.
 * Sending-side statistics for targets now properly count status PDUs.
 * Dataplane complex IOPS gauges were sometimes observed to oscillate ~10% when

@@ -1,0 +1,84 @@
+# This is your sidebar TOC. The sidebar code loops through sections here and provides the appropriate formatting.
+
+entries:
+- title: sidebar
+  folders:
+  - title: RELEASE 4.4.15
+    output: web, pdf
+    url: '#blockbridge-4-4-15-release-notes'
+
+  - title: MANAGEMENT
+    output: web, pdf
+    url: '#management'
+    folderitems:
+      - title: Multi-Cloud Openstack
+        output: web, pdf
+        url: '#management'
+      - title: Capacity-Scaled Burst IOPS Credits
+        output: web, pdf
+        url: '#management'
+
+  - title: COMPRESSION METADATA
+    output: web, pdf
+    url: '#compression-metadata'
+    folderitems:
+      - title: Metadata Efficiency
+        output: web, pdf
+        url: '#compression-metadata'
+      - title: Metadata Cache
+        output: web, pdf
+        url: '#compression-metadata'
+      - title: Metadata Concurrency
+        output: web, pdf
+        url: '#compression-metadata'
+      - title: Cache Sweeping
+        output: web, pdf
+        url: '#compression-metadata'
+
+  - title: PERFORMANCE
+    output: web, pdf
+    url: '#performance'
+    folderitems:
+      - title: Snapshot Remove Fairness
+        output: web, pdf
+        url: '#performance'
+      - title: Improved IRQ Routing
+        output: web, pdf
+        url: '#performance'
+      - title: Lower Memory Fragmentation
+        output: web, pdf
+        url: '#performance'
+
+  - title: PLATFORM
+    output: web, pdf
+    url: '#platform'
+    folderitems:
+      - title: SCSI Enclosure Stability
+        output: web, pdf
+        url: '#platform'
+      - title: Improved Failover and Service Move Times
+        output: web, pdf
+        url: '#platform'
+
+  - title: WEB UI
+    output: web, pdf
+    url: '#web-ui'
+    folderitems:
+      - title: Statistics Widget Tooltips
+        output: web, pdf
+        url: '#web-ui'
+
+  - title: CLI
+    output: web, pdf
+    url: '#cli'
+    folderitems:
+      - title: Debian 10 Support
+        output: web, pdf
+        url: '#cli'
+      - title: Ubuntu 20.04 Support
+        output: web, pdf
+        url: '#cli'
+
+  - title: Bugs Fixed
+    output: web, pdf
+    url: '#miscellaneous'
