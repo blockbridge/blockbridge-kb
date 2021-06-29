@@ -56,10 +56,10 @@ entries:
         output: web, pdf
         url: '#web-ui'
 
-  - title: Blockbridge Shell
+  - title: BLOCKBRIDGE SHELL
     output: web, pdf
     url: '#blockbridge-shell'
 
-  - title: Bugs Fixed
+  - title: BUGS FIXED
     output: web, pdf
     url: '#bugs-fixed'

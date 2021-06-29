@@ -79,6 +79,6 @@ entries:
         output: web, pdf
         url: '#cli'
 
-  - title: Bugs Fixed
+  - title: BUGS FIXED
     output: web, pdf
-    url: '#miscellaneous'
+    url: '#bugs-fixed'

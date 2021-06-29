@@ -134,6 +134,15 @@ defaults:
       sidebar: release_5_1
 
   - scope:
+      path: "release/5.1.1"
+      type: "pages"
+    values:
+      layout: "page"
+      comments: false
+      search: true
+      sidebar: release_5_1_1
+
+  - scope:
       path: "release/5.1.3"
       type: "pages"
     values:

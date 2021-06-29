@@ -30,6 +30,6 @@ entries:
     output: web, pdf
     url: '#snapshot-reclaim'
 
-  - title: Bugs Fixed
+  - title: BUGS FIXED
     output: web, pdf
     url: '#bugs-fixed'

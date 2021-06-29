@@ -3,9 +3,9 @@
 entries:
 - title: sidebar
   folders:
-  - title: RELEASE 5.1
+  - title: RELEASE 5.1.1
     output: web, pdf
-    url: '#blockbridge-5-1-release-notes'
+    url: '#blockbridge-5-1-1-release-notes'
 
   - title: MANAGEMENT
     output: web, pdf
@@ -18,15 +18,6 @@ entries:
         output: web, pdf
         url: '#management'
       - title: Enclosure Visibility
-        output: web, pdf
-        url: '#management'
-      - title: Grafana
-        output: web, pdf
-        url: '#management'
-      - title: Capacity-Scaled Burst IOPS Credits
-        output: web, pdf
-        url: '#management'
-      - title: Compression Scheduling
         output: web, pdf
         url: '#management'
 
@@ -83,13 +74,6 @@ entries:
       - title: Adjustable TLS Compression
         output: web, pdf
         url: '#performance'
-      - title: Lower Memory Fragmentation
-        output: web, pdf
-        url: '#platform--dataplane'
-
-  - title: SNAPSHOT RECLAIM
-    output: web, pdf
-    url: '#snapshot-reclaim'
 
   - title: PLATFORM
     output: web, pdf
@@ -122,31 +106,7 @@ entries:
       - title: iSCSI Sessions Scale
         output: web, pdf
         url: '#platform'
-      - title: Improved Failover and Service Move Times
-        output: web, pdf
-        url: '#platform'
-      - title: Per-Volume Maintenance Mode
-        output: web, pdf
-        url: '#platform'
-      - title: NVMe Secure Erase
-        output: web, pdf
-        url: '#platform'
 
-  - title: WEB UI
+  - title: MISCELLANEOUS
     output: web, pdf
-    url: '#web-ui'
-    folderitems:
-      - title: Statistics Widget Tooltips
-        output: web, pdf
-        url: '#web-ui'
-      - title: Datastore Statistics
-        output: web, pdf
-        url: '#web-ui'
-
-  - title: BLOCKBRIDGE SHELL
-    output: web, pdf
-    url: '#blockbridge-shell'
-
-  - title: BUGS FIXED
-    output: web, pdf
-    url: '#bugs-fixed'
+    url: '#miscellaneous'
