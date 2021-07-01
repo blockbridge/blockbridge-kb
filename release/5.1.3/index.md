@@ -85,7 +85,6 @@ Blockbridge Shell
 * Do not need to stop services to remove a cluster fence.
 * In "vip del", the list of VIPs is now sorted.
 * On service start or stop, shell warns if maintenance mode is enabled.
-* Improved host key checking for remote-support.
 
 ---
 
@@ -95,7 +94,7 @@ Bugs Fixed
 * We fixed an extremely rare case of stuck I/O requests on volumes with IOPS
   limits enabled.
 * Sending-side statistics for targets now properly count status PDUs.
-* Fixed instances where the datastore cache-hit statistic reported wild values
+* Fixed instances where the datastore cache-hit statistic reported incorrect values
   under certain workloads.
 * Dataplane complex IOPS gauges were sometimes observed to oscillate ~10% when
   the rates were in the 100,000 IOPS range, or higher.  This is now fixed.
@@ -117,6 +116,5 @@ Bugs Fixed
 * We closed an open internal HTTP port detected by Nessus.  All Blockbridge
   internal services require certificate validation, so there was never any
   security risk.  But there was also no reason to have the port exposed.
-* During upgrade, some statistics series would sometimes show a large negative
-  dip.  We've finally fixed this tricky bug.  Upgrades to 5.1.3 should see no
-  interruption in statistics.
+* We fixed a display issue where, during upgrade, some statistics series would
+  occasionally show a large negative dip.

@@ -27,24 +27,24 @@ capacity of the provisioned volume.
 
 ---
 
-Compression Metadata
---------------------
+Compression
+-----------
 
 Release 4.4.15 benefits from extensive efforts to improve the performance of
-compression-related metadata.
+compression-related metadata and the compression data cache.
 
 * **Metadata Efficiency:** On systems with a heavy re-write workload, database
 pages that store compression metadata could become inefficiently used, leading
-to increased lookup times.  In 4.4.15, we have improved the way our B+tree
+to increased lookup times.  In 4.4.15, we have optimized the way our B+tree
 handles these pages yielding a much improved fill-factor and compact metadata
 layout.
 * **Metadata Cache:** Efficiency has improved more than 40%.
 * **Metadata Concurrency:** For large installations where the compression
 metadata exceeds the cache size, we've improved our database concurrency by
 more than an order of magnitude.
-* **Cache Sweeping:** We've taken steps to limit the impact of compression
-scans on the metadata cache.  These scans now use their own pool of cache
-memory, to avoid impacting cached user metadata.
+* **Data Cache Sweeping:** We've taken steps to limit the impact of compression
+scans on the compressed data cache.  These scans now use their own pool of
+cache memory, to avoid impacting cached user data.
 
 ---
 
@@ -70,8 +70,9 @@ Platform
 * **SCSI Enclosure Stability:** Some Supermicro SCSI expanders manufactured in
 2020 came with faulty firmware that would stop responding to SES enclosure
 queries.  With support from our storage lab, they were able to address the
-issue.  Firmware revisions from 16.16.14.00 have the fix.  Blockbridge platform
-management software gained improved resiliency against flaky SCSI enclosures.
+issue.  Firmware revisions from 16.16.14.00 have the fix.  Additionally,
+Blockbridge platform management software gained improved resiliency against
+flaky SCSI enclosures.
 * **Improved Failover Times:** The dataplane is quicker about opening and
 recovering volumes.  Most failovers should be about two seconds quicker.
 
@@ -98,7 +99,7 @@ Bugs Fixed
 * We fixed an extremely rare case of stuck I/O requests on volumes with IOPS
   limits enabled.
 * Sending-side statistics for targets now properly count status PDUs.
-* Fixed instances where the datastore cache-hit statistic reported wild values
+* Fixed instances where the datastore cache-hit statistic reported incorrect values
   under certain workloads.
 * Dataplane complex IOPS gauges were sometimes observed to oscillate ~10% when
   the rates were in the 100,000 IOPS range, or higher.  This is now fixed.
@@ -113,7 +114,6 @@ Bugs Fixed
   the data journal to flush.
 * Fixed a startup memory allocation failure on systems with very large
   compressed record cache memory.
-* During upgrade, some statistics series would sometimes show a large negative
-  dip.  We've finally fixed this tricky bug.  Upgrades to 4.4.15 should see no
-  interruption in statistics.
+* We fixed a display issue where, during upgrade, some statistics series would
+  occasionally show a large negative dip.
 

@@ -64,23 +64,23 @@ Our K8s driver version 2.0.0 is up to spec with Kubernetes 1.14.
 
 ---
 
-Compression Metadata
---------------------
+Compression
+-----------
 
-Release 5.1.1 has benefited from a heavy focus on improving the performance of
-our compression-related metadata.
+Release 5.1 has benefited from a heavy focus on improving the performance of
+our compression-related metadata and the compression data cache.
 
 * **Metadata Efficiency:** On systems with a heavy re-write workload, database
 pages that store compression metadata could become inefficiently used, leading
-to increased lookup times.  In 5.1.1, we have improved the way our B+tree handles
+to increased lookup times.  In 5.1, we have optimized the way our B+tree handles
 these pages yielding a much improved fill-factor and compact metadata layout.
-* **Metadata Cache:** Efficiency has improved more than 40% in release 5.1.1.
+* **Metadata Cache:** Efficiency has improved more than 40% in release 5.1.
 * **Metadata Concurrency:** For large installations where the compression
 metadata exceeds the cache size, we've improved our database concurrency by
 more than an order of magnitude.
-* **Cache Sweeping:** We've taken steps to limit the impact of compression
-scans on the metadata cache.  These scans now use their own pool of cache
-memory, to avoid impacting cached user metadata.
+* **Data Cache Sweeping:** We've taken steps to limit the impact of compression
+scans on the compressed data cache.  These scans now use their own pool of cache
+memory, to avoid impacting cached user data.
 
 ---
 
@@ -129,8 +129,9 @@ on 48- and 64-core AMD systems.
 * **SCSI Enclosure Stability:** Some Supermicro SCSI expanders manufactured in
 2020 came with faulty firmware that would stop responding to SES enclosure
 queries.  With support from our storage lab, they were able to address the
-issue.  Firmware revisions from 16.16.14.00 have the fix.  Blockbridge platform
-management software gained improved resiliency against flaky SCSI enclosures.
+issue.  Firmware revisions from 16.16.14.00 have the fix.  Additionally,
+Blockbridge platform management software gained improved resiliency against
+flaky SCSI enclosures.
 * **Memory Usage:** We fixed some slow-growing memory usage problems with our
 platform-level services.  They weren't leaking memory, but could in some cases
 grow to consume more memory than they really should have.  Release 5.1.1 enforces

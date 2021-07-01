@@ -12,9 +12,8 @@ This release brings numerous performance and stability improvements alongside
 support for Proxmox, multi-cloud Openstack deployments, Grafana, and an updated
 Kubernetes driver.
 
-This document is current as of **version 5.1.3**.  It incorporates has rolling
-updates, reflecting all changes from the minor versions of 5.1 (5.1.1, 5.1.2,
-etc.)
+This document is current as of **version 5.1.3**.  It incorporates all changes
+from the minor versions of 5.1 (5.1.1, 5.1.2, etc.)
 
 ---
 
@@ -82,23 +81,23 @@ Our K8s driver version 2.0.0 is up to spec with Kubernetes 1.14.
 
 ---
 
-Compression Metadata
---------------------
+Compression
+-----------
 
 Release 5.1 has benefited from a heavy focus on improving the performance of
-our compression-related metadata.
+our compression-related metadata and the compression data cache.
 
 * **Metadata Efficiency:** On systems with a heavy re-write workload, database
 pages that store compression metadata could become inefficiently used, leading
-to increased lookup times.  In 5.1, we have improved the way our B+tree handles
+to increased lookup times.  In 5.1, we have optimized the way our B+tree handles
 these pages yielding a much improved fill-factor and compact metadata layout.
 * **Metadata Cache:** Efficiency has improved more than 40% in release 5.1.
 * **Metadata Concurrency:** For large installations where the compression
 metadata exceeds the cache size, we've improved our database concurrency by
 more than an order of magnitude.
-* **Cache Sweeping:** We've taken steps to limit the impact of compression
-scans on the metadata cache.  These scans now use their own pool of cache
-memory, to avoid impacting cached user metadata.
+* **Data Cache Sweeping:** We've taken steps to limit the impact of compression
+scans on the compressed data cache.  These scans now use their own pool of cache
+memory, to avoid impacting cached user data.
 
 ---
 
@@ -165,8 +164,9 @@ on 48- and 64-core AMD systems.
 * **SCSI Enclosure Stability:** Some Supermicro SCSI expanders manufactured in
 2020 came with faulty firmware that would stop responding to SES enclosure
 queries.  With support from our storage lab, they were able to address the
-issue.  Firmware revisions from 16.16.14.00 have the fix.  Blockbridge platform
-management software gained improved resiliency against flaky SCSI enclosures.
+issue.  Firmware revisions from 16.16.14.00 have the fix.  Additionally,
+Blockbridge platform management software gained improved resiliency against
+flaky SCSI enclosures.
 * **Memory Usage:** We fixed some slow-growing memory usage problems with our
 platform-level services.  They weren't leaking memory, but could in some cases
 grow to consume more memory than they really should have.  Release 5.1 enforces
@@ -214,7 +214,6 @@ now has much clearer, consistent organization, with better documentation.
 * Do not need to stop services to remove a cluster fence.
 * In "vip del", the list of VIPs is now sorted.
 * On service start or stop, shell warns if maintenance mode is enabled.
-* Improved host key checking for remote-support.
 
 ---
 
@@ -228,8 +227,8 @@ Bugs Fixed
   the rates were in the 100,000 IOPS range, or higher.  This is fixed in 5.1.
 * Fixed a rare case where the iSCSI target discovery reply could be empty when
   interfaces were disabled.
-* Fixed instances where the datastore cache-hit statistic reported wild values
-  under certain workloads.
+* Fixed instances where the datastore cache-hit statistic reported incorrect
+  values under certain workloads.
 * Fixed a rare race condition that could cause cross-vss block clones to hang
   after a vdisk resize.
 * Fixed a race condition triggered by SCSI logical unit reset commands that in
@@ -246,7 +245,6 @@ Bugs Fixed
 * We closed an open internal HTTP port detected by Nessus.  All Blockbridge
   internal services require certificate validation, so there was never any
   security risk.  But there was also no reason to have the port exposed.
-* During upgrade, some statistics series would sometimes show a large negative
-  dip.  We've finally fixed this tricky bug.  Upgrades to 5.1.3 should see no
-  interruption in statistics.
+* We fixed a display issue where, during upgrade, some statistics series would
+  occasionally show a large negative dip.
 

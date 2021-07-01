@@ -35,22 +35,22 @@ entries:
         output: web, pdf
         url: '#kubernetes-version-1.14'
 
-  - title: COMPRESSION METADATA
+  - title: COMPRESSION
     output: web, pdf
-    url: '#compression-metadata'
+    url: '#compression'
     folderitems:
       - title: Metadata Efficiency
         output: web, pdf
-        url: '#compression-metadata'
+        url: '#compression'
       - title: Metadata Cache
         output: web, pdf
-        url: '#compression-metadata'
+        url: '#compression'
       - title: Metadata Concurrency
         output: web, pdf
-        url: '#compression-metadata'
-      - title: Cache Sweeping
+        url: '#compression'
+      - title: Data Cache Sweeping
         output: web, pdf
-        url: '#compression-metadata'
+        url: '#compression'
 
   - title: PERFORMANCE
     output: web, pdf
